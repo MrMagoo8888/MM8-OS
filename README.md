@@ -8,13 +8,21 @@ BASH shell
 
 (apt package manager)
 
+
 Basic APT packages
+
 Open-Watcom C compiler
+
 GCC
+
 MAKE
+
 NASM
+
 QEMU
 
+
 Any Text Editor
+
 
 (there may be others I am missing)
