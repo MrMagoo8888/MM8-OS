@@ -2,6 +2,10 @@ Hello, I am makeing this OS for fun and would love help, tips and suggestions!
 
 Prequisits:
 
+Linux-based distro (I have ubuntu, others may or may not work natively)
+
+BASH shell
+
 (apt package manager)
 
 Basic APT packages
