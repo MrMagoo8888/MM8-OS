@@ -1,3 +1,6 @@
+!! FAT SUBSYSTEM BRANCH LASTEST WORKING BRANCH!!
+
+
 Hello, I am makeing this OS for fun and would love help, tips and suggestions!
 
 Prequisits:
@@ -26,3 +29,4 @@ Any Text Editor
 
 
 (there may be others I am missing)
+
