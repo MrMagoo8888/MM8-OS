@@ -1,0 +1,3 @@
+stdint.h(25): Warning! W138: No newline at end of file
+utility.h(4): Warning! W138: No newline at end of file
+utility.c(10): Warning! W138: No newline at end of file
