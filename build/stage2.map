@@ -1,8 +1,8 @@
-Open Watcom Linker Version 2.0 beta May  1 2021 00:25:34 (32-bit)
-Copyright (c) 2002-2021 The Open Watcom Contributors. All Rights Reserved.
+Open Watcom Linker Version 2.0 beta Aug  2 2025 02:43:14 (32-bit)
+Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 Portions Copyright (c) 1985-2002 Sybase, Inc. All Rights Reserved.
-Created on:       25/09/10 19:42:45
-Executable Image: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2.bin
+Created on:       25/09/21 14:11:52
+Executable Image: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2.bin
 creating a RAW Binary Image executable
 
 
@@ -13,7 +13,7 @@ creating a RAW Binary Image executable
 Group                           Address              Size
 =====                           =======              ====
 
-DGROUP                          00001a04             00000164
+DGROUP                          000019f0             00000164
 
 
 
@@ -25,11 +25,11 @@ Segment                Class          Group          Address         Size
 =======                =====          =====          =======         ====
 
 _ENTRY                 Code           AUTO           00000000        00000013
-_TEXT                  Code           AUTO           00000013        000019f1
-CONST                  DATA           DGROUP         00001a04        00000142
-CONST2                 DATA           DGROUP         00001b46        00000011
-_DATA                  DATA           DGROUP         00001b58        00000008
-_BSS                   BSS            DGROUP         00001b60        00000008
+_TEXT                  Code           AUTO           00000013        000019dd
+CONST                  DATA           DGROUP         000019f0        00000142
+CONST2                 DATA           DGROUP         00001b32        00000011
+_DATA                  DATA           DGROUP         00001b44        00000008
+_BSS                   BSS            DGROUP         00001b4c        00000008
 
 
                         +----------------+
@@ -42,9 +42,9 @@ _BSS                   BSS            DGROUP         00001b60        00000008
 Address        Symbol
 =======        ======
 
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/asm/main.obj(main.asm)
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/main.obj(main.asm)
 00000000       entry
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/asm/x86.obj(x86.asm)
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/x86.obj(x86.asm)
 00000013       __U4D
 0000003a       __U4M
 00000054       _x86_div64_32
@@ -52,45 +52,45 @@ Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/asm/x86.
 00000095       _x86_Disk_Reset
 000000aa       _x86_Disk_Read
 000000e1       _x86_Disk_GetDriveParams
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/c/ctype.obj(/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/ctype.c)
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj(/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/ctype.c)
 00000125+      islower_
 00000163       toupper_
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/c/disk.obj(/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/disk.c)
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj(/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/disk.c)
 000001ab       DISK_Initialize_
 00000221+      DISK_LBA2CHS_
 000002d4       DISK_ReadSectors_
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/c/fat.obj(/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/fat.c)
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj(/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/fat.c)
 00000371+      FAT_ReadBootSector_
 000003a5+      FAT_ReadFat_
 000003e9       FAT_Initialize_
-00000634+      FAT_ClusterToLba_
-0000068a+      FAT_OpenEntry_
-00000854+      FAT_NextCluster_
-000008dd       FAT_Read_
-00000c41       FAT_ReadEntry_
-00000c9a       FAT_Close_
-00000d18+      FAT_FindFile_
-00000e52       FAT_Open_
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/c/main.obj(/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/main.c)
-00000fcc       _cstart_
-00001b5c+      _g_data
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/c/memory.obj(/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/memory.c)
-0000117b       memcpy_
-000011f3       memset_
-00001252       memcmp_
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/c/stdio.obj(/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/stdio.c)
-000012cf       putc_
-000012f6+      puts_
-0000132d+      puts_f_
-0000136a       _printf
-000015ed+      printf_number_
-00001b46+      _g_HexChars
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/c/string.obj(/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/string.c)
-00001861       strchr_
-000018bc+      strcpy_
-00001930       strlen_
-Module: /home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/build/stage2/c/utility.obj(/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/utility.c)
-0000196b+      align_
+0000062f+      FAT_ClusterToLba_
+00000685+      FAT_OpenEntry_
+0000084f+      FAT_NextCluster_
+000008d8       FAT_Read_
+00000c3c       FAT_ReadEntry_
+00000c95       FAT_Close_
+00000d0c+      FAT_FindFile_
+00000e46       FAT_Open_
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj(/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/main.c)
+00000fc0       _cstart_
+00001b48+      _g_data
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj(/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/memory.c)
+0000116f       memcpy_
+000011e3       memset_
+00001242       memcmp_
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj(/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdio.c)
+000012bb       putc_
+000012e2+      puts_
+00001319+      puts_f_
+00001356       _printf
+000015d9+      printf_number_
+00001b32+      _g_HexChars
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj(/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/string.c)
+0000184d       strchr_
+000018a8+      strcpy_
+0000191c       strlen_
+Module: /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj(/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.c)
+00001957+      align_
 
 
                         +---------------------+
@@ -105,47 +105,47 @@ Module          Segment               Class           Address         Size
 
 main.asm        _ENTRY                Code           00000000         00000013
 x86.asm         _TEXT                 Code           00000013         00000112
-/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/ctype.c
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/ctype.c
                 _TEXT                 Code           00000125         00000086
-                CONST                 DATA           00001a04         00000000
-                CONST2                DATA           00001b46         00000000
-                _DATA                 DATA           00001b58         00000000
-/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/disk.c
+                CONST                 DATA           000019f0         00000000
+                CONST2                DATA           00001b32         00000000
+                _DATA                 DATA           00001b44         00000000
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/disk.c
                 _TEXT                 Code           000001ab         000001c6
-                CONST                 DATA           00001a04         00000000
-                CONST2                DATA           00001b46         00000000
-                _DATA                 DATA           00001b58         00000000
-/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/fat.c
-                _TEXT                 Code           00000371         00000c5b
-                CONST                 DATA           00001a04         00000107
-                CONST2                DATA           00001b46         00000000
-                _DATA                 DATA           00001b58         00000004
-                _BSS                  BSS            00001b60         00000008
-/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/main.c
-                _TEXT                 Code           00000fcc         000001af
-                CONST                 DATA           00001b0c         0000003a
-                CONST2                DATA           00001b46         00000000
-                _DATA                 DATA           00001b5c         00000004
-/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/memory.c
-                _TEXT                 Code           0000117b         00000154
-                CONST                 DATA           00001b46         00000000
-                CONST2                DATA           00001b46         00000000
-                _DATA                 DATA           00001b60         00000000
-/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/stdio.c
-                _TEXT                 Code           000012cf         00000592
-                CONST                 DATA           00001b46         00000000
-                CONST2                DATA           00001b46         00000011
-                _DATA                 DATA           00001b60         00000000
-/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/string.c
-                _TEXT                 Code           00001861         0000010a
-                CONST                 DATA           00001b46         00000000
-                CONST2                DATA           00001b58         00000000
-                _DATA                 DATA           00001b60         00000000
-/home/ann-marie-wilson/Documents/samba/OS/2/MM8-OS/src/bootloader/stage2/utility.c
-                _TEXT                 Code           0000196b         00000099
-                CONST                 DATA           00001b46         00000000
-                CONST2                DATA           00001b58         00000000
-                _DATA                 DATA           00001b60         00000000
+                CONST                 DATA           000019f0         00000000
+                CONST2                DATA           00001b32         00000000
+                _DATA                 DATA           00001b44         00000000
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/fat.c
+                _TEXT                 Code           00000371         00000c4f
+                CONST                 DATA           000019f0         00000107
+                CONST2                DATA           00001b32         00000000
+                _DATA                 DATA           00001b44         00000004
+                _BSS                  BSS            00001b4c         00000008
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/main.c
+                _TEXT                 Code           00000fc0         000001af
+                CONST                 DATA           00001af8         0000003a
+                CONST2                DATA           00001b32         00000000
+                _DATA                 DATA           00001b48         00000004
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/memory.c
+                _TEXT                 Code           0000116f         0000014c
+                CONST                 DATA           00001b32         00000000
+                CONST2                DATA           00001b32         00000000
+                _DATA                 DATA           00001b4c         00000000
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdio.c
+                _TEXT                 Code           000012bb         00000592
+                CONST                 DATA           00001b32         00000000
+                CONST2                DATA           00001b32         00000011
+                _DATA                 DATA           00001b4c         00000000
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/string.c
+                _TEXT                 Code           0000184d         0000010a
+                CONST                 DATA           00001b32         00000000
+                CONST2                DATA           00001b44         00000000
+                _DATA                 DATA           00001b4c         00000000
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.c
+                _TEXT                 Code           00001957         00000099
+                CONST                 DATA           00001b32         00000000
+                CONST2                DATA           00001b44         00000000
+                _DATA                 DATA           00001b4c         00000000
 Warning! W1014: stack segment not found
 
 
@@ -154,6 +154,6 @@ Warning! W1014: stack segment not found
                         +-----------------------+
 
 Stack size:  0200 (512.)
-Memory size:  1b68 (7016.)
+Memory size:  1b54 (6996.)
 Entry point address: 00000000
 Link time: 00:00.00
