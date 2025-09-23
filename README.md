@@ -44,3 +44,7 @@ paru -S gcc make bison flex libgmp-static libmpc mpfr texinfo nasm mtools qemu-s
 ```#
 
 NOTE: to install all the required packages on Arch, you need an [AUR helper](https://wiki.archlinux.org/title/AUR_helpers).
+
+```
+Thanks to Nanobyte for their OS Development series that has greatly helped with this feat.
+(https://www.youtube.com/watch?v=9t-SPC7Tczc&list=PLFjM7v6KGMpiH2G-kT781ByCNC_0pKpPN)
