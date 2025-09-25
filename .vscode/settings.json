@@ -1,5 +1,11 @@
 {
-    "css.validate": false,
-    "workbench.externalBrowser": "",
-    "nasm.validate": true
+    "files.associations": {
+        "x86.h": "c",
+        "stdio.h": "c",
+        "*.old": "plaintext",
+        "stdbool.h": "c",
+        "stdarg.h": "c",
+        "memory.h": "c",
+        "stdint.h": "c"
+    }
 }
