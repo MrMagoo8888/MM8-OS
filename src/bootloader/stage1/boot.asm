@@ -385,7 +385,7 @@ buffer:
 ; NOTES
 ;
 
-; I'm stating to get a idea of whats up - 12:44:53 17/8/2025
+; I'm stating to get a idea of whats up - 12:44:53 12/8/2025
 ; Working!!! 12:54:47 12/08/2025
 
 
