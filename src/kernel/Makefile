@@ -23,7 +23,8 @@ HEADERS_ASM = $(wildcard *.inc) \
 SOURCES_ASM = $(wildcard *.asm) \
 			  $(wildcard */*.asm) \
 			  $(wildcard */*/*.asm) \
-			  $(wildcard */*/*/*.asm)
+			  $(wildcard */*/*/*.asm) \
+			  $(wildcard arch/i686/*.asm)
 
 
 OBJECTS_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM))
