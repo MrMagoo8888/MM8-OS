@@ -1,5 +1,5 @@
 #include "memory.h"
-#include "stdint.h"
+#include <stdint.h>
 
 void* memcpy(void* dst, const void* src, uint16_t num)
 {
