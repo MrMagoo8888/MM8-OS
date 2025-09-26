@@ -1,4 +1,5 @@
 export CFLAGS = -std=c99 -g
+export CFLAGS = -std=c99 -g
 export ASMFLAGS =
 export CC = gcc
 export CXX = g++
