@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 const unsigned SCREEN_WIDTH = 80;
 const unsigned SCREEN_HEIGHT = 25;

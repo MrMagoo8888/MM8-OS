@@ -14,3 +14,12 @@ x86_inb:
     xor eax, eax
     in al, dx
     ret
+
+; Add aliases for kernel linkage
+global i686_outb
+i686_outb:
+    jmp x86_outb
+
+global i686_inb
+i686_inb:
+    jmp x86_inb
