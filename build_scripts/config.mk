@@ -1,4 +1,4 @@
-export CFLAGS = -std=c99 -g
+
 export CFLAGS = -std=c99 -g
 export ASMFLAGS =
 export CC = gcc
@@ -18,6 +18,7 @@ export TARGET_LD = $(TARGET)-gcc
 export TARGET_LINKFLAGS =
 export TARGET_LIBS =
 
+export SOURCE_DIR = $(abspath .)
 export BUILD_DIR = $(abspath build)
 
 BINUTILS_VERSION = 2.42
