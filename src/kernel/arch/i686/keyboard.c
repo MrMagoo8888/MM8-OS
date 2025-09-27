@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 extern int g_ScreenX, g_ScreenY;
+extern int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 #define KEYBOARD_DATA_PORT 0x60
 
@@ -26,13 +27,26 @@ void keyboard_irq_handler(Registers* regs) {
         return;
     }
 
-    // Handle extended Delete key (E0 53)
-    if (extended && scancode == 0x53) {
-        // Handle Delete: remove character from buffer/screen
-        if (g_ScreenX > 0) {
-            g_ScreenX--;
-            putchr(g_ScreenX, g_ScreenY, ' ');
-            setcursor(g_ScreenX, g_ScreenY);
+    // Handle extended arrow keys
+    if (extended) {
+        switch (scancode) {
+            case 0x4B: // Left Arrow
+                if (g_ScreenX > 0) g_ScreenX--;
+                setcursor(g_ScreenX, g_ScreenY);
+                break;
+            case 0x4D: // Right Arrow
+                if (g_ScreenX < SCREEN_WIDTH - 1) g_ScreenX++;
+                setcursor(g_ScreenX, g_ScreenY);
+                break;
+            case 0x48: // Up Arrow
+                if (g_ScreenY > 0) g_ScreenY--;
+                setcursor(g_ScreenX, g_ScreenY);
+                break;
+            case 0x50: // Down Arrow
+                if (g_ScreenY < SCREEN_HEIGHT - 1) g_ScreenY++;
+                setcursor(g_ScreenX, g_ScreenY);
+                break;
+            // You can add Home/End/PageUp/PageDown here too
         }
         extended = 0;
         return;
