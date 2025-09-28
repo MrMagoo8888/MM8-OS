@@ -1,16 +1,23 @@
 #include <stdio.h>
 #include <arch/i686/io.h>
-
-#include <stdarg.h>
-#include <stdbool.h>
 #include <stdint.h>
+#include "stdio.h"
+#include "stdbool.h"
+#include <stdarg.h>
 
-const unsigned SCREEN_WIDTH = 80;
-const unsigned SCREEN_HEIGHT = 25;
-const uint8_t DEFAULT_COLOR = 0x7;
+
+
+
 
 uint8_t* g_ScreenBuffer = (uint8_t*)0xB8000;
 int g_ScreenX = 0, g_ScreenY = 0;
+
+// --- Make these global, not static ---
+#define SCROLLBACK_LINES 100
+char scrollback_buffer[SCROLLBACK_LINES][SCREEN_WIDTH];
+int scrollback_start = 0;
+int scrollback_count = 0;
+int scrollback_view = 0;
 
 void putchr(int x, int y, char c)
 {
