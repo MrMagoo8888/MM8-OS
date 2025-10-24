@@ -4,20 +4,22 @@
 #include "stdio.h"
 #include "stdbool.h"
 #include <stdarg.h>
-
-
-
+#include "memory.h"
 
 
 uint8_t* g_ScreenBuffer = (uint8_t*)0xB8000;
 int g_ScreenX = 0, g_ScreenY = 0;
 
-// --- Make these global, not static ---
+// --- Scrollback Buffer ---
 #define SCROLLBACK_LINES 100
 char scrollback_buffer[SCROLLBACK_LINES][SCREEN_WIDTH];
 int scrollback_start = 0;
 int scrollback_count = 0;
 int scrollback_view = 0;
+
+// --- Live Screen Backup ---
+static uint8_t live_screen_backup[SCREEN_HEIGHT * SCREEN_WIDTH * 2];
+static bool in_scrollback_mode = false;
 
 void putchr(int x, int y, char c)
 {
@@ -65,21 +67,84 @@ void clrscr()
 
 void scrollback(int lines)
 {
-    for (int y = lines; y < SCREEN_HEIGHT; y++)
-        for (int x = 0; x < SCREEN_WIDTH; x++)
-        {
+    // Save scrolled-off lines to the scrollback buffer
+    for (int i = 0; i < lines; i++) {
+        // Save the characters of the top line (y=0)
+        for (int x = 0; x < SCREEN_WIDTH; x++) {
+            scrollback_buffer[(scrollback_start + scrollback_count) % SCROLLBACK_LINES][x] = getchr(x, 0);
+        }
+
+        if (scrollback_count < SCROLLBACK_LINES) {
+            scrollback_count++;
+        } else {
+            scrollback_start = (scrollback_start + 1) % SCROLLBACK_LINES;
+        }
+    }
+
+    // Move all lines up
+    for (int y = lines; y < SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < SCREEN_WIDTH; x++) {
             putchr(x, y - lines, getchr(x, y));
             putcolor(x, y - lines, getcolor(x, y));
         }
+    }
 
-    for (int y = SCREEN_HEIGHT - lines; y < SCREEN_HEIGHT; y++)
-        for (int x = 0; x < SCREEN_WIDTH; x++)
-        {
+    // Clear the bottom lines
+    for (int y = SCREEN_HEIGHT - lines; y < SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < SCREEN_WIDTH; x++) {
             putchr(x, y, '\0');
             putcolor(x, y, DEFAULT_COLOR);
         }
+    }
 
     g_ScreenY -= lines;
+}
+
+static void redraw_from_scrollback() {
+    int top_history_line = scrollback_count - scrollback_view;
+    for (int y = 0; y < SCREEN_HEIGHT; y++) {
+        int history_line_index = top_history_line - (SCREEN_HEIGHT - 1 - y);
+        if (history_line_index >= 0 && history_line_index < scrollback_count) {
+            int buffer_idx = (scrollback_start + history_line_index) % SCROLLBACK_LINES;
+            for (int x = 0; x < SCREEN_WIDTH; x++) {
+                putchr(x, y, scrollback_buffer[buffer_idx][x]);
+                putcolor(x, y, DEFAULT_COLOR);
+            }
+        } else {
+            // Clear lines that are beyond the history
+            for (int x = 0; x < SCREEN_WIDTH; x++) {
+                putchr(x, y, ' ');
+                putcolor(x, y, DEFAULT_COLOR);
+            }
+        }
+    }
+    setcursor(0,0);
+}
+
+void view_scrollback_up() {
+    if (scrollback_count == 0) return;
+    if (!in_scrollback_mode) {
+        memcpy(live_screen_backup, g_ScreenBuffer, sizeof(live_screen_backup));
+        in_scrollback_mode = true;
+    }
+    scrollback_view += 2;
+    if (scrollback_view > scrollback_count) {
+        scrollback_view = scrollback_count;
+    }
+    redraw_from_scrollback();
+}
+
+void view_scrollback_down() {
+    if (!in_scrollback_mode) return;
+    scrollback_view--;
+    if (scrollback_view <= 0) {
+        scrollback_view = 0;
+        in_scrollback_mode = false;
+        memcpy(g_ScreenBuffer, live_screen_backup, sizeof(live_screen_backup));
+        setcursor(g_ScreenX, g_ScreenY);
+        return;
+    }
+    redraw_from_scrollback();
 }
 
 void putc(char c)
