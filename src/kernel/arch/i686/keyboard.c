@@ -15,6 +15,11 @@
 static char g_InputBuffer[INPUT_BUFFER_SIZE];
 static int g_InputBufferIndex = 0;
 static volatile bool g_InputLineReady = false;
+
+// --- Static variables for single character input (getch) ---
+static volatile int g_CharBuffer = -1; // -1 means empty
+static volatile bool g_CharReady = false;
+
 static bool g_ShiftPressed = false;
 static bool g_AltGrPressed = false;
 
@@ -99,41 +104,21 @@ void keyboard_irq_handler(Registers* regs) {
             case 0xB8: // AltGr released
                 g_AltGrPressed = false;
                 break;
-            case 0x4B: // Left Arrow
-                if (g_ScreenX > 0) {
-                    g_ScreenX--;
-                    setcursor(g_ScreenX, g_ScreenY);
-                }
-                break;
-            case 0x4D: // Right Arrow
-                if (g_ScreenX < SCREEN_WIDTH - 1) {
-                    g_ScreenX++;
-                    setcursor(g_ScreenX, g_ScreenY);
-                }
-                break;
             case 0x48: // Up Arrow
-                if (g_ScreenY > 0) {
-                    g_ScreenY--;
-                    setcursor(g_ScreenX, g_ScreenY);
-                }
+                g_CharBuffer = KEY_UP; g_CharReady = true;
                 break;
             case 0x50: // Down Arrow
-                if (g_ScreenY < SCREEN_HEIGHT - 1) {
-                    g_ScreenY++;
-                    setcursor(g_ScreenX, g_ScreenY);
-                }
+                g_CharBuffer = KEY_DOWN; g_CharReady = true;
+                break;
+            case 0x4B: // Left Arrow
+                g_CharBuffer = KEY_LEFT; g_CharReady = true;
+                break;
+            case 0x4D: // Right Arrow
+                g_CharBuffer = KEY_RIGHT; g_CharReady = true;
                 break;
             case 0x49: { // PageUp (now for command history)
-                if (g_HistoryCount && *g_HistoryCount > 0) {
-                    if (g_HistoryNavIndex < (*g_HistoryCount - 1)) {
-                        g_HistoryNavIndex++;
-                    }
-                    // Correctly calculate the index in the circular buffer
-                    int actual_index = (*g_HistoryIndexPtr - 1 - g_HistoryNavIndex + g_HistorySize) % g_HistorySize;
-                    strcpy(g_InputBuffer, g_HistoryBuffer[actual_index]);
-                    g_InputBufferIndex = strlen(g_InputBuffer);
-                    redraw_input_line();
-                }
+                // For now, we'll let the editor handle this.
+                // In the future, this could be used for scrolling.
                 break;
             }
             case 0x51: { // PageDown (now for command history)
@@ -153,8 +138,8 @@ void keyboard_irq_handler(Registers* regs) {
                 }
                 break;
             }
-            case 0x53: // Delete - Not implemented in this simplified version
-                break;
+            case 0x53: // Delete
+                g_CharBuffer = KEY_DELETE; g_CharReady = true;
         }
         extended = 0;
         return;
@@ -165,10 +150,6 @@ void keyboard_irq_handler(Registers* regs) {
         return;
     }
 
-    // --- Buffered Input Logic ---
-    if (g_InputLineReady) {
-        return; // Line buffer is full, waiting for gets() to read it
-    }
 
     char c;
     if (g_AltGrPressed)
@@ -178,22 +159,30 @@ void keyboard_irq_handler(Registers* regs) {
     else
         c = scancode_ascii[scancode];
 
-    if (c == '\n') {
-        g_InputBuffer[g_InputBufferIndex] = '\0';
-        g_InputLineReady = true;
-        g_HistoryNavIndex = -1; // Reset history navigation on enter
-        putc('\n');
-    } else if (c == '\b') {
-        if (g_InputBufferIndex > 0) {
-            g_ScreenX--;
-            g_InputBufferIndex--;
-            putchr(g_ScreenX, g_ScreenY, ' ');
-            setcursor(g_ScreenX, g_ScreenY);
-        }
-    } else if (c != 0) {
-        if (g_InputBufferIndex < INPUT_BUFFER_SIZE - 1) {
-            g_InputBuffer[g_InputBufferIndex++] = c;
-            putc(c); // Echo character
+    // --- Input Buffering Logic ---
+    // If getch() is waiting, give it the character.
+    if (!g_CharReady) {
+        g_CharBuffer = c;
+        g_CharReady = true;
+    }
+
+    // If gets() is waiting, also add to its buffer.
+    if (!g_InputLineReady) {
+        if (c == '\n') {
+            g_InputBuffer[g_InputBufferIndex] = '\0';
+            g_InputLineReady = true;
+            g_HistoryNavIndex = -1; // Reset history navigation on enter
+            putc('\n');
+        } else if (c == '\b') {
+            if (g_InputBufferIndex > 0) {
+                g_InputBufferIndex--;
+                putc('\b'); // Let putc handle backspace logic
+            }
+        } else if (c != 0) {
+            if (g_InputBufferIndex < INPUT_BUFFER_SIZE - 1) {
+                g_InputBuffer[g_InputBufferIndex++] = c;
+                putc(c); // Echo character
+            }
         }
     }
 }
@@ -224,4 +213,20 @@ void gets(char* buffer, int size) {
     g_InputLineReady = false;
 
     __asm__ volatile("sti"); // Re-enable interrupts
+}
+
+int getch() {
+    while (!g_CharReady) {
+        __asm__ volatile("hlt"); // Wait for a key press
+    }
+
+    __asm__ volatile("cli"); // Disable interrupts for critical section
+
+    int c = g_CharBuffer;
+    g_CharReady = false;
+    g_CharBuffer = -1;
+
+    __asm__ volatile("sti"); // Re-enable interrupts
+
+    return c;
 }
