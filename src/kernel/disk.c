@@ -22,6 +22,8 @@
 
 // ATA commands
 #define ATA_CMD_READ_SECTORS     0x20
+#define ATA_CMD_WRITE_SECTORS    0x30
+#define ATA_CMD_CACHE_FLUSH      0xE7
 #define ATA_CMD_IDENTIFY_DEVICE  0xEC
 
 
@@ -122,5 +124,47 @@ bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
         i686_insw(ATA_PRIMARY_DATA, target, 256);
         target += 256;
     }
+    return true;
+}
+
+bool DISK_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buffer) {
+    // Wait until the drive is not busy
+    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY));
+
+    // Select drive (Master) and send LBA bits 24-27
+    // 0xE0 for master drive in LBA mode
+    i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xE0 | (disk->id << 4) | ((lba >> 24) & 0x0F));
+    // Send the number of sectors to write
+    i686_outb(ATA_PRIMARY_SECTOR_COUNT, count);
+
+    // Send the LBA address (bits 0-23)
+    i686_outb(ATA_PRIMARY_LBA_LOW, (uint8_t)lba);
+    i686_outb(ATA_PRIMARY_LBA_MID, (uint8_t)(lba >> 8));
+    i686_outb(ATA_PRIMARY_LBA_HIGH, (uint8_t)(lba >> 16));
+
+    // Send the WRITE SECTORS command
+    i686_outb(ATA_PRIMARY_COMMAND, ATA_CMD_WRITE_SECTORS);
+
+    const uint16_t* source = (const uint16_t*)buffer;
+
+    for (int i = 0; i < count; i++) {
+        // Poll until the drive is ready to receive data (BSY clear, DRQ set)
+        while (!((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_DATA_REQUEST) || (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR)));
+
+        // Check for an error
+        if (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR) {
+            printf("DISK: Write error! LBA=%u, Count=%u\n", lba, count);
+            return false; // Error occurred
+        }
+
+        // Write 256 16-bit words (512 bytes) from the buffer to the data port
+        i686_outsw(ATA_PRIMARY_DATA, source, 256);
+        source += 256;
+    }
+
+    // Flush the cache to ensure data is written to the disk platter
+    i686_outb(ATA_PRIMARY_COMMAND, ATA_CMD_CACHE_FLUSH);
+    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY));
+
     return true;
 }
