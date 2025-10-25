@@ -84,9 +84,6 @@ static FAT_Data g_Data;
 static uint8_t g_Fat[SECTOR_SIZE * 16]; // Max FAT size of 16 sectors (8KB)
 static uint32_t g_DataSectionLba;
 
-// Forward declarations for new functions
-FAT_File* FAT_OpenInternal(DISK* disk, const char* path);
-bool FAT_CreateFile(DISK* disk, const char* path, FAT_DirectoryEntry* entryOut);
 
 // This will hold the starting LBA of our FAT partition
 static uint32_t g_PartitionOffset = 0;
@@ -226,6 +223,33 @@ uint32_t FAT_NextCluster(uint32_t currentCluster)
         return (*(uint16_t*)(g_Fat + fatIndex)) >> 4;
 }
 
+static void FAT_SetClusterValue(uint32_t cluster, uint16_t value) {
+    uint32_t fatIndex = cluster * 3 / 2;
+    if (cluster % 2 == 0) {
+        *(uint16_t*)(g_Fat + fatIndex) = (*(uint16_t*)(g_Fat + fatIndex) & 0xF000) | (value & 0x0FFF);
+    } else {
+        *(uint16_t*)(g_Fat + fatIndex) = (*(uint16_t*)(g_Fat + fatIndex) & 0x000F) | (value << 4);
+    }
+}
+
+static uint32_t FAT_FindAndAllocateFreeCluster(DISK* disk) {
+    // Start search from cluster 2 (0 and 1 are reserved)
+    // The total number of clusters can be derived from TotalSectors
+    uint32_t total_clusters = (g_Data.BS.BootSector.TotalSectors - g_DataSectionLba) / g_Data.BS.BootSector.SectorsPerCluster;
+
+    for (uint32_t i = 2; i < total_clusters; i++) {
+        if (FAT_NextCluster(i) == 0x000) { // 0x000 indicates a free cluster
+            // Mark cluster as end of chain
+            FAT_SetClusterValue(i, 0xFFF);
+            // Write the modified FAT sector back to disk
+            uint32_t fat_sector = i * 3 / 2 / SECTOR_SIZE;
+            DISK_WriteSectors(disk, g_PartitionOffset + g_Data.BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + fat_sector * SECTOR_SIZE);
+            return i;
+        }
+    }
+    return 0; // No free clusters
+}
+
 uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* dataIn)
 {
     FAT_FileData* fd = &g_Data.OpenedFiles[file->Handle];
@@ -267,9 +291,20 @@ uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* d
                 uint32_t nextCluster = FAT_NextCluster(fd->CurrentCluster);
                 if (nextCluster >= 0xFF8) // End of chain
                 {
-                    // TODO: Allocate a new cluster and extend the chain
-                    printf("FAT: End of file reached, cluster allocation not implemented yet.\n");
-                    return u8DataIn - (const uint8_t*)dataIn; // Return bytes written so far
+                    // Allocate a new cluster
+                    uint32_t newCluster = FAT_FindAndAllocateFreeCluster(disk);
+                    if (newCluster == 0) {
+                        printf("FAT: Out of disk space!\n");
+                        return u8DataIn - (const uint8_t*)dataIn; // Return bytes written so far
+                    }
+
+                    // Link the old cluster to the new one
+                    FAT_SetClusterValue(fd->CurrentCluster, newCluster);
+                    // Write the modified FAT sector back to disk
+                    uint32_t fat_sector = fd->CurrentCluster * 3 / 2 / SECTOR_SIZE;
+                    DISK_WriteSectors(disk, g_PartitionOffset + g_Data.BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + fat_sector * SECTOR_SIZE);
+
+                    nextCluster = newCluster;
                 }
                 fd->CurrentCluster = nextCluster;
             }
@@ -428,6 +463,7 @@ bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEnt
     return false;
 }
 
+FAT_File* FAT_OpenInternal(DISK* disk, const char* path);
 FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode)
 {
     FAT_DirectoryEntry entry;
@@ -444,7 +480,19 @@ FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode)
         }
         return file;
     }
-    return NULL; // For now, we don't support creation
+    else // File does not exist
+    {
+        if (mode == FAT_OPEN_MODE_CREATE) {
+            // This is complex: we need to find the parent directory,
+            // then create the file in it.
+            // For now, let's just print a message.
+            printf("FAT: File creation not fully implemented yet.\n");
+            return NULL;
+        } else {
+            printf("FAT: File '%s' not found.\n", path);
+            return NULL;
+        }
+    }
 }
 
 FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
