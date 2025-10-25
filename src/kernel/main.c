@@ -3,6 +3,7 @@
 #include "memory.h"
 #include <hal/hal.h>
 #include <arch/i686/irq.h>
+#include "fat.h"
 #include <arch/i686/keyboard.h>
 #include "string.h"
 
@@ -11,6 +12,8 @@
 static char g_CommandHistory[HISTORY_SIZE][256];
 static int g_HistoryCount = 0;
 static int g_HistoryIndex = 0;
+
+static DISK g_Disk;
 
 extern uint8_t __bss_start;
 extern uint8_t __end;
@@ -28,6 +31,7 @@ void handle_help() {
     printf(" - help: Show this message\n");
     printf(" - echo [text]: Print back the given text\n");
     printf(" - cls: Clear the screen\n");
+    printf(" - read [file]: Read a file from the disk\n");
     printf(" - credits: Shows Credits from our Wonderful contributers and viewers\n");
 }
 
@@ -38,6 +42,28 @@ void handle_echo(const char* input) {
     } else {
         printf("Usage: echo [text]\n");
     }
+}
+
+void handle_read(const char* input) {
+    if (input[4] != ' ') {
+        printf("Usage: read [file]\n");
+        return;
+    }
+    const char* path = input + 5;
+    FAT_File* file = FAT_Open(&g_Disk, path);
+    if (!file) {
+        printf("Could not open file: %s\n", path);
+        return;
+    }
+
+    char buffer[513]; // Read 512 bytes at a time
+    uint32_t bytes_read;
+    while ((bytes_read = FAT_Read(&g_Disk, file, 512, buffer)) > 0) {
+        buffer[bytes_read] = '\0';
+        printf("%s", buffer);
+    }
+    printf("\n");
+    FAT_Close(file);
 }
 
 void add_to_history(const char* command) {
@@ -83,8 +109,19 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
     printf("Hello from kernel!\n");
     printf("Type 'help' for a list of commands.\n\n");
 
+    // Initialize disk and FAT filesystem
+    // The boot drive number is passed in from the bootloader.
+    if (!DISK_Initialize(&g_Disk, bootDrive)) {
+        printf("Disk initialization failed.\n");
+    } else if (!FAT_Initialize(&g_Disk)) {
+        printf("FAT initialization failed.\n");
+    }
+
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
+
+    // Enable interrupts now that all handlers are set up
+    i686_EnableInterrupts();
 
     char input_buffer[256];
 
@@ -99,6 +136,8 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
             clrscr();
         } else if (memcmp(input_buffer, "echo ", 5) == 0) {
             handle_echo(input_buffer);
+        } else if (memcmp(input_buffer, "read ", 5) == 0) {
+            handle_read(input_buffer);
         } else if (input_buffer[0] == '\0') {
             // Empty input, do nothing
         } else if (strcmp(input_buffer, "credits") == 0) {

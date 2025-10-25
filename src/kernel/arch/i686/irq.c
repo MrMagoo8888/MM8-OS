@@ -45,4 +45,5 @@ void i686_IRQ_Initialize()
 void i686_IRQ_RegisterHandler(int irq, IRQHandler handler)
 {
     g_IRQHandlers[irq] = handler;
+    i686_PIC_Unmask(irq);
 }

@@ -76,10 +76,10 @@ void i686_PIC_Configure(uint8_t offsetPic1, uint8_t offsetPic2)
     i686_outb(PIC2_DATA_PORT, PIC_ICW4_8086);
     i686_iowait();
 
-    // clear data registers
-    i686_outb(PIC1_DATA_PORT, 0);
+    // mask all interrupts
+    i686_outb(PIC1_DATA_PORT, 0xFF);
     i686_iowait();
-    i686_outb(PIC2_DATA_PORT, 0);
+    i686_outb(PIC2_DATA_PORT, 0xFF);
     i686_iowait();
 }
 
@@ -112,8 +112,8 @@ void i686_PIC_Mask(int irq)
         port = PIC2_DATA_PORT;
     }
 
-    uint8_t mask = i686_inb(PIC1_DATA_PORT);
-    i686_outb(PIC1_DATA_PORT,  mask | (1 << irq));
+    uint8_t mask = i686_inb(port);
+    i686_outb(port,  mask | (1 << irq));
 }
 
 void i686_PIC_Unmask(int irq)
@@ -130,20 +130,20 @@ void i686_PIC_Unmask(int irq)
         port = PIC2_DATA_PORT;
     }
 
-    uint8_t mask = i686_inb(PIC1_DATA_PORT);
-    i686_outb(PIC1_DATA_PORT,  mask & ~(1 << irq));
+    uint8_t mask = i686_inb(port);
+    i686_outb(port,  mask & ~(1 << irq));
 }
 
 uint16_t i686_PIC_ReadIrqRequestRegister()
 {
     i686_outb(PIC1_COMMAND_PORT, PIC_CMD_READ_IRR);
     i686_outb(PIC2_COMMAND_PORT, PIC_CMD_READ_IRR);
-    return ((uint16_t)i686_inb(PIC2_COMMAND_PORT)) | (((uint16_t)i686_inb(PIC2_COMMAND_PORT)) << 8);
+    return ((uint16_t)i686_inb(PIC2_COMMAND_PORT) << 8) | i686_inb(PIC1_COMMAND_PORT);
 }
 
 uint16_t i686_PIC_ReadInServiceRegister()
 {
     i686_outb(PIC1_COMMAND_PORT, PIC_CMD_READ_ISR);
     i686_outb(PIC2_COMMAND_PORT, PIC_CMD_READ_ISR);
-    return ((uint16_t)i686_inb(PIC2_COMMAND_PORT)) | (((uint16_t)i686_inb(PIC2_COMMAND_PORT)) << 8);
+    return ((uint16_t)i686_inb(PIC2_COMMAND_PORT) << 8) | i686_inb(PIC1_COMMAND_PORT);
 }
