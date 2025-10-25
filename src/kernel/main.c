@@ -6,6 +6,12 @@
 #include <arch/i686/keyboard.h>
 #include "string.h"
 
+// --- Command History ---
+#define HISTORY_SIZE 10
+static char g_CommandHistory[HISTORY_SIZE][256];
+static int g_HistoryCount = 0;
+static int g_HistoryIndex = 0;
+
 extern uint8_t __bss_start;
 extern uint8_t __end;
 
@@ -34,6 +40,18 @@ void handle_echo(const char* input) {
     }
 }
 
+void add_to_history(const char* command) {
+    if (command[0] == '\0') return; // Don't save empty commands
+    // Don't save if it's the same as the last command
+    if (g_HistoryCount > 0 && strcmp(command, g_CommandHistory[(g_HistoryIndex - 1 + HISTORY_SIZE) % HISTORY_SIZE]) == 0) {
+        return;
+    }
+    strcpy(g_CommandHistory[g_HistoryIndex], command);
+    g_HistoryIndex = (g_HistoryIndex + 1) % HISTORY_SIZE;
+    if (g_HistoryCount < HISTORY_SIZE) {
+        g_HistoryCount++;
+    }
+}
 void credits() {
     printf("Credits to our Wonderful contributers and viewers:\n\n");
         printf(" - MrJBMG\n");
@@ -66,13 +84,14 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
     printf("Type 'help' for a list of commands.\n\n");
 
     i686_IRQ_RegisterHandler(0, timer);
-    i686_Keyboard_Initialize();
+    i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
 
     char input_buffer[256];
 
     while (1) {
         printf("> ");
         gets(input_buffer, sizeof(input_buffer));
+        add_to_history(input_buffer);
 
         if (strcmp(input_buffer, "help") == 0) {
             handle_help();

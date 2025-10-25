@@ -14,7 +14,7 @@ extern int scrollback_start;
 extern int scrollback_count;
 extern int scrollback_view;
 
-void i686_Keyboard_Initialize();
+void i686_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, int* history_index, int history_size);
 void keyboard_irq_handler(Registers* regs);
 
 // Reads a line of input from the keyboard into the provided buffer.

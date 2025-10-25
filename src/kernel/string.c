@@ -15,3 +15,12 @@ unsigned int strlen(const char* str) {
     }
     return len;
 }
+
+char* strcpy(char* dst, const char* src) {
+    char* origDst = dst;
+    while (*src) {
+        *dst++ = *src++;
+    }
+    *dst = '\0';
+    return origDst;
+}

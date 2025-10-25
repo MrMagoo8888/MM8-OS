@@ -6,6 +6,7 @@
 #include "stdbool.h"
 #include "memory.h"
 #include "string.h"
+#include "stddef.h"
 
 #include "screen_defs.h"
 
@@ -16,6 +17,13 @@ static int g_InputBufferIndex = 0;
 static volatile bool g_InputLineReady = false;
 static bool g_ShiftPressed = false;
 static bool g_AltGrPressed = false;
+
+// --- Command History ---
+static char (*g_HistoryBuffer)[256] = NULL;
+static int* g_HistoryCount = NULL;
+static int* g_HistoryIndexPtr = NULL; // Pointer to main.c's g_HistoryIndex
+static int g_HistorySize = 0;
+static int g_HistoryNavIndex = -1; // How far back we are in history. -1 = not navigating. 0 = most recent.
 
 extern uint8_t* g_ScreenBuffer;
 extern int g_ScreenX, g_ScreenY;
@@ -52,6 +60,22 @@ static const char scancode_ascii_altgr[128] = {
     // ... rest are 0
 };
 
+static void redraw_input_line() {
+    // Go to the start of the input area
+    int prompt_len = 2; // "> "
+    g_ScreenX = prompt_len;
+    setcursor(g_ScreenX, g_ScreenY);
+
+    // Print the current buffer
+    printf("%s", g_InputBuffer);
+
+    // Clear the rest of the line to erase old characters
+    for (int i = strlen(g_InputBuffer); i < SCREEN_WIDTH - prompt_len; i++) {
+        putc(' ');
+    }
+    setcursor(prompt_len + g_InputBufferIndex, g_ScreenY);
+}
+
 void keyboard_irq_handler(Registers* regs) {
     uint8_t scancode = i686_inb(KEYBOARD_DATA_PORT);
 
@@ -76,20 +100,59 @@ void keyboard_irq_handler(Registers* regs) {
                 g_AltGrPressed = false;
                 break;
             case 0x4B: // Left Arrow
-                // For simplicity, we'll leave this and other navigation for a future step
+                if (g_ScreenX > 0) {
+                    g_ScreenX--;
+                    setcursor(g_ScreenX, g_ScreenY);
+                }
                 break;
             case 0x4D: // Right Arrow
+                if (g_ScreenX < SCREEN_WIDTH - 1) {
+                    g_ScreenX++;
+                    setcursor(g_ScreenX, g_ScreenY);
+                }
                 break;
             case 0x48: // Up Arrow
+                if (g_ScreenY > 0) {
+                    g_ScreenY--;
+                    setcursor(g_ScreenX, g_ScreenY);
+                }
                 break;
             case 0x50: // Down Arrow
+                if (g_ScreenY < SCREEN_HEIGHT - 1) {
+                    g_ScreenY++;
+                    setcursor(g_ScreenX, g_ScreenY);
+                }
                 break;
-            case 0x49: // PageUp
-                view_scrollback_up();
+            case 0x49: { // PageUp (now for command history)
+                if (g_HistoryCount && *g_HistoryCount > 0) {
+                    if (g_HistoryNavIndex < (*g_HistoryCount - 1)) {
+                        g_HistoryNavIndex++;
+                    }
+                    // Correctly calculate the index in the circular buffer
+                    int actual_index = (*g_HistoryIndexPtr - 1 - g_HistoryNavIndex + g_HistorySize) % g_HistorySize;
+                    strcpy(g_InputBuffer, g_HistoryBuffer[actual_index]);
+                    g_InputBufferIndex = strlen(g_InputBuffer);
+                    redraw_input_line();
+                }
                 break;
-            case 0x51: // PageDown
-                view_scrollback_down();
+            }
+            case 0x51: { // PageDown (now for command history)
+                if (g_HistoryNavIndex != -1) {
+                    if (g_HistoryNavIndex > 0) {
+                        g_HistoryNavIndex--;
+                        // Correctly calculate the index in the circular buffer
+                        int actual_index = (*g_HistoryIndexPtr - 1 - g_HistoryNavIndex + g_HistorySize) % g_HistorySize;
+                        strcpy(g_InputBuffer, g_HistoryBuffer[actual_index]);
+                    } else {
+                        // Reached the end of history, clear the line
+                        g_HistoryNavIndex = -1;
+                        g_InputBuffer[0] = '\0';
+                    }
+                    g_InputBufferIndex = strlen(g_InputBuffer);
+                    redraw_input_line();
+                }
                 break;
+            }
             case 0x53: // Delete - Not implemented in this simplified version
                 break;
         }
@@ -118,6 +181,7 @@ void keyboard_irq_handler(Registers* regs) {
     if (c == '\n') {
         g_InputBuffer[g_InputBufferIndex] = '\0';
         g_InputLineReady = true;
+        g_HistoryNavIndex = -1; // Reset history navigation on enter
         putc('\n');
     } else if (c == '\b') {
         if (g_InputBufferIndex > 0) {
@@ -134,7 +198,11 @@ void keyboard_irq_handler(Registers* regs) {
     }
 }
 
-void i686_Keyboard_Initialize() {
+void i686_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, int* history_index, int history_size) {
+    g_HistoryBuffer = history_buffer;
+    g_HistoryCount = history_count;
+    g_HistoryIndexPtr = history_index;
+    g_HistorySize = history_size;
     i686_IRQ_RegisterHandler(1, keyboard_irq_handler);
 }
 
