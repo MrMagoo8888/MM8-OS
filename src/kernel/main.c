@@ -74,7 +74,7 @@ void handle_writefile(const char* input) {
     }
     const char* path = input + 6;
 
-    FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_CREATE);
+    FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_WRITE);
     if (!file) {
         printf("Could not open file for writing: %s\n", path);
         return;

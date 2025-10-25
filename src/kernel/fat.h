@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include "disk.h"
 
-// Represents an open file or directory
 typedef struct
 {
     int Handle;
@@ -20,7 +19,6 @@ typedef enum {
     FAT_OPEN_MODE_CREATE,
 } FAT_OpenMode;
 
-// Represents a 32-byte directory entry on the disk
 typedef struct
 {
     char Name[11];
