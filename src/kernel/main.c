@@ -22,6 +22,7 @@ void handle_help() {
     printf(" - help: Show this message\n");
     printf(" - echo [text]: Print back the given text\n");
     printf(" - cls: Clear the screen\n");
+    printf(" - credits: Shows Credits from our Wonderful contributers and viewers\n");
 }
 
 void handle_echo(const char* input) {
@@ -31,6 +32,26 @@ void handle_echo(const char* input) {
     } else {
         printf("Usage: echo [text]\n");
     }
+}
+
+void credits() {
+    printf("Credits to our Wonderful contributers and viewers:\n\n");
+        printf(" - MrJBMG\n");
+        printf(" - Una\n");
+        printf(" - ChrisWestbro\n");
+        printf(" - Bobby\n");
+        //printf(" - \n");
+        //printf(" - Viewer4\n");
+        //printf(" - Viewer5\n");
+        //printf(" - Viewer6\n");
+        //printf(" - Viewer7\n");
+        //printf(" - Viewer8\n");
+        //printf(" - Viewer9\n");
+        //printf(" - Viewer10\n");
+        //printf(" - Viewer11\n");
+        //printf(" - Viewer12\n");
+        //printf(" - Viewer13\n");
+        //printf(" - Viewer14\n");
 }
 
 void __attribute__((section(".entry"))) start(uint16_t bootDrive)
@@ -61,9 +82,12 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
             handle_echo(input_buffer);
         } else if (input_buffer[0] == '\0') {
             // Empty input, do nothing
+        } else if (strcmp(input_buffer, "credits") == 0) {
+            credits();
         } else {
             printf("Unknown command: %s\n", input_buffer);
         }
+    
     }
 
     // This part is now unreachable
