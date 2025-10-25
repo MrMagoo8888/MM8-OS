@@ -11,7 +11,6 @@ uint8_t* g_ScreenBuffer = (uint8_t*)0xB8000;
 int g_ScreenX = 0, g_ScreenY = 0;
 
 // --- Scrollback Buffer ---
-#define SCROLLBACK_LINES 100
 char scrollback_buffer[SCROLLBACK_LINES][SCREEN_WIDTH];
 int scrollback_start = 0;
 int scrollback_count = 0;
