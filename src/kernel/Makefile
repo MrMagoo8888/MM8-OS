@@ -26,7 +26,12 @@ SOURCES_ASM = $(wildcard *.asm) \
 			  $(wildcard */*.asm) \
 			  $(wildcard */*/*.asm) \
 			  $(wildcard */*/*/*.asm) \
-			  $(wildcard arch/i686/*.asm)
+			  $(wildcard arch/i686/*.asm) \
+			  $(wildcard *.s) \
+			  $(wildcard */*.s) \
+			  $(wildcard */*/*.s) \
+			  $(wildcard */*/*/*.s) \
+			  $(wildcard arch/i686/*.s)
 
 
 OBJECTS_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM))

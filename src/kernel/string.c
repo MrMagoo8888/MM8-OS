@@ -24,3 +24,11 @@ char* strcpy(char* dst, const char* src) {
     *dst = '\0';
     return origDst;
 }
+
+const char* strchr(const char* str, int c) {
+    while (*str != (char)c) {
+        if (!*str++)
+            return 0;
+    }
+    return str;
+}
