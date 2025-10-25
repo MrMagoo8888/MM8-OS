@@ -51,7 +51,7 @@ void handle_read(const char* input) {
         return;
     }
     const char* path = input + 5;
-    FAT_File* file = FAT_Open(&g_Disk, path);
+    FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_READ);
     if (!file) {
         printf("Could not open file: %s\n", path);
         return;
@@ -64,7 +64,38 @@ void handle_read(const char* input) {
         printf("%s", buffer);
     }
     printf("\n");
-    FAT_Close(file);
+    FAT_Close(&g_Disk, file);
+}
+
+void handle_writefile(const char* input) {
+    if (input[5] != ' ') {
+        printf("Usage: write [file]\n");
+        return;
+    }
+    const char* path = input + 6;
+
+    // For now, we only support writing to existing files.
+    // FAT_OPEN_MODE_CREATE will be implemented later.
+    FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_WRITE);
+    if (!file) {
+        printf("Could not open file for writing: %s\n", path);
+        return;
+    }
+
+    printf("Enter text. Type 'EOF' on a new line to save and exit.\n");
+
+    char line_buffer[256];
+    while (true) {
+        gets(line_buffer, sizeof(line_buffer));
+        if (strcmp(line_buffer, "EOF") == 0) {
+            break;
+        }
+        FAT_Write(&g_Disk, file, strlen(line_buffer), line_buffer);
+        FAT_Write(&g_Disk, file, 1, "\n"); // Write a newline character
+    }
+
+    FAT_Close(&g_Disk, file);
+    printf("File saved.\n");
 }
 
 void add_to_history(const char* command) {
@@ -139,6 +170,8 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
             handle_echo(input_buffer);
         } else if (memcmp(input_buffer, "read ", 5) == 0) {
             handle_read(input_buffer);
+        } else if (memcmp(input_buffer, "write ", 6) == 0) {
+            handle_writefile(input_buffer);
         } else if (input_buffer[0] == '\0') {
             // Empty input, do nothing
         } else if (strcmp(input_buffer, "credits") == 0) {
