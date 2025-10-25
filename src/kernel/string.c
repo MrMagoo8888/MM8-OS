@@ -32,3 +32,12 @@ const char* strchr(const char* str, int c) {
     }
     return str;
 }
+
+const char* strrchr(const char* str, int c) {
+    const char* last = 0;
+    do {
+        if (*str == (char)c)
+            last = str;
+    } while (*str++);
+    return last;
+}
