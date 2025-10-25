@@ -556,13 +556,3 @@ FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
 
     return current;
 }
-
-const char* strrchr(const char* str, int c) {
-    const char* last = NULL;
-    do {
-        if (*str == (char)c) {
-            last = str;
-        }
-    } while (*str++);
-    return last;
-}
