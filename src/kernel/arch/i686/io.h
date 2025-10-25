@@ -18,3 +18,13 @@ static inline void i686_insw(uint16_t port, void* buffer, uint32_t count)
     // d (port): edx register, input
     __asm__ __volatile__("rep insw" : "+D"(buffer), "+c"(count) : "d"(port) : "memory");
 }
+
+static inline void i686_outsw(uint16_t port, const void* buffer, uint32_t count)
+{
+    // Writes 'count' 16-bit values from 'buffer' to I/O port 'port'.
+    // 'rep outsw' is a string instruction that does this efficiently.
+    // +S (buffer): esi register, read-only
+    // +c (count): ecx register, read/write
+    // d (port): edx register, input
+    __asm__ __volatile__("rep outsw" : "+S"(buffer), "+c"(count) : "d"(port));
+}

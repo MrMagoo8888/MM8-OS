@@ -32,7 +32,7 @@ void handle_help() {
     printf(" - help: Show this message\n");
     printf(" - echo [text]: Print back the given text\n");
     printf(" - cls: Clear the screen\n");
-    printf(" - read [file]: Read a file from the disk\n");
+    printf(" - read [file]: Read a file from the disk. Example: read /test.txt\n");
     printf(" - credits: Shows Credits from our Wonderful contributers and viewers\n");
 }
 
