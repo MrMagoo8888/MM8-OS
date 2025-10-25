@@ -35,462 +35,467 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
                 0x00100000                        phys = 0x100000
                 0x00100000                        . = phys
 
-.entry          0x00100000      0x163
+.entry          0x00100000      0x189
                 0x00100000                        __entry_start = .
  *(.entry)
- .entry         0x00100000      0x163 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .entry         0x00100000      0x189 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
                 0x00100000                start
 
-.text           0x00100170     0x37a6
-                0x00100170                        __text_start = .
+.text           0x00100190     0x3b96
+                0x00100190                        __text_start = .
  *(.text)
- .text          0x00100170       0x25 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/gdt.obj
-                0x00100170                i686_GDT_Load
- *fill*         0x00100195        0xb 
- .text          0x001001a0        0xd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/idt.obj
-                0x001001a0                i686_IDT_Load
- *fill*         0x001001ad        0x3 
- .text          0x001001b0       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/io.obj
-                0x001001b0                i686_outb
-                0x001001bb                i686_inb
-                0x001001c4                i686_Panic
-                0x001001c6                i686_EnableInterrupts
-                0x001001c8                i686_DisableInterrupts
-                0x001001ca                crash_me
+ .text          0x00100190       0x25 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/gdt.obj
+                0x00100190                i686_GDT_Load
+ *fill*         0x001001b5        0xb 
+ .text          0x001001c0        0xd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/idt.obj
+                0x001001c0                i686_IDT_Load
  *fill*         0x001001cd        0x3 
- .text          0x001001d0      0xa6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/isr.obj
-                0x001001d0                i686_ISR0
-                0x001001d9                i686_ISR1
-                0x001001e2                i686_ISR2
-                0x001001eb                i686_ISR3
-                0x001001f4                i686_ISR4
-                0x001001fd                i686_ISR5
-                0x00100206                i686_ISR6
-                0x0010020f                i686_ISR7
-                0x00100218                i686_ISR8
-                0x0010021f                i686_ISR9
-                0x00100228                i686_ISR10
-                0x0010022f                i686_ISR11
-                0x00100236                i686_ISR12
-                0x0010023d                i686_ISR13
-                0x00100244                i686_ISR14
-                0x0010024b                i686_ISR15
-                0x00100254                i686_ISR16
-                0x0010025d                i686_ISR17
-                0x00100264                i686_ISR18
-                0x0010026d                i686_ISR19
-                0x00100276                i686_ISR20
-                0x0010027f                i686_ISR21
-                0x00100286                i686_ISR22
-                0x0010028f                i686_ISR23
-                0x00100298                i686_ISR24
-                0x001002a1                i686_ISR25
-                0x001002aa                i686_ISR26
-                0x001002b3                i686_ISR27
-                0x001002bc                i686_ISR28
-                0x001002c5                i686_ISR29
-                0x001002ce                i686_ISR30
-                0x001002d7                i686_ISR31
-                0x001002e0                i686_ISR32
-                0x001002e9                i686_ISR33
-                0x001002f2                i686_ISR34
-                0x001002fb                i686_ISR35
-                0x00100304                i686_ISR36
-                0x0010030d                i686_ISR37
-                0x00100316                i686_ISR38
-                0x0010031f                i686_ISR39
-                0x00100328                i686_ISR40
-                0x00100331                i686_ISR41
-                0x0010033a                i686_ISR42
-                0x00100343                i686_ISR43
-                0x0010034c                i686_ISR44
-                0x00100355                i686_ISR45
-                0x0010035e                i686_ISR46
-                0x00100367                i686_ISR47
-                0x00100370                i686_ISR48
-                0x00100379                i686_ISR49
-                0x00100382                i686_ISR50
-                0x0010038b                i686_ISR51
-                0x00100394                i686_ISR52
-                0x0010039d                i686_ISR53
-                0x001003a6                i686_ISR54
-                0x001003af                i686_ISR55
-                0x001003b8                i686_ISR56
-                0x001003c1                i686_ISR57
-                0x001003ca                i686_ISR58
-                0x001003d3                i686_ISR59
-                0x001003dc                i686_ISR60
-                0x001003e5                i686_ISR61
-                0x001003ee                i686_ISR62
-                0x001003f7                i686_ISR63
-                0x00100400                i686_ISR64
-                0x00100409                i686_ISR65
-                0x00100412                i686_ISR66
-                0x0010041b                i686_ISR67
-                0x00100424                i686_ISR68
-                0x0010042d                i686_ISR69
-                0x00100436                i686_ISR70
-                0x0010043f                i686_ISR71
-                0x00100448                i686_ISR72
-                0x00100451                i686_ISR73
-                0x0010045a                i686_ISR74
-                0x00100463                i686_ISR75
-                0x0010046c                i686_ISR76
-                0x00100475                i686_ISR77
-                0x0010047e                i686_ISR78
-                0x00100487                i686_ISR79
-                0x00100490                i686_ISR80
-                0x00100499                i686_ISR81
-                0x001004a2                i686_ISR82
-                0x001004ab                i686_ISR83
-                0x001004b4                i686_ISR84
-                0x001004bd                i686_ISR85
-                0x001004c6                i686_ISR86
-                0x001004cf                i686_ISR87
-                0x001004d8                i686_ISR88
-                0x001004e1                i686_ISR89
-                0x001004ea                i686_ISR90
-                0x001004f3                i686_ISR91
-                0x001004fc                i686_ISR92
-                0x00100505                i686_ISR93
-                0x0010050e                i686_ISR94
-                0x00100517                i686_ISR95
-                0x00100520                i686_ISR96
-                0x00100529                i686_ISR97
-                0x00100532                i686_ISR98
-                0x0010053b                i686_ISR99
-                0x00100544                i686_ISR100
-                0x0010054d                i686_ISR101
-                0x00100556                i686_ISR102
-                0x0010055f                i686_ISR103
-                0x00100568                i686_ISR104
-                0x00100571                i686_ISR105
-                0x0010057a                i686_ISR106
-                0x00100583                i686_ISR107
-                0x0010058c                i686_ISR108
-                0x00100595                i686_ISR109
-                0x0010059e                i686_ISR110
-                0x001005a7                i686_ISR111
-                0x001005b0                i686_ISR112
-                0x001005b9                i686_ISR113
-                0x001005c2                i686_ISR114
-                0x001005cb                i686_ISR115
-                0x001005d4                i686_ISR116
-                0x001005dd                i686_ISR117
-                0x001005e6                i686_ISR118
-                0x001005ef                i686_ISR119
-                0x001005f8                i686_ISR120
-                0x00100601                i686_ISR121
-                0x0010060a                i686_ISR122
-                0x00100613                i686_ISR123
-                0x0010061c                i686_ISR124
-                0x00100625                i686_ISR125
-                0x0010062e                i686_ISR126
-                0x00100637                i686_ISR127
-                0x00100640                i686_ISR128
-                0x0010064c                i686_ISR129
-                0x00100658                i686_ISR130
-                0x00100664                i686_ISR131
-                0x00100670                i686_ISR132
-                0x0010067c                i686_ISR133
-                0x00100688                i686_ISR134
-                0x00100694                i686_ISR135
-                0x001006a0                i686_ISR136
-                0x001006ac                i686_ISR137
-                0x001006b8                i686_ISR138
-                0x001006c4                i686_ISR139
-                0x001006d0                i686_ISR140
-                0x001006dc                i686_ISR141
-                0x001006e8                i686_ISR142
-                0x001006f4                i686_ISR143
-                0x00100700                i686_ISR144
-                0x0010070c                i686_ISR145
-                0x00100718                i686_ISR146
-                0x00100724                i686_ISR147
-                0x00100730                i686_ISR148
-                0x0010073c                i686_ISR149
-                0x00100748                i686_ISR150
-                0x00100754                i686_ISR151
-                0x00100760                i686_ISR152
-                0x0010076c                i686_ISR153
-                0x00100778                i686_ISR154
-                0x00100784                i686_ISR155
-                0x00100790                i686_ISR156
-                0x0010079c                i686_ISR157
-                0x001007a8                i686_ISR158
-                0x001007b4                i686_ISR159
-                0x001007c0                i686_ISR160
-                0x001007cc                i686_ISR161
-                0x001007d8                i686_ISR162
-                0x001007e4                i686_ISR163
-                0x001007f0                i686_ISR164
-                0x001007fc                i686_ISR165
-                0x00100808                i686_ISR166
-                0x00100814                i686_ISR167
-                0x00100820                i686_ISR168
-                0x0010082c                i686_ISR169
-                0x00100838                i686_ISR170
-                0x00100844                i686_ISR171
-                0x00100850                i686_ISR172
-                0x0010085c                i686_ISR173
-                0x00100868                i686_ISR174
-                0x00100874                i686_ISR175
-                0x00100880                i686_ISR176
-                0x0010088c                i686_ISR177
-                0x00100898                i686_ISR178
-                0x001008a4                i686_ISR179
-                0x001008b0                i686_ISR180
-                0x001008bc                i686_ISR181
-                0x001008c8                i686_ISR182
-                0x001008d4                i686_ISR183
-                0x001008e0                i686_ISR184
-                0x001008ec                i686_ISR185
-                0x001008f8                i686_ISR186
-                0x00100904                i686_ISR187
-                0x00100910                i686_ISR188
-                0x0010091c                i686_ISR189
-                0x00100928                i686_ISR190
-                0x00100934                i686_ISR191
-                0x00100940                i686_ISR192
-                0x0010094c                i686_ISR193
-                0x00100958                i686_ISR194
-                0x00100964                i686_ISR195
-                0x00100970                i686_ISR196
-                0x0010097c                i686_ISR197
-                0x00100988                i686_ISR198
-                0x00100994                i686_ISR199
-                0x001009a0                i686_ISR200
-                0x001009ac                i686_ISR201
-                0x001009b8                i686_ISR202
-                0x001009c4                i686_ISR203
-                0x001009d0                i686_ISR204
-                0x001009dc                i686_ISR205
-                0x001009e8                i686_ISR206
-                0x001009f4                i686_ISR207
-                0x00100a00                i686_ISR208
-                0x00100a0c                i686_ISR209
-                0x00100a18                i686_ISR210
-                0x00100a24                i686_ISR211
-                0x00100a30                i686_ISR212
-                0x00100a3c                i686_ISR213
-                0x00100a48                i686_ISR214
-                0x00100a54                i686_ISR215
-                0x00100a60                i686_ISR216
-                0x00100a6c                i686_ISR217
-                0x00100a78                i686_ISR218
-                0x00100a84                i686_ISR219
-                0x00100a90                i686_ISR220
-                0x00100a9c                i686_ISR221
-                0x00100aa8                i686_ISR222
-                0x00100ab4                i686_ISR223
-                0x00100ac0                i686_ISR224
-                0x00100acc                i686_ISR225
-                0x00100ad8                i686_ISR226
-                0x00100ae4                i686_ISR227
-                0x00100af0                i686_ISR228
-                0x00100afc                i686_ISR229
-                0x00100b08                i686_ISR230
-                0x00100b14                i686_ISR231
-                0x00100b20                i686_ISR232
-                0x00100b2c                i686_ISR233
-                0x00100b38                i686_ISR234
-                0x00100b44                i686_ISR235
-                0x00100b50                i686_ISR236
-                0x00100b5c                i686_ISR237
-                0x00100b68                i686_ISR238
-                0x00100b74                i686_ISR239
-                0x00100b80                i686_ISR240
-                0x00100b8c                i686_ISR241
-                0x00100b95                i686_ISR242
-                0x00100b9e                i686_ISR243
-                0x00100ba7                i686_ISR244
-                0x00100bb0                i686_ISR245
-                0x00100bb9                i686_ISR246
-                0x00100bc2                i686_ISR247
-                0x00100bcb                i686_ISR248
-                0x00100bd4                i686_ISR249
-                0x00100bdd                i686_ISR250
-                0x00100be6                i686_ISR251
-                0x00100bef                i686_ISR252
-                0x00100bf8                i686_ISR253
-                0x00100c01                i686_ISR254
-                0x00100c0a                i686_ISR255
- .text          0x00100c3d       0xf7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
-                0x00100c3d                timer
-                0x00100c43                handle_help
-                0x00100c9c                handle_echo
-                0x00100cdb                credits
- .text          0x00100d34       0xf5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
-                0x00100d34                memcpy
-                0x00100d86                memset
-                0x00100dc9                memcmp
- .text          0x00100e29      0xaec /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x00100e29                putchr
-                0x00100e5d                putcolor
-                0x00100e94                getchr
-                0x00100eba                getcolor
-                0x00100ee3                setcursor
-                0x00100f58                clrscr
-                0x00100fd3                scrollback
-                0x00101250                view_scrollback_up
-                0x001012bc                view_scrollback_down
-                0x00101333                putc
-                0x00101437                puts
-                0x00101466                printf_unsigned
-                0x0010150a                printf_signed
-                0x00101567                printf
-                0x0010187c                print_buffer
- .text          0x00101915       0x66 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
-                0x00101915                strcmp
-                0x00101954                strlen
- .text          0x0010197b       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
-                0x0010197b                HAL_Initialize
- .text          0x00101998       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
-                0x00101998                i686_GDT_Initialize
- .text          0x001019b5       0xba /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
-                0x001019b5                i686_IDT_SetGate
-                0x00101a16                i686_IDT_EnableGate
-                0x00101a36                i686_IDT_DisableGate
-                0x00101a56                i686_IDT_Initialize
- .text          0x00101a6f       0x1b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
-                0x00101a6f                i686_iowait
- .text          0x00101a8a       0xcc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
-                0x00101a8a                i686_IRQ_Handler
-                0x00101afc                i686_IRQ_Initialize
-                0x00101b43                i686_IRQ_RegisterHandler
- .text          0x00101b56      0x1a1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
-                0x00101b56                i686_ISR_Initialize
-                0x00101b98                i686_ISR_Handler
-                0x00101cd3                i686_ISR_RegisterHandler
- .text          0x00101cf7     0x1489 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
-                0x00101cf7                i686_ISR_InitializeGates
- .text          0x00103180      0x28a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
-                0x00103180                keyboard_irq_handler
-                0x00103367                i686_Keyboard_Initialize
-                0x00103382                gets
- .text          0x0010340a      0x2b6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
-                0x0010340a                i686_PIC_Configure
-                0x001034fc                i686_PIC_SendEndOfInterrupt
-                0x0010352c                i686_PIC_Disable
-                0x00103566                i686_PIC_Mask
-                0x001035ba                i686_PIC_Unmask
-                0x00103610                i686_PIC_ReadIrqRequestRegister
-                0x00103668                i686_PIC_ReadInServiceRegister
- .text          0x001036c0      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
-                0x001036c0                __udivdi3
- *fill*         0x001037da        0x6 
- .text          0x001037e0      0x136 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
-                0x001037e0                __umoddi3
+ .text          0x001001d0       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/io.obj
+                0x001001d0                i686_outb
+                0x001001db                i686_inb
+                0x001001e4                i686_Panic
+                0x001001e6                i686_EnableInterrupts
+                0x001001e8                i686_DisableInterrupts
+                0x001001ea                crash_me
+ *fill*         0x001001ed        0x3 
+ .text          0x001001f0      0xa6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/isr.obj
+                0x001001f0                i686_ISR0
+                0x001001f9                i686_ISR1
+                0x00100202                i686_ISR2
+                0x0010020b                i686_ISR3
+                0x00100214                i686_ISR4
+                0x0010021d                i686_ISR5
+                0x00100226                i686_ISR6
+                0x0010022f                i686_ISR7
+                0x00100238                i686_ISR8
+                0x0010023f                i686_ISR9
+                0x00100248                i686_ISR10
+                0x0010024f                i686_ISR11
+                0x00100256                i686_ISR12
+                0x0010025d                i686_ISR13
+                0x00100264                i686_ISR14
+                0x0010026b                i686_ISR15
+                0x00100274                i686_ISR16
+                0x0010027d                i686_ISR17
+                0x00100284                i686_ISR18
+                0x0010028d                i686_ISR19
+                0x00100296                i686_ISR20
+                0x0010029f                i686_ISR21
+                0x001002a6                i686_ISR22
+                0x001002af                i686_ISR23
+                0x001002b8                i686_ISR24
+                0x001002c1                i686_ISR25
+                0x001002ca                i686_ISR26
+                0x001002d3                i686_ISR27
+                0x001002dc                i686_ISR28
+                0x001002e5                i686_ISR29
+                0x001002ee                i686_ISR30
+                0x001002f7                i686_ISR31
+                0x00100300                i686_ISR32
+                0x00100309                i686_ISR33
+                0x00100312                i686_ISR34
+                0x0010031b                i686_ISR35
+                0x00100324                i686_ISR36
+                0x0010032d                i686_ISR37
+                0x00100336                i686_ISR38
+                0x0010033f                i686_ISR39
+                0x00100348                i686_ISR40
+                0x00100351                i686_ISR41
+                0x0010035a                i686_ISR42
+                0x00100363                i686_ISR43
+                0x0010036c                i686_ISR44
+                0x00100375                i686_ISR45
+                0x0010037e                i686_ISR46
+                0x00100387                i686_ISR47
+                0x00100390                i686_ISR48
+                0x00100399                i686_ISR49
+                0x001003a2                i686_ISR50
+                0x001003ab                i686_ISR51
+                0x001003b4                i686_ISR52
+                0x001003bd                i686_ISR53
+                0x001003c6                i686_ISR54
+                0x001003cf                i686_ISR55
+                0x001003d8                i686_ISR56
+                0x001003e1                i686_ISR57
+                0x001003ea                i686_ISR58
+                0x001003f3                i686_ISR59
+                0x001003fc                i686_ISR60
+                0x00100405                i686_ISR61
+                0x0010040e                i686_ISR62
+                0x00100417                i686_ISR63
+                0x00100420                i686_ISR64
+                0x00100429                i686_ISR65
+                0x00100432                i686_ISR66
+                0x0010043b                i686_ISR67
+                0x00100444                i686_ISR68
+                0x0010044d                i686_ISR69
+                0x00100456                i686_ISR70
+                0x0010045f                i686_ISR71
+                0x00100468                i686_ISR72
+                0x00100471                i686_ISR73
+                0x0010047a                i686_ISR74
+                0x00100483                i686_ISR75
+                0x0010048c                i686_ISR76
+                0x00100495                i686_ISR77
+                0x0010049e                i686_ISR78
+                0x001004a7                i686_ISR79
+                0x001004b0                i686_ISR80
+                0x001004b9                i686_ISR81
+                0x001004c2                i686_ISR82
+                0x001004cb                i686_ISR83
+                0x001004d4                i686_ISR84
+                0x001004dd                i686_ISR85
+                0x001004e6                i686_ISR86
+                0x001004ef                i686_ISR87
+                0x001004f8                i686_ISR88
+                0x00100501                i686_ISR89
+                0x0010050a                i686_ISR90
+                0x00100513                i686_ISR91
+                0x0010051c                i686_ISR92
+                0x00100525                i686_ISR93
+                0x0010052e                i686_ISR94
+                0x00100537                i686_ISR95
+                0x00100540                i686_ISR96
+                0x00100549                i686_ISR97
+                0x00100552                i686_ISR98
+                0x0010055b                i686_ISR99
+                0x00100564                i686_ISR100
+                0x0010056d                i686_ISR101
+                0x00100576                i686_ISR102
+                0x0010057f                i686_ISR103
+                0x00100588                i686_ISR104
+                0x00100591                i686_ISR105
+                0x0010059a                i686_ISR106
+                0x001005a3                i686_ISR107
+                0x001005ac                i686_ISR108
+                0x001005b5                i686_ISR109
+                0x001005be                i686_ISR110
+                0x001005c7                i686_ISR111
+                0x001005d0                i686_ISR112
+                0x001005d9                i686_ISR113
+                0x001005e2                i686_ISR114
+                0x001005eb                i686_ISR115
+                0x001005f4                i686_ISR116
+                0x001005fd                i686_ISR117
+                0x00100606                i686_ISR118
+                0x0010060f                i686_ISR119
+                0x00100618                i686_ISR120
+                0x00100621                i686_ISR121
+                0x0010062a                i686_ISR122
+                0x00100633                i686_ISR123
+                0x0010063c                i686_ISR124
+                0x00100645                i686_ISR125
+                0x0010064e                i686_ISR126
+                0x00100657                i686_ISR127
+                0x00100660                i686_ISR128
+                0x0010066c                i686_ISR129
+                0x00100678                i686_ISR130
+                0x00100684                i686_ISR131
+                0x00100690                i686_ISR132
+                0x0010069c                i686_ISR133
+                0x001006a8                i686_ISR134
+                0x001006b4                i686_ISR135
+                0x001006c0                i686_ISR136
+                0x001006cc                i686_ISR137
+                0x001006d8                i686_ISR138
+                0x001006e4                i686_ISR139
+                0x001006f0                i686_ISR140
+                0x001006fc                i686_ISR141
+                0x00100708                i686_ISR142
+                0x00100714                i686_ISR143
+                0x00100720                i686_ISR144
+                0x0010072c                i686_ISR145
+                0x00100738                i686_ISR146
+                0x00100744                i686_ISR147
+                0x00100750                i686_ISR148
+                0x0010075c                i686_ISR149
+                0x00100768                i686_ISR150
+                0x00100774                i686_ISR151
+                0x00100780                i686_ISR152
+                0x0010078c                i686_ISR153
+                0x00100798                i686_ISR154
+                0x001007a4                i686_ISR155
+                0x001007b0                i686_ISR156
+                0x001007bc                i686_ISR157
+                0x001007c8                i686_ISR158
+                0x001007d4                i686_ISR159
+                0x001007e0                i686_ISR160
+                0x001007ec                i686_ISR161
+                0x001007f8                i686_ISR162
+                0x00100804                i686_ISR163
+                0x00100810                i686_ISR164
+                0x0010081c                i686_ISR165
+                0x00100828                i686_ISR166
+                0x00100834                i686_ISR167
+                0x00100840                i686_ISR168
+                0x0010084c                i686_ISR169
+                0x00100858                i686_ISR170
+                0x00100864                i686_ISR171
+                0x00100870                i686_ISR172
+                0x0010087c                i686_ISR173
+                0x00100888                i686_ISR174
+                0x00100894                i686_ISR175
+                0x001008a0                i686_ISR176
+                0x001008ac                i686_ISR177
+                0x001008b8                i686_ISR178
+                0x001008c4                i686_ISR179
+                0x001008d0                i686_ISR180
+                0x001008dc                i686_ISR181
+                0x001008e8                i686_ISR182
+                0x001008f4                i686_ISR183
+                0x00100900                i686_ISR184
+                0x0010090c                i686_ISR185
+                0x00100918                i686_ISR186
+                0x00100924                i686_ISR187
+                0x00100930                i686_ISR188
+                0x0010093c                i686_ISR189
+                0x00100948                i686_ISR190
+                0x00100954                i686_ISR191
+                0x00100960                i686_ISR192
+                0x0010096c                i686_ISR193
+                0x00100978                i686_ISR194
+                0x00100984                i686_ISR195
+                0x00100990                i686_ISR196
+                0x0010099c                i686_ISR197
+                0x001009a8                i686_ISR198
+                0x001009b4                i686_ISR199
+                0x001009c0                i686_ISR200
+                0x001009cc                i686_ISR201
+                0x001009d8                i686_ISR202
+                0x001009e4                i686_ISR203
+                0x001009f0                i686_ISR204
+                0x001009fc                i686_ISR205
+                0x00100a08                i686_ISR206
+                0x00100a14                i686_ISR207
+                0x00100a20                i686_ISR208
+                0x00100a2c                i686_ISR209
+                0x00100a38                i686_ISR210
+                0x00100a44                i686_ISR211
+                0x00100a50                i686_ISR212
+                0x00100a5c                i686_ISR213
+                0x00100a68                i686_ISR214
+                0x00100a74                i686_ISR215
+                0x00100a80                i686_ISR216
+                0x00100a8c                i686_ISR217
+                0x00100a98                i686_ISR218
+                0x00100aa4                i686_ISR219
+                0x00100ab0                i686_ISR220
+                0x00100abc                i686_ISR221
+                0x00100ac8                i686_ISR222
+                0x00100ad4                i686_ISR223
+                0x00100ae0                i686_ISR224
+                0x00100aec                i686_ISR225
+                0x00100af8                i686_ISR226
+                0x00100b04                i686_ISR227
+                0x00100b10                i686_ISR228
+                0x00100b1c                i686_ISR229
+                0x00100b28                i686_ISR230
+                0x00100b34                i686_ISR231
+                0x00100b40                i686_ISR232
+                0x00100b4c                i686_ISR233
+                0x00100b58                i686_ISR234
+                0x00100b64                i686_ISR235
+                0x00100b70                i686_ISR236
+                0x00100b7c                i686_ISR237
+                0x00100b88                i686_ISR238
+                0x00100b94                i686_ISR239
+                0x00100ba0                i686_ISR240
+                0x00100bac                i686_ISR241
+                0x00100bb5                i686_ISR242
+                0x00100bbe                i686_ISR243
+                0x00100bc7                i686_ISR244
+                0x00100bd0                i686_ISR245
+                0x00100bd9                i686_ISR246
+                0x00100be2                i686_ISR247
+                0x00100beb                i686_ISR248
+                0x00100bf4                i686_ISR249
+                0x00100bfd                i686_ISR250
+                0x00100c06                i686_ISR251
+                0x00100c0f                i686_ISR252
+                0x00100c18                i686_ISR253
+                0x00100c21                i686_ISR254
+                0x00100c2a                i686_ISR255
+ .text          0x00100c5d      0x1c2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+                0x00100c5d                timer
+                0x00100c63                handle_help
+                0x00100cbc                handle_echo
+                0x00100cfb                add_to_history
+                0x00100dc6                credits
+ .text          0x00100e1f       0xf5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+                0x00100e1f                memcpy
+                0x00100e71                memset
+                0x00100eb4                memcmp
+ .text          0x00100f14      0xaec /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x00100f14                putchr
+                0x00100f48                putcolor
+                0x00100f7f                getchr
+                0x00100fa5                getcolor
+                0x00100fce                setcursor
+                0x00101043                clrscr
+                0x001010be                scrollback
+                0x0010133b                view_scrollback_up
+                0x001013a7                view_scrollback_down
+                0x0010141e                putc
+                0x00101522                puts
+                0x00101551                printf_unsigned
+                0x001015f5                printf_signed
+                0x00101652                printf
+                0x00101967                print_buffer
+ .text          0x00101a00       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+                0x00101a00                strcmp
+                0x00101a3f                strlen
+                0x00101a66                strcpy
+ .text          0x00101aa0       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+                0x00101aa0                HAL_Initialize
+ .text          0x00101abd       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+                0x00101abd                i686_GDT_Initialize
+ .text          0x00101ada       0xba /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x00101ada                i686_IDT_SetGate
+                0x00101b3b                i686_IDT_EnableGate
+                0x00101b5b                i686_IDT_DisableGate
+                0x00101b7b                i686_IDT_Initialize
+ .text          0x00101b94       0x1b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+                0x00101b94                i686_iowait
+ .text          0x00101baf       0xcc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+                0x00101baf                i686_IRQ_Handler
+                0x00101c21                i686_IRQ_Initialize
+                0x00101c68                i686_IRQ_RegisterHandler
+ .text          0x00101c7b      0x1a1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+                0x00101c7b                i686_ISR_Initialize
+                0x00101cbd                i686_ISR_Handler
+                0x00101df8                i686_ISR_RegisterHandler
+ .text          0x00101e1c     0x1489 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+                0x00101e1c                i686_ISR_InitializeGates
+ .text          0x001032a5      0x571 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+                0x0010333a                keyboard_irq_handler
+                0x00103753                i686_Keyboard_Initialize
+                0x0010378e                gets
+ .text          0x00103816      0x2b6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+                0x00103816                i686_PIC_Configure
+                0x00103908                i686_PIC_SendEndOfInterrupt
+                0x00103938                i686_PIC_Disable
+                0x00103972                i686_PIC_Mask
+                0x001039c6                i686_PIC_Unmask
+                0x00103a1c                i686_PIC_ReadIrqRequestRegister
+                0x00103a74                i686_PIC_ReadInServiceRegister
+ *fill*         0x00103acc        0x4 
+ .text          0x00103ad0      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+                0x00103ad0                __udivdi3
+ *fill*         0x00103bea        0x6 
+ .text          0x00103bf0      0x136 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x00103bf0                __umoddi3
 
-.data           0x00103918       0x2a
-                0x00103918                        __data_start = .
+.data           0x00103d28       0x30
+                0x00103d28                        __data_start = .
  *(.data)
- .data          0x00103918        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .data          0x00103918        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .data          0x00103918        0x4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x00103918                g_ScreenBuffer
- .data          0x0010391c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .data          0x0010391c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .data          0x0010391c       0x1e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
-                0x0010391c                g_GDT
-                0x00103934                g_GDTDescriptor
- *fill*         0x0010393a        0x2 
- .data          0x0010393c        0x6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
-                0x0010393c                g_IDTDescriptor
- .data          0x00103942        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .data          0x00103942        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .data          0x00103942        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .data          0x00103942        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .data          0x00103942        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .data          0x00103942        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .data          0x00103942        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .data          0x00103942        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .data          0x00103d28        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .data          0x00103d28        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .data          0x00103d28        0x4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x00103d28                g_ScreenBuffer
+ .data          0x00103d2c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .data          0x00103d2c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .data          0x00103d2c       0x1e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+                0x00103d2c                g_GDT
+                0x00103d44                g_GDTDescriptor
+ *fill*         0x00103d4a        0x2 
+ .data          0x00103d4c        0x6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x00103d4c                g_IDTDescriptor
+ .data          0x00103d52        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .data          0x00103d52        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .data          0x00103d52        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .data          0x00103d52        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ *fill*         0x00103d52        0x2 
+ .data          0x00103d54        0x4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .data          0x00103d58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .data          0x00103d58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .data          0x00103d58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.rodata         0x00103960      0x7f0
-                0x00103960                        __rodata_start = .
+.rodata         0x00103d60      0x7f4
+                0x00103d60                        __rodata_start = .
  *(.rodata)
- .rodata        0x00103960      0x1a9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- *fill*         0x00103b09        0x3 
- .rodata        0x00103b0c       0xae /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x00103b0c                g_HexChars
- *fill*         0x00103bba        0x2 
- .rodata        0x00103bbc       0x25 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- *fill*         0x00103be1       0x1f 
- .rodata        0x00103c00      0x34f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- *fill*         0x00103f4f       0x11 
- .rodata        0x00103f60      0x1f0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .rodata        0x00103d60      0x1a9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ *fill*         0x00103f09        0x3 
+ .rodata        0x00103f0c       0xae /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x00103f0c                g_HexChars
+ *fill*         0x00103fba        0x2 
+ .rodata        0x00103fbc       0x25 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ *fill*         0x00103fe1       0x1f 
+ .rodata        0x00104000      0x34f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ *fill*         0x0010434f       0x11 
+ .rodata        0x00104360      0x1f4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
 
-.eh_frame       0x00104150       0xd8
- .eh_frame      0x00104150       0x64 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .eh_frame      0x001041b4       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.eh_frame       0x00104554       0xd8
+ .eh_frame      0x00104554       0x64 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .eh_frame      0x001045b8       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.bss            0x00104240     0x1df8
-                0x00104240                        __bss_start = .
+.bss            0x00104640     0x2828
+                0x00104640                        __bss_start = .
  *(.bss)
- .bss           0x00104240        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .bss           0x00104240        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .bss           0x00104240     0x1081 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x00104240                g_ScreenX
-                0x00104244                g_ScreenY
-                0x00104260                scrollback_buffer
-                0x00104300                scrollback_start
-                0x00104304                scrollback_count
-                0x00104308                scrollback_view
- .bss           0x001052c1        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .bss           0x001052c1        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .bss           0x001052c1        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- *fill*         0x001052c1       0x1f 
- .bss           0x001052e0      0x800 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
-                0x001052e0                g_IDT
- .bss           0x00105ae0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .bss           0x00105ae0       0x40 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
-                0x00105ae0                g_IRQHandlers
- .bss           0x00105b20      0x400 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
-                0x00105b20                g_ISRHandlers
- .bss           0x00105f20        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .bss           0x00105f20      0x10c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .bss           0x0010602c        0xc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
-                0x0010602c                PIC_ICW1
-                0x00106030                PIC_ICW4
-                0x00106034                PIC_CMD
- .bss           0x00106038        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .bss           0x00106038        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
-                0x00106038                        __end = .
+ .bss           0x00104640      0xa08 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .bss           0x00105048        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ *fill*         0x00105048       0x18 
+ .bss           0x00105060     0x1081 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x00105060                g_ScreenX
+                0x00105064                g_ScreenY
+                0x00105080                scrollback_buffer
+                0x00105120                scrollback_start
+                0x00105124                scrollback_count
+                0x00105128                scrollback_view
+ .bss           0x001060e1        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .bss           0x001060e1        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .bss           0x001060e1        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ *fill*         0x001060e1       0x1f 
+ .bss           0x00106100      0x800 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x00106100                g_IDT
+ .bss           0x00106900        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .bss           0x00106900       0x40 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+                0x00106900                g_IRQHandlers
+ .bss           0x00106940      0x400 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+                0x00106940                g_ISRHandlers
+ .bss           0x00106d40        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .bss           0x00106d40      0x11c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .bss           0x00106e5c        0xc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+                0x00106e5c                PIC_ICW1
+                0x00106e60                PIC_ICW4
+                0x00106e64                PIC_CMD
+ .bss           0x00106e68        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .bss           0x00106e68        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x00106e68                        __end = .
 OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
 
-.debug_info     0x00000000     0x30a4
- .debug_info    0x00000000      0x313 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_info    0x00000313      0x1da /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_info    0x000004ed      0x6ad /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_info    0x00000b9a       0xb3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_info    0x00000c4d       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_info    0x00000cf2      0x1f3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_info    0x00000ee5      0x247 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_info    0x0000112c       0x9e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_info    0x000011ca      0x2e5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_info    0x000014af      0x28e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_info    0x0000173d      0xcfb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_info    0x00002438      0x3a4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_info    0x000027dc      0x259 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_info    0x00002a35      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_info    0x00002d61      0x343 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.debug_info     0x00000000     0x32c7
+ .debug_info    0x00000000      0x3b7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_info    0x000003b7      0x1da /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_info    0x00000591      0x6ad /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_info    0x00000c3e       0xfb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_info    0x00000d39       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_info    0x00000dde      0x1f3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_info    0x00000fd1      0x247 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_info    0x00001218       0x9e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_info    0x000012b6      0x2e5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_info    0x0000159b      0x28e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_info    0x00001829      0xcfb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_info    0x00002524      0x4db /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_info    0x000029ff      0x259 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_info    0x00002c58      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_info    0x00002f84      0x343 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_abbrev   0x00000000     0x114c
- .debug_abbrev  0x00000000      0x177 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_abbrev  0x00000177       0xe2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_abbrev  0x00000259      0x24d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_abbrev  0x000004a6       0x8d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_abbrev  0x00000533       0x5a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_abbrev  0x0000058d       0xf0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_abbrev  0x0000067d      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_abbrev  0x0000079f       0x6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_abbrev  0x0000080c      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_abbrev  0x0000098c      0x150 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_abbrev  0x00000adc       0xbf /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_abbrev  0x00000b9b      0x18b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_abbrev  0x00000d26      0x15a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_abbrev  0x00000e80      0x15b /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_abbrev  0x00000fdb      0x171 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.debug_abbrev   0x00000000     0x1145
+ .debug_abbrev  0x00000000      0x178 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_abbrev  0x00000178       0xe2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_abbrev  0x0000025a      0x24d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_abbrev  0x000004a7       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_abbrev  0x00000547       0x5a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_abbrev  0x000005a1       0xf0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_abbrev  0x00000691      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_abbrev  0x000007b3       0x6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_abbrev  0x00000820      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_abbrev  0x000009a0      0x150 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_abbrev  0x00000af0       0xbf /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_abbrev  0x00000baf      0x170 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_abbrev  0x00000d1f      0x15a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_abbrev  0x00000e79      0x15b /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x00000fd4      0x171 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_aranges  0x00000000      0x1e8
  .debug_aranges
@@ -533,42 +538,42 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
  .debug_rnglists
                 0x00000045       0x1f /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_line     0x00000000     0x12da
- .debug_line    0x00000000      0x11b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_line    0x0000011b       0xcc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_line    0x000001e7      0x4d1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_line    0x000006b8       0x90 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_line    0x00000748       0x6a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_line    0x000007b2       0x5c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_line    0x0000080e       0x89 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_line    0x00000897       0x5e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_line    0x000008f5       0xc7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_line    0x000009bc       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_line    0x00000a90      0x25f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_line    0x00000cef      0x18b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_line    0x00000e7a      0x10f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_line    0x00000f89      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_line    0x00001109      0x1d1 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.debug_line     0x00000000     0x1475
+ .debug_line    0x00000000      0x174 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_line    0x00000174       0xcc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_line    0x00000240      0x4d1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_line    0x00000711       0xaf /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_line    0x000007c0       0x6a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_line    0x0000082a       0x5c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_line    0x00000886       0x89 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_line    0x0000090f       0x5e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_line    0x0000096d       0xc7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_line    0x00000a34       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_line    0x00000b08      0x25f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_line    0x00000d67      0x2ae /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_line    0x00001015      0x10f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_line    0x00001124      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_line    0x000012a4      0x1d1 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_str      0x00000000     0x279c
- .debug_str     0x00000000      0x1d6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_str     0x000001d6      0x103 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_str     0x000002d9      0x2fb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_str     0x000005d4       0x75 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_str     0x00000649      0x10c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_str     0x00000755      0x2ea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_str     0x00000a3f      0x281 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_str     0x00000cc0       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_str     0x00000d94      0x225 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_str     0x00000fb9      0x1b6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_str     0x0000116f      0xd3c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_str     0x00001eab      0x27a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_str     0x00002125      0x2b1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_str     0x000023d6      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_str     0x000025b9      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.debug_str      0x00000000     0x2898
+ .debug_str     0x00000000      0x223 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_str     0x00000223      0x103 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_str     0x00000326      0x2fb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_str     0x00000621       0x84 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_str     0x000006a5      0x10c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_str     0x000007b1      0x2ea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_str     0x00000a9b      0x281 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_str     0x00000d1c       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_str     0x00000df0      0x225 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_str     0x00001015      0x1b6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_str     0x000011cb      0xd3c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_str     0x00001f07      0x31a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_str     0x00002221      0x2b1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_str     0x000024d2      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_str     0x000026b5      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_line_str
-                0x00000000      0xa2c
+                0x00000000      0xa35
  .debug_line_str
                 0x00000000       0xc3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
  .debug_line_str
@@ -592,13 +597,13 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
  .debug_line_str
                 0x00000646       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
  .debug_line_str
-                0x000006e6       0xc6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+                0x000006e6       0xcf /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
  .debug_line_str
-                0x000007ac       0x90 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+                0x000007b5       0x90 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
  .debug_line_str
-                0x0000083c       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+                0x00000845       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
  .debug_line_str
-                0x00000934       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x0000093d       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .comment        0x00000000      0x11d
  .comment       0x00000000       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
@@ -617,20 +622,20 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
  .comment       0x000000f7       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
  .comment       0x0000010a       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_frame    0x00000000      0x758
- .debug_frame   0x00000000       0xac /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_frame   0x000000ac       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_frame   0x00000120      0x21c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_frame   0x0000033c       0x54 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_frame   0x00000390       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_frame   0x000003c4       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_frame   0x000003f8       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_frame   0x0000048c       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_frame   0x000004c0       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_frame   0x00000534       0x80 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_frame   0x000005b4       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_frame   0x000005e8       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_frame   0x0000065c       0xfc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+.debug_frame    0x00000000      0x7b8
+ .debug_frame   0x00000000       0xcc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_frame   0x000000cc       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_frame   0x00000140      0x21c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_frame   0x0000035c       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_frame   0x000003d0       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_frame   0x00000404       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_frame   0x00000438       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_frame   0x000004cc       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_frame   0x00000500       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_frame   0x00000574       0x80 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_frame   0x000005f4       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_frame   0x00000628       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_frame   0x000006bc       0xfc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
 
 .debug_loclists
                 0x00000000      0x978

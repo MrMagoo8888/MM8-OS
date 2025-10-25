@@ -117,7 +117,7 @@ static void redraw_from_scrollback() {
             }
         }
     }
-    setcursor(0,0);
+    setcursor(0, SCREEN_HEIGHT - 1);
 }
 
 void view_scrollback_up() {
@@ -126,7 +126,7 @@ void view_scrollback_up() {
         memcpy(live_screen_backup, g_ScreenBuffer, sizeof(live_screen_backup));
         in_scrollback_mode = true;
     }
-    scrollback_view += 2;
+    scrollback_view++;
     if (scrollback_view > scrollback_count) {
         scrollback_view = scrollback_count;
     }
