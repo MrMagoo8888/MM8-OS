@@ -537,8 +537,6 @@ FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
         FAT_DirectoryEntry entry;
         if (FAT_FindFile(disk, current, name, &entry))
         {
-            FAT_Close(disk, current);
-
             // If this is not the last component and it's not a directory, fail.
             if (*path != '\0' && (entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) == 0)
             {
@@ -546,12 +544,18 @@ FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
                 return NULL;
             }
 
+            // We found the entry. Close the directory we were searching in...
+            FAT_Close(disk, current);
+            // ...and open the new entry.
             current = FAT_OpenEntry(disk, &entry);
             if (current) {
                 // Store the location of the directory entry we just found
                 FAT_FileData* fd = &g_Data.OpenedFiles[current->Handle];
                 fd->DirectorySector = dir_lba;
                 fd->DirectoryOffset = dir_offset % SECTOR_SIZE;
+            } else {
+                // Failed to open the new entry (e.g., out of handles)
+                return NULL;
             }
         }
         else
