@@ -1,7 +1,7 @@
 !! FAT SUBSYSTEM BRANCH LASTEST WORKING BRANCH!!
 
 
-Hello, I am makeing this OS for fun and would love help, tips and suggestions!
+Hello, I am making this OS for fun and would love help, tips and suggestions!
 
 Prequisits:
 
