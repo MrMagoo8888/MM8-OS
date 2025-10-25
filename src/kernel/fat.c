@@ -335,22 +335,28 @@ FAT_File* FAT_Open(DISK* disk, const char* path)
     FAT_File* current = &g_Data.RootDirectory.Public;
 
     while (*path) {
-        bool isLast = false;
+        // Extract the next path component
         const char* delim = strchr(path, '/');
-        if (delim != NULL)
-        {
-            size_t len = delim - path;
-            memcpy(name, path, len);
-            name[len] = '\0';
-            path = delim + 1;
+        size_t len;
+        if (delim) {
+            len = delim - path;
+        } else {
+            len = strlen(path);
         }
-        else
-        {
-            size_t len = strlen(path);
-            memcpy(name, path, len);
-            name[len] = '\0';
-            path += len;
-            isLast = true;
+
+        if (len >= MAX_PATH_SIZE) {
+            // Path component is too long
+            FAT_Close(current);
+            return NULL;
+        }
+
+        memcpy(name, path, len);
+        name[len] = '\0';
+
+        if (delim) {
+            path = delim + 1;
+        } else {
+            path += len; // Move to the end of the string
         }
         
         FAT_DirectoryEntry entry;
@@ -358,7 +364,8 @@ FAT_File* FAT_Open(DISK* disk, const char* path)
         {
             FAT_Close(current);
 
-            if (!isLast && (entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) == 0)
+            // If this is not the last component and it's not a directory, fail.
+            if (*path != '\0' && (entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) == 0)
             {
                 printf("FAT: %s not a directory\n", name);
                 return NULL;
