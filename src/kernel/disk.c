@@ -22,21 +22,105 @@
 
 // ATA commands
 #define ATA_CMD_READ_SECTORS     0x20
+#define ATA_CMD_IDENTIFY_DEVICE  0xEC
 
 
 // This is a placeholder for a real ATA PIO driver.
 // For now, it does nothing but provides the interface for the FAT driver.
 
 bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
-    disk->id = driveNumber;
-    // This is a placeholder. It doesn't interact with hardware.
-    printf("DISK: Initializing disk %d (placeholder)\n", driveNumber);
+    if (driveNumber < 0x80) {
+        printf("DISK: Cannot initialize floppy drive %d with ATA driver.\n", driveNumber);
+        return false;
+    }
+
+    // Translate BIOS drive number (e.g., 0x80 for hda) to ATA drive ID (0 for master)
+    disk->id = driveNumber - 0x80;
+
+    // --- Stage 1: Software Reset ---
+    // Select the master drive
+    i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xA0);
+    i686_iowait();
+
+    // Perform a software reset
+    i686_outb(ATA_PRIMARY_CONTROL, 0x04); // Set SRST (Software Reset)
+    i686_iowait();
+    i686_outb(ATA_PRIMARY_CONTROL, 0x00); // Clear SRST
+    i686_iowait();
+
+    // Wait for the drive to finish the reset.
+    while (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY);
+
+    // --- Stage 2: IDENTIFY command ---
+    // Select the master drive again
+    i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xA0);
+
+    // Zero out registers
+    i686_outb(ATA_PRIMARY_SECTOR_COUNT, 0);
+    i686_outb(ATA_PRIMARY_LBA_LOW, 0);
+    i686_outb(ATA_PRIMARY_LBA_MID, 0);
+    i686_outb(ATA_PRIMARY_LBA_HIGH, 0);
+
+    // Send IDENTIFY DEVICE command
+    i686_outb(ATA_PRIMARY_COMMAND, ATA_CMD_IDENTIFY_DEVICE);
+    i686_iowait();
+
+    // Check for drive presence
+    if (i686_inb(ATA_PRIMARY_STATUS) == 0) {
+        printf("DISK: No drive found on primary master.\n");
+        return false;
+    }
+
+    // Poll for BSY to clear and DRQ or ERR to be set
+    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY));
+    while (!(i686_inb(ATA_PRIMARY_STATUS) & (ATA_STATUS_DATA_REQUEST | ATA_STATUS_ERROR)));
+
+    if (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR) {
+        printf("DISK: Drive %d not ready.\n", disk->id);
+        return false;
+    }
+
+    // Read and discard the 512-byte identification data
+    uint16_t identify_data[256];
+    i686_insw(ATA_PRIMARY_DATA, identify_data, 256);
+
+    printf("DISK: Initialized drive %d.\n", disk->id);
     return true;
 }
 
 bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
-    // This is a placeholder. It will always fail to read.
-    // This will cause the FAT initialization to fail, which is expected.
-    printf("DISK: ReadSectors(lba=%u, count=%u) - NOT IMPLEMENTED\n", lba, count);
-    return false;
+    // Wait until the drive is not busy
+    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY));
+
+    // Select drive (Master) and send LBA bits 24-27
+    // 0xE0 for master drive in LBA mode
+    i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xE0 | (disk->id << 4) | ((lba >> 24) & 0x0F));
+    // Send the number of sectors to read
+    i686_outb(ATA_PRIMARY_SECTOR_COUNT, count);
+
+    // Send the LBA address (bits 0-23)
+    i686_outb(ATA_PRIMARY_LBA_LOW, (uint8_t)lba);
+    i686_outb(ATA_PRIMARY_LBA_MID, (uint8_t)(lba >> 8));
+    i686_outb(ATA_PRIMARY_LBA_HIGH, (uint8_t)(lba >> 16));
+
+    // Send the READ SECTORS command
+    i686_outb(ATA_PRIMARY_COMMAND, ATA_CMD_READ_SECTORS);
+
+    uint16_t* target = (uint16_t*)buffer;
+
+    for (int i = 0; i < count; i++) {
+        // Poll until the drive is ready to transfer data (BSY clear, DRQ set)
+        while (!((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_DATA_REQUEST) || (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR)));
+
+        // Check for an error
+        if (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR) {
+            printf("DISK: Read error! LBA=%u, Count=%u\n", lba, count);
+            return false; // Error occurred
+        }
+
+        // Read 256 16-bit words (512 bytes) from the data port into the buffer
+        i686_insw(ATA_PRIMARY_DATA, target, 256);
+        target += 256;
+    }
+    return true;
 }

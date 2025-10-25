@@ -37,9 +37,6 @@ void i686_IRQ_Initialize()
     // register ISR handlers for each of the 16 irq lines
     for (int i = 0; i < 16; i++)
         i686_ISR_RegisterHandler(PIC_REMAP_OFFSET + i, i686_IRQ_Handler);
-
-    // enable interrupts
-    i686_EnableInterrupts();
 }
 
 void i686_IRQ_RegisterHandler(int irq, IRQHandler handler)

@@ -3,6 +3,7 @@
 #include "memory.h"
 #include <hal/hal.h>
 #include <arch/i686/irq.h>
+#include <arch/i686/io.h>
 #include "fat.h"
 #include <arch/i686/keyboard.h>
 #include "string.h"
@@ -110,11 +111,11 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
     printf("Type 'help' for a list of commands.\n\n");
 
     // Initialize disk and FAT filesystem
-    // The boot drive number is passed in from the bootloader.
-    if (!DISK_Initialize(&g_Disk, bootDrive)) {
-        printf("Disk initialization failed.\n");
+    // We are booting from floppy, but we want to use the first hard disk (0x80) for our root filesystem.
+    if (!DISK_Initialize(&g_Disk, 0x80)) {
+        printf("Hard disk initialization failed.\n");
     } else if (!FAT_Initialize(&g_Disk)) {
-        printf("FAT initialization failed.\n");
+        printf("FAT initialization failed on hard disk.\n");
     }
 
     i686_IRQ_RegisterHandler(0, timer);

@@ -39,6 +39,18 @@ typedef struct
 
 } __attribute__((packed)) FAT_BootSector;
 
+typedef struct {
+    uint8_t     bootable;
+    uint8_t     start_head;
+    uint8_t     start_sector : 6;
+    uint16_t    start_cylinder : 10;
+    uint8_t     system_id;
+    uint8_t     end_head;
+    uint8_t     end_sector : 6;
+    uint16_t    end_cylinder : 10;
+    uint32_t    start_lba;
+    uint32_t    size_in_sectors;
+} __attribute__((packed)) MBR_PartitionEntry;
 
 typedef struct
 {
@@ -68,19 +80,40 @@ static FAT_Data g_Data;
 static uint8_t g_Fat[SECTOR_SIZE * 16]; // Max FAT size of 16 sectors (8KB)
 static uint32_t g_DataSectionLba;
 
+// This will hold the starting LBA of our FAT partition
+static uint32_t g_PartitionOffset = 0;
 
 bool FAT_ReadBootSector(DISK* disk)
 {
-    return DISK_ReadSectors(disk, 0, 1, g_Data.BS.BootSectorBytes);
+    return DISK_ReadSectors(disk, g_PartitionOffset, 1, g_Data.BS.BootSectorBytes);
 }
 
 bool FAT_ReadFat(DISK* disk)
 {
-    return DISK_ReadSectors(disk, g_Data.BS.BootSector.ReservedSectors, g_Data.BS.BootSector.SectorsPerFat, g_Fat);
+    return DISK_ReadSectors(disk, g_PartitionOffset + g_Data.BS.BootSector.ReservedSectors, g_Data.BS.BootSector.SectorsPerFat, g_Fat);
 }
 
 bool FAT_Initialize(DISK* disk)
 {
+    // --- Read MBR to find the partition ---
+    uint8_t mbr_buffer[SECTOR_SIZE];
+    if (!DISK_ReadSectors(disk, 0, 1, mbr_buffer)) {
+        printf("FAT: Failed to read MBR.\n");
+        return false;
+    }
+
+    // Check for MBR signature
+    if (*(uint16_t*)(mbr_buffer + 0x1FE) != 0xAA55) {
+        printf("FAT: Invalid MBR signature.\n");
+        // We can assume no MBR and filesystem starts at 0, or fail. Let's fail for now.
+        return false;
+    }
+
+    // Get the first partition entry
+    MBR_PartitionEntry* partition = (MBR_PartitionEntry*)(mbr_buffer + 0x1BE);
+    g_PartitionOffset = partition->start_lba;
+    printf("FAT: Found partition starting at LBA %u\n", g_PartitionOffset);
+
     // read boot sector
     if (!FAT_ReadBootSector(disk))
     {
@@ -102,7 +135,7 @@ bool FAT_Initialize(DISK* disk)
     }
 
     // open root directory file
-    uint32_t rootDirLba = g_Data.BS.BootSector.ReservedSectors + g_Data.BS.BootSector.SectorsPerFat * g_Data.BS.BootSector.FatCount;
+    uint32_t rootDirLba = g_PartitionOffset + g_Data.BS.BootSector.ReservedSectors + g_Data.BS.BootSector.SectorsPerFat * g_Data.BS.BootSector.FatCount;
     uint32_t rootDirSize = sizeof(FAT_DirectoryEntry) * g_Data.BS.BootSector.DirEntryCount;
 
     g_Data.RootDirectory.Public.Handle = ROOT_DIRECTORY_HANDLE;
