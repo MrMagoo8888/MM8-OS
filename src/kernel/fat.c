@@ -4,7 +4,6 @@
 #include "memory.h"
 #include "ctype.h"
 #include "stddef.h"
-#include "disk.h"
 
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
@@ -61,9 +60,7 @@ typedef struct
     uint32_t FirstCluster;
     uint32_t CurrentCluster;
     uint32_t CurrentSectorInCluster;
-    bool IsModified; // Flag to track if the file's data buffer has been written to
-    uint32_t DirectorySector; // Sector containing the directory entry for this file
-    uint16_t DirectoryOffset; // Offset within the sector for this file's directory entry
+    bool IsModified;
 
 } FAT_FileData;
 
@@ -83,7 +80,6 @@ typedef struct
 static FAT_Data g_Data;
 static uint8_t g_Fat[SECTOR_SIZE * 16]; // Max FAT size of 16 sectors (8KB)
 static uint32_t g_DataSectionLba;
-
 
 // This will hold the starting LBA of our FAT partition
 static uint32_t g_PartitionOffset = 0;
@@ -201,7 +197,6 @@ FAT_File* FAT_OpenEntry(DISK* disk, FAT_DirectoryEntry* entry)
     fd->CurrentCluster = fd->FirstCluster;
     fd->CurrentSectorInCluster = 0;
     fd->IsModified = false;
-    // DirectorySector and DirectoryOffset must be set by the caller (FAT_OpenInternal)
 
     if (!DISK_ReadSectors(disk, FAT_ClusterToLba(fd->CurrentCluster), 1, fd->Buffer))
     {
@@ -223,31 +218,21 @@ uint32_t FAT_NextCluster(uint32_t currentCluster)
         return (*(uint16_t*)(g_Fat + fatIndex)) >> 4;
 }
 
-static void FAT_SetClusterValue(uint32_t cluster, uint16_t value) {
-    uint32_t fatIndex = cluster * 3 / 2;
-    if (cluster % 2 == 0) {
-        *(uint16_t*)(g_Fat + fatIndex) = (*(uint16_t*)(g_Fat + fatIndex) & 0xF000) | (value & 0x0FFF);
-    } else {
-        *(uint16_t*)(g_Fat + fatIndex) = (*(uint16_t*)(g_Fat + fatIndex) & 0x000F) | (value << 4);
-    }
-}
+void FAT_Flush(DISK* disk, FAT_File* file) {
+    FAT_FileData* fd = &g_Data.OpenedFiles[file->Handle];
 
-static uint32_t FAT_FindAndAllocateFreeCluster(DISK* disk) {
-    // Start search from cluster 2 (0 and 1 are reserved)
-    // The total number of clusters can be derived from TotalSectors
-    uint32_t total_clusters = (g_Data.BS.BootSector.TotalSectors - g_DataSectionLba) / g_Data.BS.BootSector.SectorsPerCluster;
-
-    for (uint32_t i = 2; i < total_clusters; i++) {
-        if (FAT_NextCluster(i) == 0x000) { // 0x000 indicates a free cluster
-            // Mark cluster as end of chain
-            FAT_SetClusterValue(i, 0xFFF);
-            // Write the modified FAT sector back to disk
-            uint32_t fat_sector = i * 3 / 2 / SECTOR_SIZE;
-            DISK_WriteSectors(disk, g_PartitionOffset + g_Data.BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + fat_sector * SECTOR_SIZE);
-            return i;
+    if (fd->IsModified) {
+        // Write the last modified sector to disk
+        uint32_t lba = FAT_ClusterToLba(fd->CurrentCluster) + fd->CurrentSectorInCluster;
+        if (!DISK_WriteSectors(disk, lba, 1, fd->Buffer)) {
+            printf("FAT: Failed to flush file handle %d\n", file->Handle);
         }
+
+        // In a more complete implementation, we would also update the directory entry
+        // with the new file size here. For now, we just write the data.
+
+        fd->IsModified = false;
     }
-    return 0; // No free clusters
 }
 
 uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* dataIn)
@@ -255,10 +240,13 @@ uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* d
     FAT_FileData* fd = &g_Data.OpenedFiles[file->Handle];
     const uint8_t* u8DataIn = (const uint8_t*)dataIn;
 
-    // For now, we don't support writing to directories
+    // Writing to directories is not supported
     if (fd->Public.IsDirectory) {
         return 0;
     }
+
+    // Clamp write to file size. We don't support growing files yet.
+    byteCount = min(byteCount, fd->Public.Size - fd->Public.Position);
 
     while (byteCount > 0)
     {
@@ -274,81 +262,23 @@ uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* d
         fd->Public.Position += take;
         byteCount -= take;
 
-        // If the file size grew, update it
-        if (fd->Public.Position > fd->Public.Size) {
-            fd->Public.Size = fd->Public.Position;
-        }
-
-        // If the buffer is full, write it to disk and move to the next sector/cluster
+        // If the buffer is full, write it to disk
         if (left_in_buffer == take)
         {
-            // Write the current sector
-            DISK_WriteSectors(disk, FAT_ClusterToLba(fd->CurrentCluster) + fd->CurrentSectorInCluster, 1, fd->Buffer);
+            FAT_Flush(disk, file);
 
-            if (++fd->CurrentSectorInCluster >= g_Data.BS.BootSector.SectorsPerCluster)
-            {
-                fd->CurrentSectorInCluster = 0;
-                uint32_t nextCluster = FAT_NextCluster(fd->CurrentCluster);
-                if (nextCluster >= 0xFF8) // End of chain
-                {
-                    // Allocate a new cluster
-                    uint32_t newCluster = FAT_FindAndAllocateFreeCluster(disk);
-                    if (newCluster == 0) {
-                        printf("FAT: Out of disk space!\n");
-                        return u8DataIn - (const uint8_t*)dataIn; // Return bytes written so far
-                    }
-
-                    // Link the old cluster to the new one
-                    FAT_SetClusterValue(fd->CurrentCluster, newCluster);
-                    // Write the modified FAT sector back to disk
-                    uint32_t fat_sector = fd->CurrentCluster * 3 / 2 / SECTOR_SIZE;
-                    DISK_WriteSectors(disk, g_PartitionOffset + g_Data.BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + fat_sector * SECTOR_SIZE);
-
-                    nextCluster = newCluster;
+            // For simplicity, we'll just read the next sector.
+            // A full implementation would handle cluster changes.
+            if (fd->Public.Position < fd->Public.Size) {
+                if (!DISK_ReadSectors(disk, FAT_ClusterToLba(fd->CurrentCluster) + fd->CurrentSectorInCluster + 1, 1, fd->Buffer)) {
+                    printf("FAT: read error during write!\n");
+                    break;
                 }
-                fd->CurrentCluster = nextCluster;
-            }
-
-            // Read the next sector for continued writing
-            if (!DISK_ReadSectors(disk, FAT_ClusterToLba(fd->CurrentCluster) + fd->CurrentSectorInCluster, 1, fd->Buffer))
-            {
-                printf("FAT: read error during write!\n");
-                break;
             }
         }
     }
 
     return u8DataIn - (const uint8_t*)dataIn;
-}
-
-void FAT_Flush(DISK* disk, FAT_File* file) {
-    FAT_FileData* fd = &g_Data.OpenedFiles[file->Handle];
-
-    if (fd->IsModified) {
-        // Write the last modified sector to disk
-        uint32_t lba = FAT_ClusterToLba(fd->CurrentCluster) + fd->CurrentSectorInCluster;
-        if (!DISK_WriteSectors(disk, lba, 1, fd->Buffer)) {
-            printf("FAT: Failed to flush file handle %d\n", file->Handle);
-        }
-
-        // Update directory entry with new file size
-        // We need to read the directory sector, modify it, and write it back.
-        uint8_t dir_sector[SECTOR_SIZE];
-        if (!DISK_ReadSectors(disk, fd->DirectorySector, 1, dir_sector)) {
-            printf("FAT: Failed to read directory sector to update size for handle %d\n", file->Handle);
-            return;
-        }
-
-        FAT_DirectoryEntry* entry = (FAT_DirectoryEntry*)(dir_sector + fd->DirectoryOffset);
-        entry->Size = fd->Public.Size;
-        // TODO: Update ModifiedTime and ModifiedDate
-
-        if (!DISK_WriteSectors(disk, fd->DirectorySector, 1, dir_sector)) {
-            printf("FAT: Failed to write directory sector to update size for handle %d\n", file->Handle);
-        }
-
-        fd->IsModified = false;
-    }
 }
 
 uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
@@ -418,14 +348,13 @@ void FAT_Close(DISK* disk, FAT_File* file)
 {
     if (file->Handle == ROOT_DIRECTORY_HANDLE)
     {
-        // For the root directory, just reset its position.
-        // No need to flush as we don't support writing to it yet.
         file->Position = 0;
         g_Data.RootDirectory.CurrentCluster = g_Data.RootDirectory.FirstCluster;
     }
     else
     {
-        FAT_Flush(disk, file);
+        if (g_Data.OpenedFiles[file->Handle].Opened)
+            FAT_Flush(disk, file);
         g_Data.OpenedFiles[file->Handle].Opened = false;
     }
 }
@@ -463,39 +392,10 @@ bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEnt
     return false;
 }
 
+// Forward declare to resolve circular dependency with FAT_Open
 FAT_File* FAT_OpenInternal(DISK* disk, const char* path);
+
 FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode)
-{
-    FAT_DirectoryEntry entry;
-
-    // Try to open the file
-    FAT_File* file = FAT_OpenInternal(disk, path);
-
-    if (file) // File exists
-    {
-        if (mode == FAT_OPEN_MODE_CREATE) {
-            printf("FAT: File '%s' already exists.\n", path);
-            FAT_Close(disk, file);
-            return NULL;
-        }
-        return file;
-    }
-    else // File does not exist
-    {
-        if (mode == FAT_OPEN_MODE_CREATE) {
-            // This is complex: we need to find the parent directory,
-            // then create the file in it.
-            // For now, let's just print a message.
-            printf("FAT: File creation not fully implemented yet.\n");
-            return NULL;
-        } else {
-            printf("FAT: File '%s' not found.\n", path);
-            return NULL;
-        }
-    }
-}
-
-FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
 {
     char name[MAX_PATH_SIZE];
 
@@ -503,7 +403,22 @@ FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
         path++;
 
     FAT_File* current = &g_Data.RootDirectory.Public;
+    
+    // For now, we only support read and write, not create.
+    if (mode == FAT_OPEN_MODE_CREATE) {
+        printf("FAT: File creation not yet supported.\n");
+        // Fall through to open for writing if it exists.
+    }
 
+    return FAT_OpenInternal(disk, path);
+}
+
+FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
+{
+    char name[MAX_PATH_SIZE];
+    FAT_File* current = &g_Data.RootDirectory.Public;
+    current->Position = 0; // Reset root dir for searching
+    
     while (*path) {
         // Extract the next path component
         const char* delim = strchr(path, '/');
@@ -516,7 +431,7 @@ FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
 
         if (len >= MAX_PATH_SIZE) {
             // Path component is too long
-            FAT_Close(disk, current);
+            // No need to close root dir
             return NULL;
         }
 
@@ -529,14 +444,11 @@ FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
             path += len; // Move to the end of the string
         }
         
-        // Before searching, get the directory's current LBA and position
-        FAT_FileData* parent_fd = (current->Handle == ROOT_DIRECTORY_HANDLE) ? &g_Data.RootDirectory : &g_Data.OpenedFiles[current->Handle];
-        uint32_t dir_lba = (current->Handle == ROOT_DIRECTORY_HANDLE) ? parent_fd->CurrentCluster : FAT_ClusterToLba(parent_fd->CurrentCluster) + parent_fd->CurrentSectorInCluster;
-        uint32_t dir_offset = parent_fd->Public.Position;
-
         FAT_DirectoryEntry entry;
         if (FAT_FindFile(disk, current, name, &entry))
         {
+            FAT_Close(disk, current);
+
             // If this is not the last component and it's not a directory, fail.
             if (*path != '\0' && (entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) == 0)
             {
@@ -544,19 +456,7 @@ FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
                 return NULL;
             }
 
-            // We found the entry. Close the directory we were searching in...
-            FAT_Close(disk, current);
-            // ...and open the new entry.
             current = FAT_OpenEntry(disk, &entry);
-            if (current) {
-                // Store the location of the directory entry we just found
-                FAT_FileData* fd = &g_Data.OpenedFiles[current->Handle];
-                fd->DirectorySector = dir_lba;
-                fd->DirectoryOffset = dir_offset % SECTOR_SIZE;
-            } else {
-                // Failed to open the new entry (e.g., out of handles)
-                return NULL;
-            }
         }
         else
         {
