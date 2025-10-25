@@ -6,7 +6,7 @@ uint8_t __attribute__((cdecl)) i686_inb(uint16_t port);
 uint8_t __attribute__((cdecl)) i686_EnableInterrupts();
 uint8_t __attribute__((cdecl)) i686_DisableInterrupts();
 
-void i686_iowait();
+void __attribute__((cdecl)) i686_iowait();
 void __attribute__((cdecl)) i686_Panic();
 
 static inline void i686_insw(uint16_t port, void* buffer, uint32_t count)
