@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "disk.h"
 
+// Represents an open file or directory
 typedef struct
 {
     int Handle;
@@ -12,6 +13,14 @@ typedef struct
     uint32_t Size;
 } FAT_File;
 
+// File open modes
+typedef enum {
+    FAT_OPEN_MODE_READ,
+    FAT_OPEN_MODE_WRITE,
+    FAT_OPEN_MODE_CREATE,
+} FAT_OpenMode;
+
+// Represents a 32-byte directory entry on the disk
 typedef struct
 {
     char Name[11];
@@ -40,7 +49,8 @@ enum FAT_Attributes
 };
 
 bool FAT_Initialize(DISK* disk);
-FAT_File* FAT_Open(DISK* disk, const char* path);
+FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode);
 uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut);
-void FAT_Close(FAT_File* file);
+uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* dataIn);
+void FAT_Close(DISK* disk, FAT_File* file);
 bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEntry* entryOut);
