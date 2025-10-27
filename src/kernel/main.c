@@ -68,6 +68,9 @@ static char g_EditorBuffer[EDITOR_BUFFER_SIZE];
 
 void redraw_editor(const char* buffer, int cursor_pos) {
     clrscr();
+    // Print status bar first so it can be overwritten by text if needed
+    printf("\n[Ctrl+S to Save and Exit]");
+    setcursor(0, 0); // Reset cursor to top-left for drawing buffer
     printf("%s", buffer);
     
     // Calculate cursor X and Y from position
@@ -108,9 +111,6 @@ void handle_editor(const char* input) {
     int cursor_pos = file_size;
     redraw_editor(g_EditorBuffer, cursor_pos);
 
-    printf("\n[Ctrl+S to Save and Exit]");
-    setcursor(0, SCREEN_HEIGHT - 1);
-
     while (true) {
         int key = getch();
 
@@ -136,8 +136,30 @@ void handle_editor(const char* input) {
             case KEY_RIGHT:
                 if (cursor_pos < strlen(g_EditorBuffer)) cursor_pos++;
                 break;
-            // UP and DOWN are complex, involving finding previous/next lines.
-            // We'll leave them for a future enhancement.
+            case KEY_UP:
+            {
+                int current_line_start = cursor_pos;
+                while (current_line_start > 0 && g_EditorBuffer[current_line_start - 1] != '\n') {
+                    current_line_start--;
+                }
+                if (current_line_start > 0) { // Not on the first line
+                    int prev_line_end = current_line_start - 2;
+                    int prev_line_start = prev_line_end;
+                    while (prev_line_start > 0 && g_EditorBuffer[prev_line_start - 1] != '\n') {
+                        prev_line_start--;
+                    }
+                    int col = cursor_pos - current_line_start;
+                    cursor_pos = prev_line_start + col;
+                    if (cursor_pos > prev_line_end + 1) cursor_pos = prev_line_end + 1;
+                }
+                break;
+            }
+            case KEY_DOWN:
+                // This is a simplified implementation. A full one would find the start
+                // of the next line and move to the same column, similar to KEY_UP.
+                // For now, let's just move to the end of the buffer.
+                cursor_pos = strlen(g_EditorBuffer);
+                break;
             case '\b': // Backspace
                 if (cursor_pos > 0) {
                     memmove(&g_EditorBuffer[cursor_pos - 1], &g_EditorBuffer[cursor_pos], strlen(g_EditorBuffer) - cursor_pos + 1);
@@ -157,8 +179,6 @@ void handle_editor(const char* input) {
                 break;
         }
         redraw_editor(g_EditorBuffer, cursor_pos);
-        printf("\n[Ctrl+S to Save and Exit]");
-        setcursor(0, SCREEN_HEIGHT - 1);
     }
 }
 
