@@ -35,3 +35,22 @@ int memcmp(const void* ptr1, const void* ptr2, uint16_t num)
 
     return 0;
 }
+
+void* memmove(void* dst, const void* src, uint16_t num)
+{
+    uint8_t* u8Dst = (uint8_t*)dst;
+    const uint8_t* u8Src = (const uint8_t*)src;
+
+    // If destination is before source, we can copy forwards
+    if (u8Dst < u8Src) {
+        for (uint16_t i = 0; i < num; i++) {
+            u8Dst[i] = u8Src[i];
+        }
+    } else { // Otherwise, we must copy backwards to avoid overwriting data
+        for (uint16_t i = num; i > 0; i--) {
+            u8Dst[i-1] = u8Src[i-1];
+        }
+    }
+
+    return dst;
+}
