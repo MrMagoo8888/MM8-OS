@@ -1,5 +1,7 @@
 #pragma once
 
+#include "isr.h"
+
 // Ensure SCROLLBACK_LINES and SCREEN_WIDTH are defined as macros before this line
 #ifndef SCROLLBACK_LINES
 #define SCROLLBACK_LINES 2 // or another suitable constant value
