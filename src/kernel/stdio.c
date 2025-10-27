@@ -154,6 +154,17 @@ void putc(char c)
             g_ScreenX = 0;
             g_ScreenY++;
             break;
+
+        case '\b':
+            if (g_ScreenX > 0) {
+                g_ScreenX--;
+                putchr(g_ScreenX, g_ScreenY, ' ');
+            } else if (g_ScreenY > 0) {
+                g_ScreenY--;
+                g_ScreenX = SCREEN_WIDTH - 1;
+                putchr(g_ScreenX, g_ScreenY, ' ');
+            }
+            break;
     
         case '\t':
             for (int i = 0; i < 4 - (g_ScreenX % 4); i++)

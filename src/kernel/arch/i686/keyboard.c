@@ -29,6 +29,7 @@ static volatile int g_CharBuffer = -1; // -1 means empty
 static volatile bool g_CharReady = false;
 
 static bool g_ShiftPressed = false;
+static bool g_CtrlPressed = false;
 static bool g_AltGrPressed = false;
 
 // --- Command History ---
@@ -83,7 +84,7 @@ static void redraw_input_line() {
     printf("%s", g_InputBuffer);
 
     // Clear the rest of the line to erase old characters
-    for (int i = strlen(g_InputBuffer); i < SCREEN_WIDTH - prompt_len; i++) {
+    for (int i = g_ScreenX; i < SCREEN_WIDTH; i++) {
         putc(' ');
     }
     setcursor(prompt_len + g_InputBufferIndex, g_ScreenY);
@@ -95,13 +96,24 @@ void keyboard_irq_handler(Registers* regs) {
     // Handle shift press/release
     if (scancode == 0x2A || scancode == 0x36) { // Left or Right Shift pressed
         g_ShiftPressed = true;
-        return;
+        i686_PIC_SendEndOfInterrupt(1);
+        return; // Return after sending EOI
     } else if (scancode == 0xAA || scancode == 0xB6) { // Left or Right Shift released
         g_ShiftPressed = false;
-        return;
+        i686_PIC_SendEndOfInterrupt(1);
+        return; // Return after sending EOI
+    } else if (scancode == 0x1D) { // Ctrl pressed
+        g_CtrlPressed = true;
+        i686_PIC_SendEndOfInterrupt(1);
+        return; // Return after sending EOI
+    } else if (scancode == 0x9D) { // Ctrl released
+        g_CtrlPressed = false;
+        i686_PIC_SendEndOfInterrupt(1);
+        return; // Return after sending EOI
     } else if (scancode == 0xE0) {
         extended = 1;
-        return;
+        i686_PIC_SendEndOfInterrupt(1);
+        return; // Return after sending EOI
     }
 
     if (extended) {
@@ -150,7 +162,8 @@ void keyboard_irq_handler(Registers* regs) {
                 g_CharBuffer = KEY_DELETE; g_CharReady = true;
         }
         extended = 0;
-        return;
+        i686_PIC_SendEndOfInterrupt(1);
+        return; // Return after sending EOI
     }
 
     // Ignore key release codes
@@ -160,7 +173,9 @@ void keyboard_irq_handler(Registers* regs) {
 
 
     char c;
-    if (g_AltGrPressed)
+    if (g_CtrlPressed)
+        c = scancode_ascii[scancode] & 0x1F; // Create control character
+    else if (g_AltGrPressed)
         c = scancode_ascii_altgr[scancode];
     else if (g_ShiftPressed)
         c = scancode_ascii_shifted[scancode];
@@ -175,7 +190,17 @@ void keyboard_irq_handler(Registers* regs) {
             }
         }
     } else if (g_CurrentInputMode == INPUT_MODE_GETS) {
-        if (!g_InputLineReady) {
+        // Handle special keys first
+        if (g_CharBuffer == KEY_DELETE) {
+            if (g_InputBufferIndex < strlen(g_InputBuffer)) {
+                memmove(&g_InputBuffer[g_InputBufferIndex], &g_InputBuffer[g_InputBufferIndex + 1], strlen(g_InputBuffer) - g_InputBufferIndex);
+                redraw_input_line();
+            }
+            g_CharBuffer = -1; // Consume the delete key
+            g_CharReady = false; 
+        }
+        // Now handle printable characters
+        else if (!g_InputLineReady) {
             if (c == '\n') {
                 g_InputBuffer[g_InputBufferIndex] = '\0';
                 g_InputLineReady = true;
