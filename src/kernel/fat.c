@@ -425,7 +425,6 @@ uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
 
                 if (fd->CurrentCluster >= 0xFF8)
                 {
-                    fd->Public.Size = fd->Public.Position;
                     break;
                 }
 
@@ -463,6 +462,9 @@ void FAT_Close(DISK* disk, FAT_File* file)
 
 bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEntry* entryOut)
 {
+    // Reset directory position before searching
+    file->Position = 0;
+
     char fatName[12];
     FAT_DirectoryEntry entry;
 
@@ -527,7 +529,7 @@ FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode)
         while(FAT_ReadEntry(disk, root, &entry)) {
             if (entry.Name[0] == 0x00 || entry.Name[0] == 0xE5) {
                 // Found a free entry
-                uint32_t entry_pos = root->Position - sizeof(FAT_DirectoryEntry);
+                uint32_t entry_offset_in_sector = (root->Position - sizeof(FAT_DirectoryEntry)) % SECTOR_SIZE;
                 
                 memset(&entry, 0, sizeof(entry));
                 // Convert name (simplified)
@@ -537,9 +539,14 @@ FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode)
                 if (ext) for(int i=0; i<3 && ext[i+1]; i++) entry.Name[8+i] = toupper(ext[i+1]);
 
                 entry.Attributes = FAT_ATTRIBUTE_ARCHIVE;
+                entry.FirstClusterLow = 0; // No clusters allocated yet
+                entry.Size = 0;
+
+                // Copy the new entry into the root directory's buffer
+                memcpy(g_Data.RootDirectory.Buffer + entry_offset_in_sector, &entry, sizeof(FAT_DirectoryEntry));
                 
                 // Write new entry back to disk
-                DISK_WriteSectors(disk, g_Data.RootDirectory.CurrentCluster + (entry_pos / SECTOR_SIZE), 1, g_Data.RootDirectory.Buffer);
+                DISK_WriteSectors(disk, g_Data.RootDirectory.CurrentCluster, 1, g_Data.RootDirectory.Buffer);
                 
                 // Now open the new file
                 return FAT_OpenInternal(disk, path);
