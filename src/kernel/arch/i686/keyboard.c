@@ -6,9 +6,17 @@
 #include "stdbool.h"
 #include "memory.h"
 #include "string.h"
+#include "pic.h"
 #include "stddef.h"
 
 #include "screen_defs.h"
+
+typedef enum {
+    INPUT_MODE_NONE,
+    INPUT_MODE_GETS,  // Waiting for gets()
+    INPUT_MODE_GETCH, // Waiting for getch()
+} InputMode;
+static volatile InputMode g_CurrentInputMode = INPUT_MODE_NONE;
 
 // --- Static variables for buffered input ---
 #define INPUT_BUFFER_SIZE 256
@@ -159,32 +167,36 @@ void keyboard_irq_handler(Registers* regs) {
     else
         c = scancode_ascii[scancode];
 
-    // --- Input Buffering Logic ---
-    // If getch() is waiting, give it the character.
-    if (!g_CharReady) {
-        g_CharBuffer = c;
-        g_CharReady = true;
-    }
-
-    // If gets() is waiting, also add to its buffer.
-    if (!g_InputLineReady) {
-        if (c == '\n') {
-            g_InputBuffer[g_InputBufferIndex] = '\0';
-            g_InputLineReady = true;
-            g_HistoryNavIndex = -1; // Reset history navigation on enter
-            putc('\n');
-        } else if (c == '\b') {
-            if (g_InputBufferIndex > 0) {
-                g_InputBufferIndex--;
-                putc('\b'); // Let putc handle backspace logic
+    if (g_CurrentInputMode == INPUT_MODE_GETCH) {
+        if (c != 0 || g_CharBuffer != -1) { // Pass through printable chars or special keys
+            if (!g_CharReady) {
+                if (c != 0) g_CharBuffer = c; // Prioritize special keys set earlier
+                g_CharReady = true;
             }
-        } else if (c != 0) {
-            if (g_InputBufferIndex < INPUT_BUFFER_SIZE - 1) {
-                g_InputBuffer[g_InputBufferIndex++] = c;
-                putc(c); // Echo character
+        }
+    } else if (g_CurrentInputMode == INPUT_MODE_GETS) {
+        if (!g_InputLineReady) {
+            if (c == '\n') {
+                g_InputBuffer[g_InputBufferIndex] = '\0';
+                g_InputLineReady = true;
+                g_HistoryNavIndex = -1; // Reset history navigation on enter
+                putc('\n');
+            } else if (c == '\b') {
+                if (g_InputBufferIndex > 0) {
+                    g_InputBufferIndex--;
+                    // Let putc handle backspace logic on screen
+                    putc('\b');
+                }
+            } else if (c != 0) {
+                if (g_InputBufferIndex < INPUT_BUFFER_SIZE - 1) {
+                    g_InputBuffer[g_InputBufferIndex++] = c;
+                    putc(c); // Echo character
+                }
             }
         }
     }
+
+    i686_PIC_SendEndOfInterrupt(1); // test**
 }
 
 void i686_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, int* history_index, int history_size) {
@@ -196,6 +208,8 @@ void i686_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, i
 }
 
 void gets(char* buffer, int size) {
+    g_CurrentInputMode = INPUT_MODE_GETS;
+
     while (!g_InputLineReady) {
         __asm__ volatile("hlt"); // Wait for an interrupt
     }
@@ -212,10 +226,14 @@ void gets(char* buffer, int size) {
     memset(g_InputBuffer, 0, sizeof(g_InputBuffer)); // CRITICAL: Clear buffer for next use
     g_InputLineReady = false;
 
+    g_CurrentInputMode = INPUT_MODE_NONE;
+
     __asm__ volatile("sti"); // Re-enable interrupts
 }
 
 int getch() {
+    g_CurrentInputMode = INPUT_MODE_GETCH;
+
     while (!g_CharReady) {
         __asm__ volatile("hlt"); // Wait for a key press
     }
@@ -225,6 +243,8 @@ int getch() {
     int c = g_CharBuffer;
     g_CharReady = false;
     g_CharBuffer = -1;
+
+    g_CurrentInputMode = INPUT_MODE_NONE;
 
     __asm__ volatile("sti"); // Re-enable interrupts
 

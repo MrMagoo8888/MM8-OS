@@ -25,6 +25,18 @@ char* strcpy(char* dst, const char* src) {
     return origDst;
 }
 
+int strncmp(const char* str1, const char* str2, unsigned int n) {
+    for (unsigned int i = 0; i < n; i++) {
+        if (str1[i] != str2[i]) {
+            return (unsigned char)str1[i] - (unsigned char)str2[i];
+        }
+        if (str1[i] == '\0') {
+            return 0; // Both strings are equal up to n or shorter
+        }
+    }
+    return 0; // Strings are equal for n characters
+}
+
 const char* strchr(const char* str, int c) {
     while (*str != (char)c) {
         if (!*str++)

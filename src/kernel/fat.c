@@ -77,6 +77,15 @@ typedef struct
 
 } FAT_Data;
 
+// --- FAT Type Detection ---
+typedef enum {
+    FAT_TYPE_UNKNOWN,
+    FAT_TYPE_FAT12,
+    FAT_TYPE_FAT16,
+    FAT_TYPE_FAT32,
+} FAT_Type;
+
+static FAT_Type g_FatType = FAT_TYPE_UNKNOWN;
 static FAT_Data g_Data;
 static uint8_t g_Fat[SECTOR_SIZE * 16]; // Max FAT size of 16 sectors (8KB)
 static uint32_t g_DataSectionLba;
@@ -158,6 +167,24 @@ bool FAT_Initialize(DISK* disk)
     uint32_t rootDirSectors = (rootDirSize + g_Data.BS.BootSector.BytesPerSector - 1) / g_Data.BS.BootSector.BytesPerSector;
     g_DataSectionLba = rootDirLba + rootDirSectors;
 
+    // --- Determine FAT Type ---
+    uint32_t dataSectors = g_Data.BS.BootSector.TotalSectors - (g_Data.BS.BootSector.ReservedSectors + (g_Data.BS.BootSector.FatCount * g_Data.BS.BootSector.SectorsPerFat));
+    uint32_t clusterCount = dataSectors / g_Data.BS.BootSector.SectorsPerCluster;
+
+    if (clusterCount < 4085) {
+        g_FatType = FAT_TYPE_FAT12;
+        printf("FAT: Detected FAT12 filesystem\n");
+    } else if (clusterCount < 65525) {
+        g_FatType = FAT_TYPE_FAT16;
+        printf("FAT: Detected FAT16 filesystem (not supported)\n");
+        return false; // Or implement FAT16
+    } else {
+        g_FatType = FAT_TYPE_FAT32;
+        printf("FAT: Detected FAT32 filesystem (not supported)\n");
+        return false; // Or implement FAT32
+    }
+
+
     // reset opened files
     for (int i = 0; i < MAX_FILE_HANDLES; i++)
         g_Data.OpenedFiles[i].Opened = false;
@@ -210,20 +237,44 @@ FAT_File* FAT_OpenEntry(DISK* disk, FAT_DirectoryEntry* entry)
 
 uint32_t FAT_NextCluster(uint32_t currentCluster)
 {    
-    uint32_t fatIndex = currentCluster * 3 / 2;
-
-    if (currentCluster % 2 == 0)
-        return (*(uint16_t*)(g_Fat + fatIndex)) & 0x0FFF;
-    else
-        return (*(uint16_t*)(g_Fat + fatIndex)) >> 4;
+    switch (g_FatType) {
+        case FAT_TYPE_FAT12:
+        {
+            uint32_t fatIndex = currentCluster * 3 / 2;
+            uint16_t val = *(uint16_t*)(g_Fat + fatIndex);
+            if (currentCluster % 2 == 0)
+                return val & 0x0FFF;
+            else
+                return val >> 4;
+        }
+        case FAT_TYPE_FAT32:
+        {
+            uint32_t* fat_table = (uint32_t*)g_Fat;
+            return fat_table[currentCluster] & 0x0FFFFFFF; // Mask out top 4 bits
+        }
+        default:
+            return 0xFFF; // End of chain for unsupported types
+    }
 }
 
 static void FAT_SetClusterValue(uint32_t cluster, uint16_t value) {
-    uint32_t fatIndex = cluster * 3 / 2;
-    if (cluster % 2 == 0) {
-        *(uint16_t*)(g_Fat + fatIndex) = (*(uint16_t*)(g_Fat + fatIndex) & 0xF000) | (value & 0x0FFF);
-    } else {
-        *(uint16_t*)(g_Fat + fatIndex) = (*(uint16_t*)(g_Fat + fatIndex) & 0x000F) | (value << 4);
+    switch (g_FatType) {
+        case FAT_TYPE_FAT12:
+        {
+            uint32_t fatIndex = cluster * 3 / 2;
+            if (cluster % 2 == 0) {
+                *(uint16_t*)(g_Fat + fatIndex) = (*(uint16_t*)(g_Fat + fatIndex) & 0xF000) | (value & 0x0FFF);
+            } else {
+                *(uint16_t*)(g_Fat + fatIndex) = (*(uint16_t*)(g_Fat + fatIndex) & 0x000F) | (value << 4);
+            }
+            break;
+        }
+        case FAT_TYPE_FAT32:
+        {
+            uint32_t* fat_table = (uint32_t*)g_Fat;
+            fat_table[cluster] = (*(uint32_t*)(g_Fat + cluster) & 0xF0000000) | (value & 0x0FFFFFFF);
+            break;
+        }
     }
 }
 

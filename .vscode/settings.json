@@ -6,6 +6,7 @@
         "stdbool.h": "c",
         "stdarg.h": "c",
         "memory.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "screen_defs.h": "c"
     }
 }
