@@ -12,7 +12,6 @@ SOURCES_C = $(wildcard *.c) \
 			$(wildcard */*.c) \
 			$(wildcard */*/*.c) \
 			$(wildcard */*/*/*.c) \
-			command.c \
 			arch/i686/isrs_gen.c
 
 OBJECTS_C = $(patsubst %.c, $(BUILD_DIR)/kernel/c/%.obj, $(SOURCES_C))

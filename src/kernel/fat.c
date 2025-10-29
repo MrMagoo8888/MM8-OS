@@ -496,9 +496,6 @@ bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEnt
     return false;
 }
 
-// Forward declare to resolve circular dependency with FAT_Open
-FAT_File* FAT_OpenInternal(DISK* disk, const char* path);
-
 FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode)
 {
     char name[MAX_PATH_SIZE];
@@ -507,109 +504,116 @@ FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode)
         path++;
 
     FAT_File* current = &g_Data.RootDirectory.Public;
-    
-    // For now, we only support read and write, not create.
-    if (mode == FAT_OPEN_MODE_CREATE) {
-        FAT_File* f = FAT_OpenInternal(disk, path);
-        if (f) { // File exists, open for writing
-            return f;
-        }
-        // File does not exist, create it.
-        // This is a simplified creation at the root. A full implementation
-        // would parse the path to find the parent directory.
-        const char* filename = path;
-        const char* last_slash = strrchr(path, '/');
-        if (last_slash) {
-            filename = last_slash + 1;
-        }
+    current->Position = 0; // Reset root dir for searching
 
-        FAT_File* root = &g_Data.RootDirectory.Public;
-        root->Position = 0;
-        FAT_DirectoryEntry entry;
-        while(FAT_ReadEntry(disk, root, &entry)) {
-            if (entry.Name[0] == 0x00 || entry.Name[0] == 0xE5) {
-                // Found a free entry
-                uint32_t entry_offset_in_sector = (root->Position - sizeof(FAT_DirectoryEntry)) % SECTOR_SIZE;
-                
-                memset(&entry, 0, sizeof(entry));
-                // Convert name (simplified)
-                memset(entry.Name, ' ', 11);
-                for(int i = 0; i < 8 && filename[i] && filename[i] != '.'; i++) entry.Name[i] = toupper(filename[i]);
-                const char* ext = strchr(filename, '.');
-                if (ext) for(int i=0; i<3 && ext[i+1]; i++) entry.Name[8+i] = toupper(ext[i+1]);
+    // First, check if the file already exists.
+    FAT_DirectoryEntry existing_entry;
+    if (FAT_FindFile(disk, current, path, &existing_entry)) {
+        // File exists, just open it.
+        return FAT_OpenEntry(disk, &existing_entry);
+    }
 
-                entry.Attributes = FAT_ATTRIBUTE_ARCHIVE;
-                entry.FirstClusterLow = 0; // No clusters allocated yet
-                entry.Size = 0;
-
-                // Copy the new entry into the root directory's buffer
-                memcpy(g_Data.RootDirectory.Buffer + entry_offset_in_sector, &entry, sizeof(FAT_DirectoryEntry));
-                
-                // Write new entry back to disk
-                DISK_WriteSectors(disk, g_Data.RootDirectory.CurrentCluster, 1, g_Data.RootDirectory.Buffer);
-                
-                // Now open the new file
-                return FAT_OpenInternal(disk, path);
-            }
-        }
-        printf("FAT: No free space in root directory.\n");
+    // If we're not in CREATE mode and the file wasn't found, it's an error.
+    if (mode != FAT_OPEN_MODE_CREATE) {
+        printf("FAT: %s not found\n", path);
         return NULL;
     }
 
-    return FAT_OpenInternal(disk, path);
-}
+    // --- Create a new file ---
+    // Simplified: create only in root for now.
+    if (strchr(path, '/')) {
+        printf("FAT: Creation only supported in root directory for now.\n");
+        return NULL;
+    }
 
-FAT_File* FAT_OpenInternal(DISK* disk, const char* path)
-{
-    char name[MAX_PATH_SIZE];
-    FAT_File* current = &g_Data.RootDirectory.Public;
-    current->Position = 0; // Reset root dir for searching
+    current->Position = 0; // Rewind root directory to search for a free entry.
+    FAT_DirectoryEntry new_entry;
+    while (FAT_ReadEntry(disk, current, &new_entry)) {
+        if (new_entry.Name[0] == 0x00 || new_entry.Name[0] == 0xE5) {
+            // Found a free entry. Let's create the file here.
+            uint32_t entry_offset_in_sector = (current->Position - sizeof(FAT_DirectoryEntry)) % SECTOR_SIZE;
+
+            memset(&new_entry, 0, sizeof(new_entry));
+            memset(new_entry.Name, ' ', 11);
+            const char* filename = path;
+            for (int i = 0; i < 8 && filename[i] && filename[i] != '.'; i++) new_entry.Name[i] = toupper(filename[i]);
+            const char* ext = strchr(filename, '.');
+            if (ext) for (int i = 0; i < 3 && ext[i + 1]; i++) new_entry.Name[8 + i] = toupper(ext[i + 1]);
+
+            new_entry.Attributes = FAT_ATTRIBUTE_ARCHIVE;
+            new_entry.FirstClusterLow = 0; // No data clusters allocated yet.
+            new_entry.Size = 0;
+
+            memcpy(g_Data.RootDirectory.Buffer + entry_offset_in_sector, &new_entry, sizeof(FAT_DirectoryEntry));
+            DISK_WriteSectors(disk, g_Data.RootDirectory.CurrentCluster, 1, g_Data.RootDirectory.Buffer);
+
+            // Now that it's created, open it and return the handle.
+            return FAT_OpenEntry(disk, &new_entry);
+        }
+    }
+    printf("FAT: No free space in root directory.\n");
+    return NULL;
     
     while (*path) {
         // Extract the next path component
         const char* delim = strchr(path, '/');
         size_t len;
+        bool isLast = false;
         if (delim) {
             len = delim - path;
         } else {
             len = strlen(path);
+            isLast = true;
         }
 
         if (len >= MAX_PATH_SIZE) {
-            // Path component is too long
-            // No need to close root dir
             return NULL;
         }
 
         memcpy(name, path, len);
         name[len] = '\0';
 
-        if (delim) {
-            path = delim + 1;
-        } else {
-            path += len; // Move to the end of the string
-        }
-        
         FAT_DirectoryEntry entry;
         if (FAT_FindFile(disk, current, name, &entry))
         {
-            FAT_Close(disk, current);
-
-            // If this is not the last component and it's not a directory, fail.
-            if (*path != '\0' && (entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) == 0)
+            if (isLast) {
+                // Found the file, open it and return
+                FAT_Close(disk, current); // Close the parent directory
+                return FAT_OpenEntry(disk, &entry);
+            }
+            else if ((entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) == 0)
             {
+                // Path component is not a directory, but it's not the last part of the path
+                FAT_Close(disk, current);
                 printf("FAT: %s not a directory\n", name);
                 return NULL;
             }
-
-            current = FAT_OpenEntry(disk, &entry);
+            current = FAT_OpenEntry(disk, &entry); // Open the next directory in the path
+            if (!current) return NULL; // FAT_OpenEntry failed
         }
         else
         {
+            if (isLast && mode == FAT_OPEN_MODE_CREATE) {
+                // We already handled creation in the root directory.
+                // A more complex implementation would create the file here.
+                printf("FAT: Creation only supported in root directory for now.\n");
+            } else {
+                printf("FAT: %s not found\n", name);
+            }
             FAT_Close(disk, current);
-            printf("FAT: %s not found\n", name);
             return NULL;
         }
+
+        if (delim) {
+            path = delim + 1;
+        } else {
+            path += len;
+        }
+    }
+
+    // This case handles opening the root directory itself, e.g., "read /"
+    if (current->Handle == ROOT_DIRECTORY_HANDLE) {
+        return current;
     }
 
     return current;

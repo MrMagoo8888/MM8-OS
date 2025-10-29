@@ -8,8 +8,8 @@
 #include "fat.h"
 #include <arch/i686/keyboard.h>
 #include "string.h"
-#include "command.h"
-#include "editor.h"
+#include <commands/command.h>
+#include <apps/editor/editor.h>
 #include "globals.h"
 
 
@@ -72,8 +72,13 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
 
     while (1) {
         printf("> ");
+
+
         gets(input_buffer, sizeof(input_buffer));
+
         add_to_history(input_buffer);
+
+
         command_dispatch(input_buffer); // invokes commands like help, cls, echo, read, edit
     
     }
