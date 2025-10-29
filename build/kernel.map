@@ -19,16 +19,16 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/gdt.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/idt.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/io.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/arch/i686/isr.obj
-LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
-LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
 LOAD /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
@@ -47,7 +47,7 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
  .entry         0x00100000      0x129 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
                 0x00100000                start
 
-.text           0x00100130     0x5d26
+.text           0x00100130     0x5d56
                 0x00100130                        __text_start = .
  *(.text)
  .text          0x00100130       0x1f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/asm/start.obj
@@ -324,231 +324,229 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
                 0x00100bd8                i686_ISR253
                 0x00100be1                i686_ISR254
                 0x00100bea                i686_ISR255
- .text          0x00100c1d      0x2fb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
-                0x00100e14                command_dispatch
- .text          0x00100f18       0x1c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
-                0x00100f18                toupper
- .text          0x00100f34      0x578 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
-                0x00100f9c                DISK_Initialize
-                0x00101194                DISK_ReadSectors
-                0x0010130b                DISK_WriteSectors
- .text          0x001014ac      0x55b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
-                0x00101560                editor_handle_command
- .text          0x00101a07     0x11cd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
-                0x00101a07                FAT_ReadBootSector
-                0x00101a27                FAT_ReadFat
-                0x00101a5d                FAT_Initialize
-                0x00101d50                FAT_ClusterToLba
-                0x00101d6f                FAT_OpenEntry
-                0x00101ef3                FAT_NextCluster
-                0x001020f0                FAT_Flush
-                0x0010217a                FAT_Write
-                0x001023ee                FAT_Read
-                0x00102621                FAT_ReadEntry
-                0x00102642                FAT_Close
-                0x001026a6                FAT_FindFile
-                0x00102821                FAT_Open
-                0x00102a66                FAT_OpenInternal
- .text          0x00102bd4       0xd1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
-                0x00102bd4                timer
-                0x00102bda                add_to_history
- .text          0x00102ca5      0x1a7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
-                0x00102ca5                memcpy
-                0x00102cf7                memset
-                0x00102d3a                memcmp
-                0x00102db7                memmove
- .text          0x00102e4c      0xb7f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x00102e4c                putchr
-                0x00102e80                putcolor
-                0x00102eb7                getchr
-                0x00102edd                getcolor
-                0x00102f06                setcursor
-                0x00102f7b                clrscr
-                0x00102ff6                scrollback
-                0x00103273                view_scrollback_up
-                0x001032df                view_scrollback_down
-                0x00103356                putc
-                0x001034ed                puts
-                0x0010351c                printf_unsigned
-                0x001035c0                printf_signed
-                0x0010361d                printf
-                0x00103932                print_buffer
- .text          0x001039cb      0x175 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
-                0x001039cb                strcmp
-                0x00103a0a                strlen
-                0x00103a31                strcpy
-                0x00103a6b                strncmp
-                0x00103add                strchr
-                0x00103b0b                strrchr
- .text          0x00103b40       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
-                0x00103b40                HAL_Initialize
- .text          0x00103b5d       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
-                0x00103b5d                i686_GDT_Initialize
- .text          0x00103b7a       0xba /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
-                0x00103b7a                i686_IDT_SetGate
-                0x00103bdb                i686_IDT_EnableGate
-                0x00103bfb                i686_IDT_DisableGate
-                0x00103c1b                i686_IDT_Initialize
- .text          0x00103c34       0x1b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
-                0x00103c34                i686_iowait
- .text          0x00103c4f       0xd9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
-                0x00103c4f                i686_IRQ_Handler
-                0x00103cc1                i686_IRQ_Initialize
-                0x00103d04                i686_IRQ_RegisterHandler
- .text          0x00103d28      0x1a1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
-                0x00103d28                i686_ISR_Initialize
-                0x00103d6a                i686_ISR_Handler
-                0x00103ea5                i686_ISR_RegisterHandler
- .text          0x00103ec9     0x1489 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
-                0x00103ec9                i686_ISR_InitializeGates
- .text          0x00105352      0x5dd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
-                0x001053d5                keyboard_irq_handler
-                0x00105810                i686_Keyboard_Initialize
-                0x0010584b                gets
-                0x001058e7                getch
- .text          0x0010592f      0x2c6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
-                0x0010592f                i686_PIC_Configure
-                0x00105a27                i686_PIC_SendEndOfInterrupt
-                0x00105a57                i686_PIC_Disable
-                0x00105a91                i686_PIC_Mask
-                0x00105aeb                i686_PIC_Unmask
-                0x00105b47                i686_PIC_ReadIrqRequestRegister
-                0x00105b9e                i686_PIC_ReadInServiceRegister
- *fill*         0x00105bf5        0xb 
- .text          0x00105c00      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
-                0x00105c00                __udivdi3
- *fill*         0x00105d1a        0x6 
- .text          0x00105d20      0x136 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
-                0x00105d20                __umoddi3
+ .text          0x00100c1d       0x1c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+                0x00100c1d                toupper
+ .text          0x00100c39      0x578 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+                0x00100ca1                DISK_Initialize
+                0x00100e99                DISK_ReadSectors
+                0x00101010                DISK_WriteSectors
+ .text          0x001011b1     0x11fc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+                0x001011b1                FAT_ReadBootSector
+                0x001011d1                FAT_ReadFat
+                0x00101207                FAT_Initialize
+                0x001014fa                FAT_ClusterToLba
+                0x00101519                FAT_OpenEntry
+                0x0010169d                FAT_NextCluster
+                0x0010189a                FAT_Flush
+                0x00101924                FAT_Write
+                0x00101b98                FAT_Read
+                0x00101dcb                FAT_ReadEntry
+                0x00101dec                FAT_Close
+                0x00101e50                FAT_FindFile
+                0x00101fcb                FAT_Open
+ .text          0x001023ad       0xd1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+                0x001023ad                timer
+                0x001023b3                add_to_history
+ .text          0x0010247e      0x1a7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+                0x0010247e                memcpy
+                0x001024d0                memset
+                0x00102513                memcmp
+                0x00102590                memmove
+ .text          0x00102625      0xb7f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x00102625                putchr
+                0x00102659                putcolor
+                0x00102690                getchr
+                0x001026b6                getcolor
+                0x001026df                setcursor
+                0x00102754                clrscr
+                0x001027cf                scrollback
+                0x00102a4c                view_scrollback_up
+                0x00102ab8                view_scrollback_down
+                0x00102b2f                putc
+                0x00102cc6                puts
+                0x00102cf5                printf_unsigned
+                0x00102d99                printf_signed
+                0x00102df6                printf
+                0x0010310b                print_buffer
+ .text          0x001031a4      0x175 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+                0x001031a4                strcmp
+                0x001031e3                strlen
+                0x0010320a                strcpy
+                0x00103244                strncmp
+                0x001032b6                strchr
+                0x001032e4                strrchr
+ .text          0x00103319      0x2fb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+                0x00103510                command_dispatch
+ .text          0x00103614       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+                0x00103614                HAL_Initialize
+ .text          0x00103631      0x55b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+                0x001036e5                editor_handle_command
+ .text          0x00103b8c       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+                0x00103b8c                i686_GDT_Initialize
+ .text          0x00103ba9       0xba /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x00103ba9                i686_IDT_SetGate
+                0x00103c0a                i686_IDT_EnableGate
+                0x00103c2a                i686_IDT_DisableGate
+                0x00103c4a                i686_IDT_Initialize
+ .text          0x00103c63       0x1b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+                0x00103c63                i686_iowait
+ .text          0x00103c7e       0xd9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+                0x00103c7e                i686_IRQ_Handler
+                0x00103cf0                i686_IRQ_Initialize
+                0x00103d33                i686_IRQ_RegisterHandler
+ .text          0x00103d57      0x1a1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+                0x00103d57                i686_ISR_Initialize
+                0x00103d99                i686_ISR_Handler
+                0x00103ed4                i686_ISR_RegisterHandler
+ .text          0x00103ef8     0x1489 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+                0x00103ef8                i686_ISR_InitializeGates
+ .text          0x00105381      0x5dd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+                0x00105404                keyboard_irq_handler
+                0x0010583f                i686_Keyboard_Initialize
+                0x0010587a                gets
+                0x00105916                getch
+ .text          0x0010595e      0x2c6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+                0x0010595e                i686_PIC_Configure
+                0x00105a56                i686_PIC_SendEndOfInterrupt
+                0x00105a86                i686_PIC_Disable
+                0x00105ac0                i686_PIC_Mask
+                0x00105b1a                i686_PIC_Unmask
+                0x00105b76                i686_PIC_ReadIrqRequestRegister
+                0x00105bcd                i686_PIC_ReadInServiceRegister
+ *fill*         0x00105c24        0xc 
+ .text          0x00105c30      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+                0x00105c30                __udivdi3
+ *fill*         0x00105d4a        0x6 
+ .text          0x00105d50      0x136 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x00105d50                __umoddi3
 
-.data           0x00105e58       0x34
-                0x00105e58                        __data_start = .
+.data           0x00105e88       0x34
+                0x00105e88                        __data_start = .
  *(.data)
- .data          0x00105e58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .data          0x00105e58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
- .data          0x00105e58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- .data          0x00105e58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .data          0x00105e58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- .data          0x00105e58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .data          0x00105e58        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .data          0x00105e58        0x4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x00105e58                g_ScreenBuffer
- .data          0x00105e5c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .data          0x00105e5c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .data          0x00105e5c       0x1e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
-                0x00105e5c                g_GDT
-                0x00105e74                g_GDTDescriptor
- *fill*         0x00105e7a        0x2 
- .data          0x00105e7c        0x6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
-                0x00105e7c                g_IDTDescriptor
- .data          0x00105e82        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .data          0x00105e82        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .data          0x00105e82        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .data          0x00105e82        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- *fill*         0x00105e82        0x2 
- .data          0x00105e84        0x8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .data          0x00105e8c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .data          0x00105e8c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .data          0x00105e8c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .data          0x00105e88        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+ .data          0x00105e88        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ .data          0x00105e88        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .data          0x00105e88        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .data          0x00105e88        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .data          0x00105e88        0x4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x00105e88                g_ScreenBuffer
+ .data          0x00105e8c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .data          0x00105e8c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .data          0x00105e8c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .data          0x00105e8c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .data          0x00105e8c       0x1e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+                0x00105e8c                g_GDT
+                0x00105ea4                g_GDTDescriptor
+ *fill*         0x00105eaa        0x2 
+ .data          0x00105eac        0x6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x00105eac                g_IDTDescriptor
+ .data          0x00105eb2        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .data          0x00105eb2        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .data          0x00105eb2        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .data          0x00105eb2        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ *fill*         0x00105eb2        0x2 
+ .data          0x00105eb4        0x8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .data          0x00105ebc        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .data          0x00105ebc        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .data          0x00105ebc        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.rodata         0x00105ea0      0xcd4
-                0x00105ea0                        __rodata_start = .
+.rodata         0x00105ec0      0xd14
+                0x00105ec0                        __rodata_start = .
  *(.rodata)
- .rodata        0x00105ea0      0x22c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .rodata        0x001060cc       0xe9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- *fill*         0x001061b5        0x3 
- .rodata        0x001061b8       0x7c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .rodata        0x00106234      0x287 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- *fill*         0x001064bb        0x1 
- .rodata        0x001064bc       0x8c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .rodata        0x00106548       0xae /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x00106548                g_HexChars
- *fill*         0x001065f6        0x2 
- .rodata        0x001065f8       0x25 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- *fill*         0x0010661d        0x3 
- .rodata        0x00106620      0x34f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- *fill*         0x0010696f       0x11 
- .rodata        0x00106980      0x1f4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .rodata        0x00105ec0       0xe9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ *fill*         0x00105fa9        0x3 
+ .rodata        0x00105fac      0x2c0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .rodata        0x0010626c       0x8c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .rodata        0x001062f8       0xae /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x001062f8                g_HexChars
+ *fill*         0x001063a6        0x2 
+ .rodata        0x001063a8      0x22c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .rodata        0x001065d4       0x7c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .rodata        0x00106650       0x25 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ *fill*         0x00106675        0xb 
+ .rodata        0x00106680      0x34f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ *fill*         0x001069cf       0x11 
+ .rodata        0x001069e0      0x1f4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
 
-.eh_frame       0x00106b74       0xd8
- .eh_frame      0x00106b74       0x64 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .eh_frame      0x00106bd8       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.eh_frame       0x00106bd4       0xd8
+ .eh_frame      0x00106bd4       0x64 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .eh_frame      0x00106c38       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.bss            0x00106c60     0x724c
-                0x00106c60                        __bss_start = .
+.bss            0x00106cc0     0x724c
+                0x00106cc0                        __bss_start = .
  *(.bss)
- .bss           0x00106c60        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .bss           0x00106c60        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
- .bss           0x00106c60        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- .bss           0x00106c60     0x1000 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .bss           0x00107c60     0x39c8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- *fill*         0x0010b628       0x18 
- .bss           0x0010b640      0xa28 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
-                0x0010b640                g_Disk
- .bss           0x0010c068        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- *fill*         0x0010c068       0x18 
- .bss           0x0010c080     0x1081 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x0010c080                g_ScreenX
-                0x0010c084                g_ScreenY
-                0x0010c0a0                scrollback_buffer
-                0x0010c140                scrollback_start
-                0x0010c144                scrollback_count
-                0x0010c148                scrollback_view
- .bss           0x0010d101        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .bss           0x0010d101        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .bss           0x0010d101        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- *fill*         0x0010d101       0x1f 
- .bss           0x0010d120      0x800 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
-                0x0010d120                g_IDT
- .bss           0x0010d920        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .bss           0x0010d920       0x40 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
-                0x0010d920                g_IRQHandlers
- .bss           0x0010d960      0x400 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
-                0x0010d960                g_ISRHandlers
- .bss           0x0010dd60        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .bss           0x0010dd60      0x140 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .bss           0x0010dea0        0xc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
-                0x0010dea0                PIC_ICW1
-                0x0010dea4                PIC_ICW4
-                0x0010dea8                PIC_CMD
- .bss           0x0010deac        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .bss           0x0010deac        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
-                0x0010deac                        __end = .
+ .bss           0x00106cc0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+ .bss           0x00106cc0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ .bss           0x00106cc0     0x39c8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ *fill*         0x0010a688       0x18 
+ .bss           0x0010a6a0      0xa28 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+                0x0010a6a0                g_Disk
+ .bss           0x0010b0c8        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ *fill*         0x0010b0c8       0x18 
+ .bss           0x0010b0e0     0x1081 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x0010b0e0                g_ScreenX
+                0x0010b0e4                g_ScreenY
+                0x0010b100                scrollback_buffer
+                0x0010b1a0                scrollback_start
+                0x0010b1a4                scrollback_count
+                0x0010b1a8                scrollback_view
+ .bss           0x0010c161        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .bss           0x0010c161        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .bss           0x0010c161        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ *fill*         0x0010c161       0x1f 
+ .bss           0x0010c180     0x1000 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .bss           0x0010d180        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .bss           0x0010d180      0x800 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x0010d180                g_IDT
+ .bss           0x0010d980        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .bss           0x0010d980       0x40 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+                0x0010d980                g_IRQHandlers
+ .bss           0x0010d9c0      0x400 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+                0x0010d9c0                g_ISRHandlers
+ .bss           0x0010ddc0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .bss           0x0010ddc0      0x140 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .bss           0x0010df00        0xc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+                0x0010df00                PIC_ICW1
+                0x0010df04                PIC_ICW4
+                0x0010df08                PIC_CMD
+ .bss           0x0010df0c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .bss           0x0010df0c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x0010df0c                        __end = .
 OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
 
-.debug_info     0x00000000     0x4e19
- .debug_info    0x00000000      0x2e8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .debug_info    0x000002e8       0x56 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
- .debug_info    0x0000033e      0x2fc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- .debug_info    0x0000063a      0x41c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .debug_info    0x00000a56      0xe84 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- .debug_info    0x000018da      0x403 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_info    0x00001cdd      0x26d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_info    0x00001f4a      0x6ad /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_info    0x000025f7      0x1c6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_info    0x000027bd       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_info    0x00002862      0x1f3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_info    0x00002a55      0x247 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_info    0x00002c9c       0x9e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_info    0x00002d3a      0x2e0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_info    0x0000301a      0x28e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_info    0x000032a8      0xcfb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_info    0x00003fa3      0x5ae /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_info    0x00004551      0x259 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_info    0x000047aa      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_info    0x00004ad6      0x343 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.debug_info     0x00000000     0x4dc7
+ .debug_info    0x00000000       0x56 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+ .debug_info    0x00000056      0x2fc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ .debug_info    0x00000352      0xe32 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .debug_info    0x00001184      0x403 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_info    0x00001587      0x26d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_info    0x000017f4      0x6ad /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_info    0x00001ea1      0x1c6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_info    0x00002067      0x2e8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_info    0x0000234f       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_info    0x000023f4      0x41c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_info    0x00002810      0x1f3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_info    0x00002a03      0x247 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_info    0x00002c4a       0x9e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_info    0x00002ce8      0x2e0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_info    0x00002fc8      0x28e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_info    0x00003256      0xcfb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_info    0x00003f51      0x5ae /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_info    0x000044ff      0x259 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_info    0x00004758      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_info    0x00004a84      0x343 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_abbrev   0x00000000     0x19a4
- .debug_abbrev  0x00000000      0x1b1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .debug_abbrev  0x000001b1       0x4d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
- .debug_abbrev  0x000001fe      0x173 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- .debug_abbrev  0x00000371      0x1b7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .debug_abbrev  0x00000528      0x2b5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- .debug_abbrev  0x000007dd      0x17c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_abbrev  0x00000959       0xec /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_abbrev  0x00000a45      0x24d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_abbrev  0x00000c92       0xc5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_abbrev  0x00000d57       0x5a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_abbrev  0x00000000       0x4d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+ .debug_abbrev  0x0000004d      0x173 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ .debug_abbrev  0x000001c0      0x2b5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .debug_abbrev  0x00000475      0x17c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_abbrev  0x000005f1       0xec /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_abbrev  0x000006dd      0x24d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_abbrev  0x0000092a       0xc5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_abbrev  0x000009ef      0x1b1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_abbrev  0x00000ba0       0x5a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_abbrev  0x00000bfa      0x1b7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
  .debug_abbrev  0x00000db1       0xf0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
  .debug_abbrev  0x00000ea1      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
  .debug_abbrev  0x00000fc3       0x6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
@@ -562,25 +560,25 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
 
 .debug_aranges  0x00000000      0x288
  .debug_aranges
-                0x00000000       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
+                0x00000000       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
  .debug_aranges
-                0x00000020       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+                0x00000020       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
  .debug_aranges
-                0x00000040       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+                0x00000040       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
  .debug_aranges
-                0x00000060       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
+                0x00000060       0x28 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
  .debug_aranges
-                0x00000080       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+                0x00000088       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
  .debug_aranges
-                0x000000a0       0x28 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+                0x000000a8       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
  .debug_aranges
-                0x000000c8       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+                0x000000c8       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
  .debug_aranges
-                0x000000e8       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x000000e8       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
  .debug_aranges
-                0x00000108       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+                0x00000108       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
  .debug_aranges
-                0x00000128       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+                0x00000128       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
  .debug_aranges
                 0x00000148       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
  .debug_aranges
@@ -602,119 +600,104 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
  .debug_aranges
                 0x00000268       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_rnglists
-                0x00000000       0xce
- .debug_rnglists
-                0x00000000       0x26 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .debug_rnglists
-                0x00000026       0x22 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .debug_rnglists
-                0x00000048       0x22 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- .debug_rnglists
-                0x0000006a       0x1b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_rnglists
-                0x00000085       0x2a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_rnglists
-                0x000000af       0x1f /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.debug_line     0x00000000     0x24ee
+ .debug_line    0x00000000       0x58 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+ .debug_line    0x00000058      0x287 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ .debug_line    0x000002df      0x7b0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .debug_line    0x00000a8f      0x143 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_line    0x00000bd2      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_line    0x00000cf4      0x4fa /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_line    0x000011ee      0x127 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_line    0x00001315      0x169 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_line    0x0000147e       0x6a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_line    0x000014e8      0x353 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_line    0x0000183b       0x5c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_line    0x00001897       0x89 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_line    0x00001920       0x5e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_line    0x0000197e       0xc2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_line    0x00001a40       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_line    0x00001b14      0x25f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_line    0x00001d73      0x30a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_line    0x0000207d      0x120 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_line    0x0000219d      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_line    0x0000231d      0x1d1 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_line     0x00000000     0x24c7
- .debug_line    0x00000000      0x161 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .debug_line    0x00000161       0x58 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
- .debug_line    0x000001b9      0x287 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- .debug_line    0x00000440      0x34f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .debug_line    0x0000078f      0x79b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- .debug_line    0x00000f2a      0x13d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_line    0x00001067      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_line    0x00001189      0x4fa /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_line    0x00001683      0x127 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_line    0x000017aa       0x6a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_line    0x00001814       0x5c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_line    0x00001870       0x89 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_line    0x000018f9       0x5e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_line    0x00001957       0xc2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_line    0x00001a19       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_line    0x00001aed      0x25f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_line    0x00001d4c      0x30a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_line    0x00002056      0x120 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_line    0x00002176      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_line    0x000022f6      0x1d1 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
-
-.debug_str      0x00000000     0x389a
- .debug_str     0x00000000      0x20d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .debug_str     0x0000020d       0x53 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
- .debug_str     0x00000260      0x19c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- .debug_str     0x000003fc      0x2a9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .debug_str     0x000006a5      0x843 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- .debug_str     0x00000ee8      0x259 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_str     0x00001141      0x10b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_str     0x0000124c      0x2fb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_str     0x00001547       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_str     0x000015e7      0x10c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_str     0x000016f3      0x2ea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_str     0x000019dd      0x281 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_str     0x00001c5e       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_str     0x00001d32      0x21f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_str     0x00001f51      0x1b6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_str     0x00002107      0xd3c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_str     0x00002e43      0x3e0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_str     0x00003223      0x2b1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_str     0x000034d4      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_str     0x000036b7      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.debug_str      0x00000000     0x3890
+ .debug_str     0x00000000       0x53 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+ .debug_str     0x00000053      0x19c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ .debug_str     0x000001ef      0x839 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .debug_str     0x00000a28      0x259 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_str     0x00000c81      0x10b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_str     0x00000d8c      0x2fb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_str     0x00001087       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_str     0x00001127      0x20d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_str     0x00001334      0x10c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_str     0x00001440      0x2a9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_str     0x000016e9      0x2ea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_str     0x000019d3      0x281 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_str     0x00001c54       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_str     0x00001d28      0x21f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_str     0x00001f47      0x1b6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_str     0x000020fd      0xd3c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_str     0x00002e39      0x3e0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_str     0x00003219      0x2b1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_str     0x000034ca      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_str     0x000036ad      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_line_str
-                0x00000000      0xdc5
+                0x00000000      0xe08
  .debug_line_str
-                0x00000000       0xbe /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
+                0x00000000       0x72 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
  .debug_line_str
-                0x000000be       0x72 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+                0x00000072       0xa2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
  .debug_line_str
-                0x00000130       0xa2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+                0x00000114       0xb0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
  .debug_line_str
-                0x000001d2       0xd2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
+                0x000001c4       0xfe /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
  .debug_line_str
-                0x000002a4       0xb0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+                0x000002c2       0x80 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
  .debug_line_str
-                0x00000354       0xf3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+                0x00000342       0xff /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
  .debug_line_str
-                0x00000447       0x80 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+                0x00000441       0x75 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
  .debug_line_str
-                0x000004c7       0xff /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x000004b6       0xde /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
  .debug_line_str
-                0x000005c6       0x75 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+                0x00000594       0x98 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
  .debug_line_str
-                0x0000063b       0x98 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+                0x0000062c       0xea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
  .debug_line_str
-                0x000006d3       0x8b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+                0x00000716       0x8b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
  .debug_line_str
-                0x0000075e       0x91 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x000007a1       0x91 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
  .debug_line_str
-                0x000007ef       0x8d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+                0x00000832       0x8d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
  .debug_line_str
-                0x0000087c       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+                0x000008bf       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
  .debug_line_str
-                0x00000921       0xa4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+                0x00000964       0xa4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
  .debug_line_str
-                0x000009c5       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+                0x00000a08       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
  .debug_line_str
-                0x00000a65       0xe0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+                0x00000aa8       0xe0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
  .debug_line_str
-                0x00000b45       0x90 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+                0x00000b88       0x90 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
  .debug_line_str
-                0x00000bd5       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+                0x00000c18       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
  .debug_line_str
-                0x00000ccd       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x00000d10       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .comment        0x00000000      0x17c
- .comment       0x00000000       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .comment       0x00000013       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
- .comment       0x00000026       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- .comment       0x00000039       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .comment       0x0000004c       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- .comment       0x0000005f       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .comment       0x00000072       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .comment       0x00000085       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .comment       0x00000098       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .comment       0x000000ab       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .comment       0x00000000       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+ .comment       0x00000013       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ .comment       0x00000026       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .comment       0x00000039       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .comment       0x0000004c       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .comment       0x0000005f       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .comment       0x00000072       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .comment       0x00000085       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .comment       0x00000098       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .comment       0x000000ab       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
  .comment       0x000000be       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
  .comment       0x000000d1       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
  .comment       0x000000e4       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
@@ -726,25 +709,40 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
  .comment       0x00000156       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
  .comment       0x00000169       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_frame    0x00000000      0xc24
- .debug_frame   0x00000000       0xb4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/command.obj
- .debug_frame   0x000000b4       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
- .debug_frame   0x000000e8       0xc4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
- .debug_frame   0x000001ac       0x54 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/editor.obj
- .debug_frame   0x00000200      0x22c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
- .debug_frame   0x0000042c       0x6c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_frame   0x00000498       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_frame   0x0000052c      0x21c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_frame   0x00000748       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_frame   0x0000081c       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_frame   0x00000850       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_frame   0x00000884       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_frame   0x00000918       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_frame   0x0000094c       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_frame   0x000009c0       0x80 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_frame   0x00000a40       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_frame   0x00000a74       0xb4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_frame   0x00000b28       0xfc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+.debug_frame    0x00000000      0xc04
+ .debug_frame   0x00000000       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
+ .debug_frame   0x00000034       0xc4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
+ .debug_frame   0x000000f8      0x20c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .debug_frame   0x00000304       0x6c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_frame   0x00000370       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_frame   0x00000404      0x21c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_frame   0x00000620       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_frame   0x000006f4       0xb4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_frame   0x000007a8       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_frame   0x000007dc       0x54 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_frame   0x00000830       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_frame   0x00000864       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_frame   0x000008f8       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_frame   0x0000092c       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_frame   0x000009a0       0x80 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_frame   0x00000a20       0x34 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_frame   0x00000a54       0xb4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_frame   0x00000b08       0xfc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+
+.debug_rnglists
+                0x00000000       0xce
+ .debug_rnglists
+                0x00000000       0x22 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
+ .debug_rnglists
+                0x00000022       0x1b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_rnglists
+                0x0000003d       0x26 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_rnglists
+                0x00000063       0x22 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_rnglists
+                0x00000085       0x2a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_rnglists
+                0x000000af       0x1f /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_loclists
                 0x00000000      0x978
