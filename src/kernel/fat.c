@@ -261,11 +261,11 @@ uint32_t FAT_NextCluster(uint32_t currentCluster)
             return fat_table[currentCluster] & 0x0FFFFFFF; // Mask out top 4 bits
         }
         default:
-            return 0xFFF; // End of chain for unsupported types
+            return 0x0FFFFFFF; // End of chain for unsupported types
     }
 }
 
-static void FAT_SetClusterValue(uint32_t cluster, uint16_t value) {
+static void FAT_SetClusterValue(uint32_t cluster, uint32_t value) {
     switch (g_FatType) {
         case FAT_TYPE_FAT12:
         {
@@ -280,7 +280,7 @@ static void FAT_SetClusterValue(uint32_t cluster, uint16_t value) {
         case FAT_TYPE_FAT32:
         {
             uint32_t* fat_table = (uint32_t*)g_Fat;
-            fat_table[cluster] = (*(uint32_t*)(g_Fat + cluster) & 0xF0000000) | (value & 0x0FFFFFFF);
+            fat_table[cluster] = (fat_table[cluster] & 0xF0000000) | (value & 0x0FFFFFFF);
             break;
         }
     }
@@ -293,10 +293,21 @@ static uint32_t FAT_FindAndAllocateFreeCluster(DISK* disk) {
     for (uint32_t i = 2; i < total_clusters; i++) {
         if (FAT_NextCluster(i) == 0x000) { // 0x000 indicates a free cluster
             // Mark cluster as end of chain
-            FAT_SetClusterValue(i, 0xFFF);
+            if (g_FatType == FAT_TYPE_FAT32) {
+                FAT_SetClusterValue(i, 0x0FFFFFFF);
+            } else {
+                FAT_SetClusterValue(i, 0xFFF);
+            }
+
             // Write the modified FAT sector back to disk
-            uint32_t fat_sector = i * 3 / 2 / SECTOR_SIZE;
-            DISK_WriteSectors(disk, g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + fat_sector * SECTOR_SIZE);
+            uint32_t fat_offset;
+            if (g_FatType == FAT_TYPE_FAT32) {
+                fat_offset = i * 4;
+            } else {
+                fat_offset = i * 3 / 2;
+            }
+            uint32_t fat_sector = fat_offset / SECTOR_SIZE;
+            DISK_WriteSectors(disk, g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + (fat_sector * SECTOR_SIZE));
             return i;
         }
     }
@@ -360,7 +371,14 @@ uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* d
             {
                 fd->CurrentSectorInCluster = 0;
                 uint32_t nextCluster = FAT_NextCluster(fd->CurrentCluster);
-                if (nextCluster >= 0xFF8) // End of chain
+                
+                bool isEndOfChain;
+                if (g_FatType == FAT_TYPE_FAT32) {
+                    isEndOfChain = nextCluster >= 0x0FFFFFF8;
+                } else {
+                    isEndOfChain = nextCluster >= 0xFF8;
+                }
+                if (isEndOfChain) // End of chain
                 {
                     // Allocate a new cluster
                     uint32_t newCluster = FAT_FindAndAllocateFreeCluster(disk);
@@ -371,8 +389,14 @@ uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* d
                     // Link the old cluster to the new one
                     FAT_SetClusterValue(fd->CurrentCluster, newCluster);
                     // Write the modified FAT sector back to disk
-                    uint32_t fat_sector = fd->CurrentCluster * 3 / 2 / SECTOR_SIZE;
-                    DISK_WriteSectors(disk, g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + fat_sector * SECTOR_SIZE);
+                    uint32_t fat_offset;
+                    if (g_FatType == FAT_TYPE_FAT32) {
+                        fat_offset = fd->CurrentCluster * 4;
+                    } else {
+                        fat_offset = fd->CurrentCluster * 3 / 2;
+                    }
+                    uint32_t fat_sector = fat_offset / SECTOR_SIZE;
+                    DISK_WriteSectors(disk, g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + (fat_sector * SECTOR_SIZE));
 
                     nextCluster = newCluster;
                 }
@@ -399,7 +423,8 @@ uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
 
     uint8_t* u8DataOut = (uint8_t*)dataOut;
 
-    if (!fd->Public.IsDirectory || (fd->Public.IsDirectory && fd->Public.Size != 0))
+    // For FAT32 root, size is dynamic, so we don't limit read by size.
+    if (!fd->Public.IsDirectory || (fd->Public.IsDirectory && fd->Public.Size != 0) || (file->Handle == ROOT_DIRECTORY_HANDLE && g_FatType == FAT_TYPE_FAT12))
         byteCount = min(byteCount, fd->Public.Size - fd->Public.Position);
 
     while (byteCount > 0)
@@ -414,7 +439,7 @@ uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
 
         if (leftInBuffer == take)
         {
-            if (fd->Public.Handle == ROOT_DIRECTORY_HANDLE)
+            if (fd->Public.Handle == ROOT_DIRECTORY_HANDLE && g_FatType == FAT_TYPE_FAT12)
             {
                 ++fd->CurrentCluster;
                 if (!DISK_ReadSectors(disk, fd->CurrentCluster, 1, fd->Buffer))
@@ -431,7 +456,13 @@ uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
                     fd->CurrentCluster = FAT_NextCluster(fd->CurrentCluster);
                 }
 
-                if (fd->CurrentCluster >= 0xFF8)
+                bool isEndOfChain;
+                if (g_FatType == FAT_TYPE_FAT32) {
+                    isEndOfChain = fd->CurrentCluster >= 0x0FFFFFF8;
+                } else {
+                    isEndOfChain = fd->CurrentCluster >= 0xFF8;
+                }
+                if (isEndOfChain)
                 {
                     break;
                 }
@@ -458,7 +489,11 @@ void FAT_Close(DISK* disk, FAT_File* file)
     if (file->Handle == ROOT_DIRECTORY_HANDLE)
     {
         file->Position = 0;
-        g_Data->RootDirectory.CurrentCluster = g_Data->RootDirectory.FirstCluster;
+        if (g_FatType == FAT_TYPE_FAT12) {
+             g_Data->RootDirectory.CurrentCluster = g_Data->RootDirectory.FirstCluster;
+        } else {
+            // For FAT32, we need to re-read the first sector of the root dir cluster chain
+        }
     }
     else
     {
@@ -488,7 +523,13 @@ void FAT_Close(DISK* disk, FAT_File* file)
                         memcpy(g_Data->RootDirectory.Buffer + entry_offset_in_sector, &entry, sizeof(FAT_DirectoryEntry));
                         
                         // Write the modified sector back to disk
-                        DISK_WriteSectors(disk, g_Data->RootDirectory.CurrentCluster, 1, g_Data->RootDirectory.Buffer);
+                        uint32_t lba_to_write;
+                        if (g_FatType == FAT_TYPE_FAT12) {
+                            lba_to_write = g_Data->RootDirectory.CurrentCluster;
+                        } else {
+                            lba_to_write = FAT_ClusterToLba(g_Data->RootDirectory.CurrentCluster) + g_Data->RootDirectory.CurrentSectorInCluster;
+                        }
+                        DISK_WriteSectors(disk, lba_to_write, 1, g_Data->RootDirectory.Buffer);
                         break; // Found and updated
                     }
                     current_pos = g_Data->RootDirectory.Public.Position;
@@ -584,7 +625,13 @@ FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode)
             new_entry.Size = 0;
 
             memcpy(g_Data->RootDirectory.Buffer + entry_offset_in_sector, &new_entry, sizeof(FAT_DirectoryEntry));
-            DISK_WriteSectors(disk, g_Data->RootDirectory.CurrentCluster, 1, g_Data->RootDirectory.Buffer);
+            uint32_t lba_to_write;
+            if (g_FatType == FAT_TYPE_FAT12) {
+                lba_to_write = g_Data->RootDirectory.CurrentCluster;
+            } else {
+                lba_to_write = FAT_ClusterToLba(g_Data->RootDirectory.CurrentCluster) + g_Data->RootDirectory.CurrentSectorInCluster;
+            }
+            DISK_WriteSectors(disk, lba_to_write, 1, g_Data->RootDirectory.Buffer);
 
             // Now that it's created, open it and return the handle.
             return FAT_OpenEntry(disk, &new_entry);
