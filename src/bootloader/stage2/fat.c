@@ -268,14 +268,14 @@ bool FAT_ReadEntry(DISK* disk, FAT_File* file, FAT_DirectoryEntry* dirEntry)
 
 void FAT_Close(FAT_File* file)
 {
-    if (file->Handle == ROOT_DIRECTORY_HANDLE)
+    if (file && file->Handle == ROOT_DIRECTORY_HANDLE)
     {
         file->Position = 0;
         g_Data->RootDirectory.CurrentCluster = g_Data->RootDirectory.FirstCluster;
     }
     else
     {
-        g_Data->OpenedFiles[file->Handle].Opened = false;
+        if (file) g_Data->OpenedFiles[file->Handle].Opened = false;
     }
 }
 
