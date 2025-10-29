@@ -8,6 +8,7 @@
 #include "fat.h"
 #include <arch/i686/keyboard.h>
 #include "string.h"
+#include "heap.h"
 #include <commands/command.h>
 #include <apps/editor/editor.h>
 #include "globals.h"
@@ -48,6 +49,8 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
     
     HAL_Initialize();
+
+    heap_initialize();
     
     clrscr();
     

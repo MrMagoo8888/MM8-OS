@@ -17,3 +17,6 @@ void scrollforward(int lines);
 
 void view_scrollback_up();
 void view_scrollback_down();
+
+int sprintf(char* str, const char* format, ...);
+int sscanf(const char* str, const char* format, ...);

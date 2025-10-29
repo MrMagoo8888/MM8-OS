@@ -21,6 +21,30 @@ typedef enum {
 
 typedef struct
 {
+    uint8_t Buffer[512]; // SECTOR_SIZE
+    FAT_File Public;
+    bool Opened;
+    uint32_t FirstCluster;
+    uint32_t CurrentCluster;
+    uint32_t CurrentSectorInCluster;
+    bool IsModified;
+
+} FAT_FileData;
+
+typedef struct
+{
+    union
+    {
+        // FAT_BootSector BootSector;
+        uint8_t BootSectorBytes[512]; // SECTOR_SIZE
+    } BS;
+
+    FAT_FileData RootDirectory;
+    FAT_FileData OpenedFiles[10]; // MAX_FILE_HANDLES
+} FAT_Data;
+
+typedef struct
+{
     char Name[11];
     uint8_t Attributes;
     uint8_t _Reserved;
@@ -51,4 +75,5 @@ FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode);
 uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut);
 uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* dataIn);
 void FAT_Close(DISK* disk, FAT_File* file);
+bool FAT_Seek(DISK* disk, FAT_File* file, uint32_t offset);
 bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEntry* entryOut);
