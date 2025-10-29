@@ -1,0 +1,9 @@
+{
+"message": "Hello from JSON!",
+    "kernel": "MM8-OS",
+    "year": 2025,
+    "is_awesome": true,
+    "features": [
+        "FAT32", "malloc", "cJSON"
+    ]
+}

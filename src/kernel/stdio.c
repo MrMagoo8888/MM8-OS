@@ -395,3 +395,17 @@ void print_buffer(const char* msg, const void* buffer, uint32_t count)
     }
     puts("\n");
 }
+
+// STUB: A proper sprintf is a lot of work. This is just to satisfy the linker.
+int sprintf(char* str, const char* format, ...)
+{
+    // For now, just create an empty string. This will cause issues for cJSON's
+    // number printing, but it will allow the kernel to link.
+    str[0] = '\0';
+    return 0;
+}
+
+// STUB: A proper sscanf is a lot of work.
+int sscanf(const char* str, const char* format, ...) {
+    return 0; // Pretend we parsed nothing.
+}

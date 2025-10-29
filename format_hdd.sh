@@ -15,6 +15,12 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+# --- Start: Robust Cleanup ---
+# Ensure the mount point is not busy from a previous failed run
+umount "$MOUNT_POINT" || true
+losetup -d $(losetup -j "$HDD_IMAGE" | cut -d: -f1) 2>/dev/null || true
+# --- End: Robust Cleanup ---
+
 echo "Setting up loopback device for $HDD_IMAGE..."
 LOOP_DEV=$(losetup -fP --show "$HDD_IMAGE")
 if [ -z "$LOOP_DEV" ]; then
@@ -22,10 +28,10 @@ if [ -z "$LOOP_DEV" ]; then
     exit 1
 fi
 
-echo "Creating FAT12 filesystem on $LOOP_DEV..."
+echo "Creating FAT32 filesystem on $LOOP_DEV..."
 # We use --mbr=y to write a Master Boot Record (MBR) to the disk image.
 # This creates a partition table and the 0xAA55 boot signature, which is required for the disk to be recognized as a valid, formatted drive.
-mkfs.fat -F 12 --mbr=y "$LOOP_DEV"
+mkfs.fat -F 32 --mbr=y "$LOOP_DEV"
 
 echo "Creating mount point $MOUNT_POINT..."
 mkdir -p "$MOUNT_POINT"
@@ -33,8 +39,20 @@ mkdir -p "$MOUNT_POINT"
 echo "Mounting $LOOP_DEV to $MOUNT_POINT..."
 mount "$LOOP_DEV" "$MOUNT_POINT"
 
-echo "Copying $TEST_FILE to the disk image..."
-cp "$TEST_FILE" "$MOUNT_POINT/"
+echo "Copying test files to the disk image..."
+cp "$TEST_FILE" "$MOUNT_POINT/test.txt"
+
+cat > "$MOUNT_POINT/test.json" << EOL
+{
+    "message": "Hello from JSON!",
+    "kernel": "MM8-OS",
+    "year": 2025,
+    "is_awesome": true,
+    "features": [
+        "FAT32", "malloc", "cJSON"
+    ]
+}
+EOL
 
 echo "Unmounting and detaching loopback device..."
 umount "$MOUNT_POINT"

@@ -1,10 +1,11 @@
 #include "command.h"
 #include "stdio.h"
 #include "string.h"
-#include "string.h"
 #include "fat.h"
 #include <apps/editor/editor.h>
+#include "memory.h"
 #include "globals.h"
+#include "json.h"
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
@@ -15,6 +16,7 @@ static void handle_help() {
     printf(" - read [file]: Read a file from the disk. Example: read /test.txt\n");
     printf(" - edit [file]: Open or create a file for editing.\n");
     printf(" - credits: Shows Credits from our Wonderful contributers and viewers\n");
+    printf(" - json_test: Runs a test of the cJSON library and heap.\n");
 }
 
 static void handle_echo(const char* input) {
@@ -72,6 +74,8 @@ void command_dispatch(const char* input) {
         // Empty input, do nothing
     } else if (strcmp(input, "credits") == 0) {
         credits();
+    } else if (memcmp(input, "json_test", 9) == 0) {
+        handle_json_test();
     } else {
         printf("Unknown command: %s\n", input);
     }
