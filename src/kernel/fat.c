@@ -13,53 +13,6 @@
 #define MAX_FILE_HANDLES        10
 #define ROOT_DIRECTORY_HANDLE   -1
 
-typedef struct 
-{
-    uint8_t BootJumpInstruction[3];
-    uint8_t OemIdentifier[8];
-    uint16_t BytesPerSector;
-    uint8_t SectorsPerCluster;
-    uint16_t ReservedSectors;
-    uint8_t FatCount;
-    uint16_t DirEntryCount;
-    uint16_t TotalSectors;
-    uint8_t MediaDescriptorType;
-    uint16_t SectorsPerFat;
-    uint16_t SectorsPerTrack;
-    uint16_t Heads;
-    uint32_t HiddenSectors;
-    uint32_t LargeSectorCount;
-
-    union {
-        // FAT12/16 Extended Boot Record
-        struct {
-            uint8_t DriveNumber;
-            uint8_t _Reserved;
-            uint8_t Signature;
-            uint32_t VolumeId;
-            uint8_t VolumeLabel[11];
-            uint8_t SystemId[8];
-        } fat16;
-        // FAT32 Extended Boot Record
-        struct {
-            uint32_t SectorsPerFat32;
-            uint16_t Flags;
-            uint16_t FatVersion;
-            uint32_t RootCluster;
-            uint16_t FSInfoSector;
-            uint16_t BackupBootSector;
-            uint8_t _Reserved[12];
-            uint8_t DriveNumber;
-            uint8_t _Reserved2;
-            uint8_t Signature;
-            uint32_t VolumeId;
-            uint8_t VolumeLabel[11];
-            uint8_t SystemId[8];
-        } __attribute__((packed)) fat32;
-    } Ebr;
-
-} __attribute__((packed)) FAT_BootSector;
-
 typedef struct {
     uint8_t     bootable;
     uint8_t     start_head;
@@ -72,31 +25,6 @@ typedef struct {
     uint32_t    start_lba;
     uint32_t    size_in_sectors;
 } __attribute__((packed)) MBR_PartitionEntry;
-
-typedef struct
-{
-    uint8_t Buffer[SECTOR_SIZE];
-    FAT_File Public;
-    bool Opened;
-    uint32_t FirstCluster;
-    uint32_t CurrentCluster;
-    uint32_t CurrentSectorInCluster;
-    bool IsModified;
-
-} FAT_FileData;
-
-typedef struct
-{
-    union
-    {
-        FAT_BootSector BootSector;
-        uint8_t BootSectorBytes[SECTOR_SIZE];
-    } BS;
-
-    FAT_FileData RootDirectory;
-    FAT_FileData OpenedFiles[MAX_FILE_HANDLES];
-
-} FAT_Data;
 
 // --- FAT Type Detection ---
 typedef enum {
@@ -592,7 +520,7 @@ bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEnt
     char fatName[12];
     FAT_DirectoryEntry entry;
 
-    memset(fatName, ' ', sizeof(fatName));
+    memset(fatName, ' ', 11);
     fatName[11] = '\0';
 
     const char* ext = strrchr(name, '.');
