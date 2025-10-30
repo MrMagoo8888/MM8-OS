@@ -6,6 +6,53 @@
 
 typedef struct
 {
+    uint8_t BootJumpInstruction[3];
+    uint8_t OemIdentifier[8];
+    uint16_t BytesPerSector;
+    uint8_t SectorsPerCluster;
+    uint16_t ReservedSectors;
+    uint8_t FatCount;
+    uint16_t DirEntryCount;
+    uint16_t TotalSectors;
+    uint8_t MediaDescriptorType;
+    uint16_t SectorsPerFat;
+    uint16_t SectorsPerTrack;
+    uint16_t Heads;
+    uint32_t HiddenSectors;
+    uint32_t LargeSectorCount;
+
+    union {
+        // FAT12/16 Extended Boot Record
+        struct {
+            uint8_t DriveNumber;
+            uint8_t _Reserved;
+            uint8_t Signature;
+            uint32_t VolumeId;
+            uint8_t VolumeLabel[11];
+            uint8_t SystemId[8];
+        } fat16;
+        // FAT32 Extended Boot Record
+        struct {
+            uint32_t SectorsPerFat32;
+            uint16_t Flags;
+            uint16_t FatVersion;
+            uint32_t RootCluster;
+            uint16_t FSInfoSector;
+            uint16_t BackupBootSector;
+            uint8_t _Reserved[12];
+            uint8_t DriveNumber;
+            uint8_t _Reserved2;
+            uint8_t Signature;
+            uint32_t VolumeId;
+            uint8_t VolumeLabel[11];
+            uint8_t SystemId[8];
+        } __attribute__((packed)) fat32;
+    } Ebr;
+
+} __attribute__((packed)) FAT_BootSector;
+
+typedef struct
+{
     int Handle;
     bool IsDirectory;
     uint32_t Position;
@@ -35,7 +82,7 @@ typedef struct
 {
     union
     {
-        // FAT_BootSector BootSector;
+        FAT_BootSector BootSector;
         uint8_t BootSectorBytes[512]; // SECTOR_SIZE
     } BS;
 
