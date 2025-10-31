@@ -6,6 +6,7 @@
 #include "memory.h"
 #include "globals.h"
 #include "json.h"
+#include "afk.h"
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
@@ -70,6 +71,8 @@ void command_dispatch(const char* input) {
         handle_read(input);
     } else if (memcmp(input, "edit ", 5) == 0) {
         editor_handle_command(input);
+    } else if (strcmp(input, "afk") == 0) {
+        afk();
     } else if (input[0] == '\0') {
         // Empty input, do nothing
     } else if (strcmp(input, "credits") == 0) {
