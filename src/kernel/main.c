@@ -12,6 +12,7 @@
 #include <commands/command.h>
 #include <apps/editor/editor.h>
 #include "globals.h"
+#include <apps/calc/calc.h> // Include for handle_calc
 
 
 DISK g_Disk;
