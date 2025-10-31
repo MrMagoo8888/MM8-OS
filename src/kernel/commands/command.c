@@ -9,6 +9,8 @@
 #include "afk.h"
 #include <apps/calc/calc.h>
 
+#include "commands/credits.h"
+
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
     printf("Available commands:\n");
@@ -50,15 +52,6 @@ static void handle_read(const char* input) {
     }
     printf("\n");
     FAT_Close(&g_Disk, file);
-}
-
-static void credits() {
-    printf("Credits to our Wonderful contributers and viewers:\n\n");
-    printf(" - MrJBMG\n");
-    printf(" - Una\n");
-    printf(" - ChrisWestbro\n");
-    printf(" - Bobby\n");
-    printf(" - Alex\n");
 }
 
 void command_dispatch(const char* input) {
