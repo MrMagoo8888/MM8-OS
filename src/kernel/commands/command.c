@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "json.h"
 #include "afk.h"
+#include <apps/calc/calc.h>
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
@@ -79,6 +80,8 @@ void command_dispatch(const char* input) {
         credits();
     } else if (memcmp(input, "json_test", 9) == 0) {
         handle_json_test();
+    } else if (memcmp(input, "calc", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
+        handle_calc(input);
     } else {
         printf("Unknown command: %s\n", input);
     }
