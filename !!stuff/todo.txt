@@ -1,0 +1,9 @@
+Color Command -- Done
+
+2d drawing -
+    - Switch to graphics (not VGA text)
+    - Import / Write graphics
+    - Draw graphics
+    - GUI?
+
+3d?? - 

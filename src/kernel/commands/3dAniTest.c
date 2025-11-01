@@ -42,4 +42,7 @@ void ani3d_test() {
     clrscr();
 
     draw_circle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 8, '*', Color_Yellow);
+
+    getch();
+    clrscr();
 }
