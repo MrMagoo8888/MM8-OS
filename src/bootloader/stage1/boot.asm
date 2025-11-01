@@ -188,6 +188,11 @@ start:
 
 .read_finish:
     
+    ; Set video mode to 13h (320x200, 256 colors) as requested
+    mov ah, 0x00
+    mov al, 0x13
+    int 0x10
+
     ; jump to our kernel
     mov dl, [ebr_drive_number]          ; boot device in dl
 
