@@ -9,6 +9,7 @@
 #include "afk.h"
 #include <apps/calc/calc.h>
 #include "mm8Splash.h"
+#include "3dAniTest.h"
 
 #include "commands/credits.h"
 
@@ -73,6 +74,8 @@ void command_dispatch(const char* input) {
         editor_handle_command(input);
     } else if (strcmp(input, "afk") == 0) {
         afk();
+    } else if (strcmp(input, "3dani_test") == 0) {
+        ani3d_test();
     } else if (memcmp(input, "color ", 6) == 0) {
         handle_color(input);
     } else if (input[0] == '\0') {
