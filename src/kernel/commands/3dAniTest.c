@@ -3,6 +3,7 @@
 #include "string.h"
 #include "graphics.h" //raphics library
 #include "arch/i686/keyboard.h"
+#include "arch/i686/screen_defs.h"
 
 void squareTest() {
     clrscr();

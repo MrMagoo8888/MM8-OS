@@ -5,6 +5,7 @@
 #include "stdio.h" 
 #include <arch/i686/screen_defs.h>
 #include "ctype.h"
+#include <stdint.h>
 
 // Helper to parse a 1 or 2 digit hex string to a byte
 static unsigned char hex_to_byte(const char* hex_str) {
@@ -17,6 +18,7 @@ static unsigned char hex_to_byte(const char* hex_str) {
             val = (val << 4) + (c - 'a' + 10);
         else if (c >= 'A' && c <= 'F')
             val = (val << 4) + (c - 'A' + 10);
+        else break;
     }
     return val;
 }

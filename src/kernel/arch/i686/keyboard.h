@@ -1,20 +1,7 @@
 #pragma once
 
 #include "isr.h"
-
-// Ensure SCROLLBACK_LINES and SCREEN_WIDTH are defined as macros before this line
-#ifndef SCROLLBACK_LINES
-#define SCROLLBACK_LINES 2 // or another suitable constant value
-#endif
-
-#ifndef SCREEN_WIDTH
-#define SCREEN_WIDTH 80 // or another suitable constant value
-#endif
-
-extern char scrollback_buffer[SCROLLBACK_LINES][SCREEN_WIDTH];
-extern int scrollback_start;
-extern int scrollback_count;
-extern int scrollback_view;
+#include "screen_defs.h"   // use shared definitions (SCROLLBACK_LINES, SCREEN_WIDTH, etc.)
 
 // Special key codes for getch()
 enum {

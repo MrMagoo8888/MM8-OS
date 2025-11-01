@@ -6,19 +6,9 @@
 #include <stdarg.h>
 #include "memory.h"
 
+#include <arch/i686/screen_defs.h>   // <-- ADDED: use shared screen defs/vars
 
-uint8_t* g_ScreenBuffer = (uint8_t*)0xB8000;
-int g_ScreenX = 0, g_ScreenY = 0;
-
-// --- Scrollback Buffer ---
-char scrollback_buffer[SCROLLBACK_LINES][SCREEN_WIDTH];
-int scrollback_start = 0;
-int scrollback_count = 0;
-int scrollback_view = 0;
-
-// --- Live Screen Backup ---
-static uint8_t live_screen_backup[SCREEN_HEIGHT * SCREEN_WIDTH * 2];
-static bool in_scrollback_mode = false;
+// removed local SCREEN_* / DEFAULT_COLOR / g_ScreenBuffer / scrollback defs
 
 void putchr(int x, int y, char c)
 {

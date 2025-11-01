@@ -6,6 +6,7 @@ extern __bss_start
 extern __end
 
 extern start
+extern set_vbe_mode        ; <-- add this line
 global entry
 
 entry:
@@ -21,7 +22,10 @@ entry:
     mov bp, sp
 
     ; switch to protected mode
-    call EnableA20          ; 2 - Enable A20 gate
+    call EnableA20          ; 2 - Enable A20
+
+    call set_vbe_mode       ; <-- INSERT: set VBE linear framebuffer while still in real mode
+
     call LoadGDT            ; 3 - Load GDT
 
     ; 4 - set protection enable flag in CR0
