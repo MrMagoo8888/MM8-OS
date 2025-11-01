@@ -67,6 +67,8 @@ void command_dispatch(const char* input) {
         editor_handle_command(input);
     } else if (strcmp(input, "afk") == 0) {
         afk();
+    } else if (memcmp(input, "color ", 6) == 0) {
+        handle_color(input);
     } else if (input[0] == '\0') {
         // Empty input, do nothing
     } else if (strcmp(input, "credits") == 0) {
