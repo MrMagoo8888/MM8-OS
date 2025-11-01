@@ -4,8 +4,22 @@
 #include "string.h"  // For strcmp, strtoul, etc.
 #include "stdio.h" 
 #include <arch/i686/screen_defs.h>
-// #include "screendefs.h" // Include your screen definitions file for color constants
+#include "ctype.h"
 
+// Helper to parse a 1 or 2 digit hex string to a byte
+static unsigned char hex_to_byte(const char* hex_str) {
+    unsigned char val = 0;
+    while (*hex_str) {
+        char c = *hex_str++;
+        if (c >= '0' && c <= '9')
+            val = (val << 4) + (c - '0');
+        else if (c >= 'a' && c <= 'f')
+            val = (val << 4) + (c - 'a' + 10);
+        else if (c >= 'A' && c <= 'F')
+            val = (val << 4) + (c - 'A' + 10);
+    }
+    return val;
+}
 
 
 // Global variable definition (if not defined in screendefs.c)
@@ -54,30 +68,21 @@ void handle_color(const char* input) {
     
     // --- 2. Try to parse as a number (e.g., 0x0A, 10) ---
     else if (color_arg[0] != '\0') {
-        // Use a function like strtoul or your custom string-to-number function
-        // This is a common pattern in OS dev, but you may need to implement strtoul.
-        // For simplicity, here's a conceptual call:
-        // new_color_code = (unsigned char)your_str_to_int_func(color_arg);
-        
-        // **If using simple numerical codes (0-15):**
-        // A simple approach is to check if the first character is a digit and convert it.
-        if (color_arg[0] >= '0' && color_arg[0] <= '9') {
-            new_color_code = color_arg[0] - '0'; // For single-digit decimal codes
-        } else {
-             printf("Error: Invalid color name or code.\n");
-             return;
-        }
+        new_color_code = hex_to_byte(color_arg);
     } else {
         // No argument provided (e.g., user just typed "color")
-        printf("Usage: color <name or code>\n");
+        printf("Usage: color <name | hex_code>\n");
+        printf("Example: color yellow\n");
+        printf("Example: color 0E\n");
         return;
     }
     
     // --- 3. Update the variable ---
     DEFAULT_COLOR = new_color_code;
-    printf("Default color set to code: 0x%X\n", (unsigned int)new_color_code);
     
-    // You may also want to call a function here to immediately apply the change
-    // to the entire screen/console if needed.
-    // update_screen_colors();
+    // --- 4. Refresh the screen with the new color ---
+    refresh_screen_color();
+
+    // --- 5. Print confirmation message in the new color ---
+    printf("Color set to 0x%X\n", (unsigned int)new_color_code);
 }

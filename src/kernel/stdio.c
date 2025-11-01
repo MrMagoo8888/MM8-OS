@@ -99,6 +99,15 @@ void scrollback(int lines)
     g_ScreenY -= lines;
 }
 
+void refresh_screen_color()
+{
+    for (int y = 0; y < SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < SCREEN_WIDTH; x++) {
+            putcolor(x, y, DEFAULT_COLOR);
+        }
+    }
+}
+
 static void redraw_from_scrollback() {
     int top_history_line = scrollback_count - scrollback_view;
     for (int y = 0; y < SCREEN_HEIGHT; y++) {
