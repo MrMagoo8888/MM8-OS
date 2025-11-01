@@ -74,7 +74,7 @@ void handle_color(const char* input) {
     }
     
     // --- 3. Update the variable ---
-    default_screen_color = new_color_code;
+    DEFAULT_COLOR = new_color_code;
     printf("Default color set to code: 0x%X\n", (unsigned int)new_color_code);
     
     // You may also want to call a function here to immediately apply the change
