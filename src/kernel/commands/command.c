@@ -8,11 +8,17 @@
 #include "json.h"
 #include "afk.h"
 #include <apps/calc/calc.h>
+#include "mm8Splash.h"
 
 #include "commands/credits.h"
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
+
+    clrscr();
+
+    mm8Splash();
+
     printf("Available commands:\n");
     printf(" - help: Show this message\n");
     printf(" - echo [text]: Print back the given text\n");
