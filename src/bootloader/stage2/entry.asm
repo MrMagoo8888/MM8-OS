@@ -20,6 +20,16 @@ entry:
     mov sp, 0xFFF0
     mov bp, sp
 
+    ; Graphic Mode STILL WORK IN PROGRESS
+    ; call graphicsSwitch
+    ;call graphicsSwitch
+    
+    ; Set a VESA graphics mode (e.g., 1024x768x32)
+    mov ax, 1024
+    mov bx, 768
+    mov cl, 32
+    call vbe_set_mode
+
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
     call LoadGDT            ; 3 - Load GDT
@@ -167,3 +177,173 @@ g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
 
 g_BootDrive: db 0
+
+graphicsSwitch: 
+    ; switch to graphics mode 0x13
+    mov ax, 0x0013
+    int 0x10
+    ret
+
+; Sets a VESA mode
+; IN: AX = width, BX = height, CL = bpp
+; OUT: Carry flag set on error
+vbe_set_mode:
+    mov [.width], ax
+    mov [.height], bx
+    mov [.bpp], cl
+
+    call find_mode
+    jc .error
+
+    call set_mode
+    jc .error
+
+    clc
+    ret
+
+.error:
+    stc
+    ret
+
+.width  dw 0
+.height dw 0
+.bpp    db 0
+.mode   dw 0
+
+find_mode:
+    push es
+    mov ax, 0x4F00
+    mov di, vbe_info_block
+    int 0x10
+    pop es
+    cmp ax, 0x4F
+    jne .error
+
+    mov ax, [vbe_info_block.video_modes_ptr + 2]
+    mov es, ax
+    mov si, [vbe_info_block.video_modes_ptr]
+
+.find_loop:
+    mov ax, [es:si]
+    add si, 2
+    cmp ax, 0xFFFF
+    je .error
+
+    push es
+    mov cx, ax
+    mov ax, 0x4F01
+    mov di, mode_info_block
+    int 0x10
+    pop es
+    cmp ax, 0x4F
+    jne .error
+
+    mov ax, [vbe_set_mode.width]
+    cmp ax, [mode_info_block.width]
+    jne .find_loop
+
+    mov ax, [vbe_set_mode.height]
+    cmp ax, [mode_info_block.height]
+    jne .find_loop
+
+    mov al, [vbe_set_mode.bpp]
+    cmp al, [mode_info_block.bpp]
+    jne .find_loop
+
+    mov ax, [es:si-2]
+    mov [vbe_set_mode.mode], ax
+    clc
+    ret
+
+.error:
+    stc
+    ret
+
+set_mode:
+    mov ax, [vbe_set_mode.width]
+    mov [vbe_screen.width], ax
+    mov ax, [vbe_set_mode.height]
+    mov [vbe_screen.height], ax
+    mov eax, [mode_info_block.framebuffer]
+    mov [vbe_screen.physical_buffer], eax
+    mov ax, [mode_info_block.pitch]
+    mov [vbe_screen.bytes_per_line], ax
+    mov al, [vbe_set_mode.bpp]
+    mov [vbe_screen.bpp], al
+    movzx eax, al
+    shr eax, 3
+    mov [vbe_screen.bytes_per_pixel], eax
+
+    push es
+    mov ax, 0x4F02
+    mov bx, [vbe_set_mode.mode]
+    or bx, 0x4000 ; enable Linear Frame Buffer
+    mov di, 0
+    int 0x10
+    pop es
+    cmp ax, 0x4F
+    jne .error
+
+    clc
+    ret
+
+.error:
+    stc
+    ret
+
+section .bss
+
+vbe_info_block:
+    .signature       resb 4
+    .version         resw 1
+    .oem_string_ptr  resd 1
+    .capabilities    resd 1
+    .video_modes_ptr resd 1
+    .total_memory    resw 1
+    .oem_sw_rev      resw 1
+    .oem_vendor_ptr  resd 1
+    .oem_product_ptr resd 1
+    .oem_rev_ptr     resd 1
+                     resb 222
+                     resb 256
+
+mode_info_block:
+    .attributes      resw 1
+    .window_a        resb 1
+    .window_b        resb 1
+    .granularity     resw 1
+    .window_size     resw 1
+    .segment_a       resw 1
+    .segment_b       resw 1
+    .win_func_ptr    resd 1
+    .pitch           resw 1
+    .width           resw 1
+    .height          resw 1
+    .char_width      resb 1
+    .char_height     resb 1
+    .planes          resb 1
+    .bpp             resb 1
+    .banks           resb 1
+    .memory_model    resb 1
+    .bank_size       resb 1
+    .image_pages     resb 1
+    .reserved1       resb 1
+    .red_mask        resb 1
+    .red_position    resb 1
+    .green_mask      resb 1
+    .green_position  resb 1
+    .blue_mask       resb 1
+    .blue_position   resb 1
+    .reserved_mask   resb 1
+    .reserved_pos    resb 1
+    .dcf             resb 1
+    .framebuffer     resd 1
+                     resb 206
+
+vbe_screen:
+    .width           resw 1
+    .height          resw 1
+    .bpp             resb 1
+    .bytes_per_pixel resd 1
+    .bytes_per_line  resw 1
+    .physical_buffer resd 1
