@@ -1,4 +1,4 @@
-#include "stdio.h"
+/*#include "stdio.h"
 #include "3dAniTest.h"
 #include "string.h"
 #include "graphics.h" //raphics library
@@ -45,4 +45,4 @@ void ani3d_test() {
 
     getch();
     clrscr();
-}
+} */

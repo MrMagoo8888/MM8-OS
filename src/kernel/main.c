@@ -13,10 +13,14 @@
 #include <apps/editor/editor.h>
 #include "globals.h"
 #include <apps/calc/calc.h> // Include for handle_calc
+#include "vbe.h"
 #include <commands/mm8Splash.h>
+#include "graphics.h"
 
 
 DISK g_Disk;
+vbe_screen_t* g_vbe_screen_info;
+
 
 extern uint8_t __bss_start;
 extern uint8_t __end;
@@ -45,22 +49,33 @@ void add_to_history(const char* command) {
     }
 }
 
-void __attribute__((section(".entry"))) start(uint16_t bootDrive)
+void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* vbe_info)
 {
    
+    g_vbe_screen_info = vbe_info;
+
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
     
     HAL_Initialize();
 
     heap_initialize();
     
-    clrscr();
+    // clrscr(); // This is for text mode, we'll use our new graphics function
+    graphics_clear_screen(0xFF111122); // A dark blue color
     
-    mm8Splash();
+    // mm8Splash(); // This will no longer work as it uses text-mode printf
 
+    // Let's draw something to test!
+    graphics_draw_rect(100, 100, 200, 150, 0xFF00FF00); // A green rectangle
+    graphics_draw_rect(120, 120, 160, 110, 0xFFFF0000); // A red rectangle inside
+    graphics_draw_line(0, 0, g_vbe_screen_info->width - 1, g_vbe_screen_info->height - 1, 0xFFFFFFFF); // A white diagonal line
 
-
-
+    // The printf calls below will no longer be visible on screen.
+    // The next step is to implement a graphical console!
+    printf("VBE Mode Info:\n");
+    printf("  Resolution: %dx%d %dbpp\n", g_vbe_screen_info->width, g_vbe_screen_info->height, g_vbe_screen_info->bpp);
+    printf("  Framebuffer: 0x%x\n", g_vbe_screen_info->physical_buffer);
+    
     printf("\n\nType 'help' for a list of commands.\n\n");
 
     // Initialize disk and FAT filesystem

@@ -59,7 +59,8 @@ entry:
     cld
     rep stosb
 
-    ; expect boot drive in dl, send it as argument to cstart function
+    ; Pass boot drive and vbe screen info to the kernel
+    push vbe_screen
     xor edx, edx
     mov dl, [g_BootDrive]
     push edx
