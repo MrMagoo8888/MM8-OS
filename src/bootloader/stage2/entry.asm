@@ -278,7 +278,7 @@ set_mode:
     push es
     mov ax, 0x4F02
     mov bx, [vbe_set_mode.mode]
-    or bx, 0x4000 ; enable Linear Frame Buffer
+    or bx, 0xC000 ; enable Linear Frame Buffer and don't clear video memory
     mov di, 0
     int 0x10
     pop es
@@ -292,6 +292,16 @@ set_mode:
     stc
     ret
 
+section .data
+; This structure holds the VBE mode information passed to the kernel.
+; Moved from .bss to .data to prevent the kernel's BSS clear from zeroing it.
+vbe_screen:
+    .width           resw 1
+    .height          resw 1
+    .bpp             resb 1
+    .bytes_per_pixel resd 1
+    .bytes_per_line  resw 1
+    .physical_buffer resd 1
 section .bss
 
 vbe_info_block:
@@ -340,11 +350,3 @@ mode_info_block:
     .dcf             resb 1
     .framebuffer     resd 1
                      resb 206
-
-vbe_screen:
-    .width           resw 1
-    .height          resw 1
-    .bpp             resb 1
-    .bytes_per_pixel resd 1
-    .bytes_per_line  resw 1
-    .physical_buffer resd 1
