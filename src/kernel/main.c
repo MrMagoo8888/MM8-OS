@@ -51,24 +51,24 @@ void add_to_history(const char* command) {
 
 void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* vbe_info)
 {
-   
-    g_vbe_screen_info = vbe_info;
-
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
     
     HAL_Initialize();
+    g_vbe_screen_info = vbe_info;
 
     heap_initialize();
     
     // clrscr(); // This is for text mode, we'll use our new graphics function
-    graphics_clear_screen(0xFF111122); // A dark blue color
+    //graphics_clear_screen(0xFF111122); // A dark blue color
+
+    graphics_clear_screen(0xFFFF5486); // A nice pink color
     
     // mm8Splash(); // This will no longer work as it uses text-mode printf
 
     // Let's draw something to test!
     graphics_draw_rect(100, 100, 200, 150, 0xFF00FF00); // A green rectangle
     graphics_draw_rect(120, 120, 160, 110, 0xFFFF0000); // A red rectangle inside
-    graphics_draw_line(0, 0, g_vbe_screen_info->width - 1, g_vbe_screen_info->height - 1, 0xFFFFFFFF); // A white diagonal line
+    graphics_draw_line(0, 0, g_vbe_screen_info->width - 1, g_vbe_screen_info->height - 10, 0xFFFFFFFF); // A white diagonal line
 
     // The printf calls below will no longer be visible on screen.
     // The next step is to implement a graphical console!

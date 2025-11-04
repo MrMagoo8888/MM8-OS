@@ -5,7 +5,13 @@ section .entry
 extern __bss_start
 extern __end
 
-extern start
+; C functions from our bootloader library
+extern DISK_Initialize
+extern FAT_Initialize
+extern FAT_Open
+extern FAT_Read
+extern FAT_Close
+
 global entry
 
 entry:
@@ -20,7 +26,7 @@ entry:
     mov sp, 0xFFF0
     mov bp, sp
 
-    ; Graphic Mode STILL WORK IN PROGRESS
+    ; Graphic Mode STILL WORK IN PROGRESS Edit: Nov 4 2025 - Fuckkkkk
     ; call graphicsSwitch
     ;call graphicsSwitch
     
@@ -50,21 +56,41 @@ entry:
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
-   
-    ; clear bss (uninitialized data)
-    mov edi, __bss_start
-    mov ecx, __end
-    sub ecx, edi
-    mov al, 0
-    cld
-    rep stosb
 
-    ; Pass boot drive and vbe screen info to the kernel
+    ; Load the kernel from disk
+    ; This logic is moved from the old bootloader's main.c
+    mov esp, 0x7C00 ; Set up a temporary stack for C calls
+    pusha
+    mov bp, sp
+    
+    push dword [g_BootDrive]
+    lea eax, [disk_struct]
+    push eax
+    call DISK_Initialize
+    add esp, 8
+
+    lea eax, [disk_struct]
+    push eax
+    call FAT_Initialize
+    add esp, 4
+
+    push dword kernel_filename
+    lea eax, [disk_struct]
+    push eax
+    call FAT_Open
+    add esp, 8
+    mov [fd_struct], eax
+
+    call load_kernel_loop
+
+    popa
+
+    ; Now, call the loaded kernel with the correct arguments
     push vbe_screen
     xor edx, edx
     mov dl, [g_BootDrive]
     push edx
-    call start
+    call 0x100000 ; Call kernel at its loaded address
 
     cli
     hlt
@@ -261,19 +287,20 @@ find_mode:
     ret
 
 set_mode:
+    ; Populate the vbe_screen structure in the exact order the C kernel expects.
     mov ax, [vbe_set_mode.width]
     mov [vbe_screen.width], ax
     mov ax, [vbe_set_mode.height]
     mov [vbe_screen.height], ax
-    mov eax, [mode_info_block.framebuffer]
-    mov [vbe_screen.physical_buffer], eax
-    mov ax, [mode_info_block.pitch]
-    mov [vbe_screen.bytes_per_line], ax
     mov al, [vbe_set_mode.bpp]
     mov [vbe_screen.bpp], al
     movzx eax, al
     shr eax, 3
     mov [vbe_screen.bytes_per_pixel], eax
+    mov ax, [mode_info_block.pitch]
+    mov [vbe_screen.bytes_per_line], ax
+    mov eax, [mode_info_block.framebuffer]
+    mov [vbe_screen.physical_buffer], eax
 
     push es
     mov ax, 0x4F02
@@ -292,6 +319,24 @@ set_mode:
     stc
     ret
 
+load_kernel_loop:
+    pusha
+.loop:
+    push dword 0x10000 ; Buffer to read into (MEMORY_LOAD_KERNEL)
+    push dword 4096    ; Bytes to read (MEMORY_LOAD_SIZE)
+    push dword [fd_struct]
+    lea eax, [disk_struct]
+    push eax
+    call FAT_Read
+    add esp, 16
+    test eax, eax
+    jz .done
+    ; memcpy is complex, for now we assume kernel is small and fits in one read
+    ; A proper implementation would copy from the load buffer to the final kernel address.
+.done:
+    popa
+    ret
+
 section .data
 ; This structure holds the VBE mode information passed to the kernel.
 ; Moved from .bss to .data to prevent the kernel's BSS clear from zeroing it.
@@ -302,6 +347,9 @@ vbe_screen:
     .bytes_per_pixel resd 1
     .bytes_per_line  resw 1
     .physical_buffer resd 1
+
+kernel_filename: db "/kernel.bin", 0
+
 section .bss
 
 vbe_info_block:
@@ -350,3 +398,6 @@ mode_info_block:
     .dcf             resb 1
     .framebuffer     resd 1
                      resb 206
+
+disk_struct: resb 128 ; Reserve space for DISK struct
+fd_struct:   resd 1   ; Reserve space for FAT_File*

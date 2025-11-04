@@ -22,13 +22,11 @@ void put_pixel(int x, int y, uint32_t color) {
 void graphics_clear_screen(uint32_t color) {
     if (!g_vbe_screen_info) return;
 
-    uint32_t* framebuffer = (uint32_t*)g_vbe_screen_info->physical_buffer;
-    uint32_t total_pixels = g_vbe_screen_info->width * g_vbe_screen_info->height;
-
-    // This is a simple but potentially slow way to clear.
-    // A memset would be faster if the pitch matches width * bytes_per_pixel.
-    for (uint32_t i = 0; i < total_pixels; i++) {
-        framebuffer[i] = color;
+    // Iterate through every pixel using put_pixel, which correctly handles the framebuffer pitch.
+    for (uint16_t y = 0; y < g_vbe_screen_info->height; y++) {
+        for (uint16_t x = 0; x < g_vbe_screen_info->width; x++) {
+            put_pixel(x, y, color);
+        }
     }
 }
 
