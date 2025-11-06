@@ -5,6 +5,7 @@
 #include "stdbool.h"
 #include <stdarg.h>
 #include "memory.h"
+#include "gprintf.h"
 
 
 uint8_t* g_ScreenBuffer = (uint8_t*)0xB8000;
@@ -210,191 +211,23 @@ void puts(const char* str)
     }
 }
 
-const char g_HexChars[] = "0123456789abcdef";
-
-void printf_unsigned(unsigned long long number, int radix)
-{
-    char buffer[32];
-    int pos = 0;
-
-    // convert number to ASCII
-    do 
-    {
-        unsigned long long rem = number % radix;
-        number /= radix;
-        buffer[pos++] = g_HexChars[rem];
-    } while (number > 0);
-
-    // print number in reverse order
-    while (--pos >= 0)
-        putc(buffer[pos]);
+static void printf_handler(void* context, char c) {
+    (void)context; // context is not used for printf
+    putc(c);
 }
-
-void printf_signed(long long number, int radix)
-{
-    if (number < 0)
-    {
-        putc('-');
-        printf_unsigned(-number, radix);
-    }
-    else printf_unsigned(number, radix);
-}
-
-#define PRINTF_STATE_NORMAL         0
-#define PRINTF_STATE_LENGTH         1
-#define PRINTF_STATE_LENGTH_SHORT   2
-#define PRINTF_STATE_LENGTH_LONG    3
-#define PRINTF_STATE_SPEC           4
-
-#define PRINTF_LENGTH_DEFAULT       0
-#define PRINTF_LENGTH_SHORT_SHORT   1
-#define PRINTF_LENGTH_SHORT         2
-#define PRINTF_LENGTH_LONG          3
-#define PRINTF_LENGTH_LONG_LONG     4
 
 void printf(const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-
-    int state = PRINTF_STATE_NORMAL;
-    int length = PRINTF_LENGTH_DEFAULT;
-    int radix = 10;
-    bool sign = false;
-    bool number = false;
-
-    while (*fmt)
-    {
-        switch (state)
-        {
-            case PRINTF_STATE_NORMAL:
-                switch (*fmt)
-                {
-                    case '%':   state = PRINTF_STATE_LENGTH;
-                                break;
-                    default:    putc(*fmt);
-                                break;
-                }
-                break;
-
-            case PRINTF_STATE_LENGTH:
-                switch (*fmt)
-                {
-                    case 'h':   length = PRINTF_LENGTH_SHORT;
-                                state = PRINTF_STATE_LENGTH_SHORT;
-                                break;
-                    case 'l':   length = PRINTF_LENGTH_LONG;
-                                state = PRINTF_STATE_LENGTH_LONG;
-                                break;
-                    default:    goto PRINTF_STATE_SPEC_;
-                }
-                break;
-
-            case PRINTF_STATE_LENGTH_SHORT:
-                if (*fmt == 'h')
-                {
-                    length = PRINTF_LENGTH_SHORT_SHORT;
-                    state = PRINTF_STATE_SPEC;
-                }
-                else goto PRINTF_STATE_SPEC_;
-                break;
-
-            case PRINTF_STATE_LENGTH_LONG:
-                if (*fmt == 'l')
-                {
-                    length = PRINTF_LENGTH_LONG_LONG;
-                    state = PRINTF_STATE_SPEC;
-                }
-                else goto PRINTF_STATE_SPEC_;
-                break;
-
-            case PRINTF_STATE_SPEC:
-            PRINTF_STATE_SPEC_:
-                switch (*fmt)
-                {
-                    case 'c':   putc((char)va_arg(args, int));
-                                break;
-
-                    case 's':   
-                                puts(va_arg(args, const char*));
-                                break;
-
-                    case '%':   putc('%');
-                                break;
-
-                    case 'd':
-                    case 'i':   radix = 10; sign = true; number = true;
-                                break;
-
-                    case 'u':   radix = 10; sign = false; number = true;
-                                break;
-
-                    case 'X':
-                    case 'x':
-                    case 'p':   radix = 16; sign = false; number = true;
-                                break;
-
-                    case 'o':   radix = 8; sign = false; number = true;
-                                break;
-
-                    // ignore invalid spec
-                    default:    break;
-                }
-
-                if (number)
-                {
-                    if (sign)
-                    {
-                        switch (length)
-                        {
-                        case PRINTF_LENGTH_SHORT_SHORT:
-                        case PRINTF_LENGTH_SHORT:
-                        case PRINTF_LENGTH_DEFAULT:     printf_signed(va_arg(args, int), radix);
-                                                        break;
-
-                        case PRINTF_LENGTH_LONG:        printf_signed(va_arg(args, long), radix);
-                                                        break;
-
-                        case PRINTF_LENGTH_LONG_LONG:   printf_signed(va_arg(args, long long), radix);
-                                                        break;
-                        }
-                    }
-                    else
-                    {
-                        switch (length)
-                        {
-                        case PRINTF_LENGTH_SHORT_SHORT:
-                        case PRINTF_LENGTH_SHORT:
-                        case PRINTF_LENGTH_DEFAULT:     printf_unsigned(va_arg(args, unsigned int), radix);
-                                                        break;
-                                                        
-                        case PRINTF_LENGTH_LONG:        printf_unsigned(va_arg(args, unsigned  long), radix);
-                                                        break;
-
-                        case PRINTF_LENGTH_LONG_LONG:   printf_unsigned(va_arg(args, unsigned  long long), radix);
-                                                        break;
-                        }
-                    }
-                }
-
-                // reset state
-                state = PRINTF_STATE_NORMAL;
-                length = PRINTF_LENGTH_DEFAULT;
-                radix = 10;
-                sign = false;
-                number = false;
-                break;
-        }
-
-        fmt++;
-    }
-
+    gprintf(printf_handler, NULL, fmt, args);
     va_end(args);
 }
 
 void print_buffer(const char* msg, const void* buffer, uint32_t count)
 {
     const uint8_t* u8Buffer = (const uint8_t*)buffer;
+    const char g_HexChars[] = "0123456789abcdef";
     
     puts(msg);
     for (uint16_t i = 0; i < count; i++)
@@ -405,13 +238,26 @@ void print_buffer(const char* msg, const void* buffer, uint32_t count)
     puts("\n");
 }
 
-// STUB: A proper sprintf is a lot of work. This is just to satisfy the linker.
+typedef struct {
+    char* str;
+    int count;
+} sprintf_context_t;
+
+static void sprintf_handler(void* context, char c) {
+    sprintf_context_t* ctx = (sprintf_context_t*)context;
+    *(ctx->str++) = c;
+    ctx->count++;
+}
+
 int sprintf(char* str, const char* format, ...)
 {
-    // For now, just create an empty string. This will cause issues for cJSON's
-    // number printing, but it will allow the kernel to link.
-    str[0] = '\0';
-    return 0;
+    va_list args;
+    va_start(args, format);
+    sprintf_context_t context = { .str = str, .count = 0 };
+    gprintf(sprintf_handler, &context, format, args);
+    va_end(args);
+    *context.str = '\0'; // Null-terminate the string
+    return context.count;
 }
 
 // STUB: A proper sscanf is a lot of work.

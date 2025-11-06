@@ -69,14 +69,19 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* 
     graphics_draw_rect(100, 100, 200, 150, 0xFF00FF00); // A green rectangle
     graphics_draw_rect(120, 120, 160, 110, 0xFFFF0000); // A red rectangle inside
     graphics_draw_line(0, 0, g_vbe_screen_info->width - 1, g_vbe_screen_info->height - 10, 0xFFFFFFFF); // A white diagonal line
-
-    // The printf calls below will no longer be visible on screen.
-    // The next step is to implement a graphical console!
-    printf("VBE Mode Info:\n");
-    printf("  Resolution: %dx%d %dbpp\n", g_vbe_screen_info->width, g_vbe_screen_info->height, g_vbe_screen_info->bpp);
-    printf("  Framebuffer: 0x%x\n", g_vbe_screen_info->physical_buffer);
     
-    printf("\n\nType 'help' for a list of commands.\n\n");
+    // Let's test our new graphics text functions!
+    graphics_draw_string(20, 20, "MM8-OS Graphical Mode!", 0xFFFFFFFF);
+    graphics_draw_string(20, 30, "----------------------", 0xFFFFFFFF);
+    
+    char buffer[256];
+    sprintf(buffer, "Resolution: %dx%d %dbpp", g_vbe_screen_info->width, g_vbe_screen_info->height, g_vbe_screen_info->bpp);
+    graphics_draw_string(20, 50, buffer, 0xFF00FFFF); // Cyan
+    
+    sprintf(buffer, "Framebuffer: 0x%x", g_vbe_screen_info->physical_buffer);
+    graphics_draw_string(20, 60, buffer, 0xFF00FFFF); // Cyan
+    
+    graphics_draw_string(20, 80, "Type 'help' for a list of commands.", 0xFFFFFF00); // Yellow
 
     // Initialize disk and FAT filesystem
     // We are booting from floppy, but we want to use the first hard disk (0x80) for our root filesystem.
@@ -92,15 +97,19 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* 
     // Enable interrupts now that all handlers are set up
     i686_EnableInterrupts();
 
+    // For now, printf will go to serial, but our graphical text works!
+    printf("MM8-OS Kernel Started.\n");
+
     char input_buffer[256];
 
     while (1) {
-        printf("> ");
-
+        // This is a temporary prompt until we have a full graphical console
+        graphics_draw_string(0, g_vbe_screen_info->height - 10, "> ", 0xFFFFFFFF);
 
         gets(input_buffer, sizeof(input_buffer));
 
         add_to_history(input_buffer);
+        // TODO: We need to echo the input buffer to the screen graphically
 
 
         command_dispatch(input_buffer); // invokes commands like help, cls, echo, read, edit

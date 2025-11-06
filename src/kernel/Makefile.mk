@@ -1,5 +1,5 @@
 TARGET_ASMFLAGS += -f elf
-TARGET_CFLAGS += -ffreestanding -nostdlib -I. -I./libs/cjson
+TARGET_CFLAGS += -ffreestanding -nostdlib -I.
 TARGET_LIBS += -lgcc
 TARGET_LINKFLAGS += -T linker.ld -nostdlib
 
@@ -11,9 +11,8 @@ HEADERS_C = $(wildcard *.h) \
 SOURCES_C = $(wildcard *.c) \
 			$(wildcard */*.c) \
 			$(wildcard */*/*.c) \
-			./math.c \
-			./libs/cjson/cJSON.c \
 			$(wildcard */*/*/*.c) \
+			gprintf.c \
 			arch/i686/isrs_gen.c
 
 OBJECTS_C = $(patsubst %.c, $(BUILD_DIR)/kernel/c/%.obj, $(SOURCES_C))
