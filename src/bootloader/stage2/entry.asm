@@ -60,9 +60,7 @@ entry:
     ; Load the kernel from disk
     ; This logic is moved from the old bootloader's main.c
     mov esp, 0x7C00 ; Set up a temporary stack for C calls
-    pusha
-    mov bp, sp
-    
+
     push dword [g_BootDrive]
     lea eax, [disk_struct]
     push eax
@@ -82,8 +80,6 @@ entry:
     mov [fd_struct], eax
 
     call load_kernel_loop
-
-    popa
 
     ; Now, call the loaded kernel with the correct arguments
     push vbe_screen
@@ -239,7 +235,6 @@ vbe_set_mode:
 
 find_mode:
 
-    [bits 16] ; idk man
     push es
     mov ax, 0x4F00
     mov di, vbe_info_block
@@ -254,7 +249,6 @@ find_mode:
 
 .find_loop:
 
-    [bits 16] ;idk man
     mov ax, [es:si]
     add si, 2
     cmp ax, 0xFFFF
@@ -292,7 +286,6 @@ find_mode:
 
 set_mode:
 
-    [bits 16] ;idk man
     ; Populate the vbe_screen structure in the exact order the C kernel expects.
     mov ax, [vbe_set_mode.width]
     mov [vbe_screen.width], ax
@@ -328,21 +321,35 @@ set_mode:
     ret
 
 load_kernel_loop:
-    pusha
+    ; Save registers we will modify, but NOT eax, as it holds the return value of FAT_Read
+    push ecx
+    push esi
+    push edi
+    mov edi, 0x100000 ; EDI = Destination pointer (MEMORY_KERNEL_ADDR)
 .loop:
-    push dword 0x10000 ; Buffer to read into (MEMORY_LOAD_KERNEL) TESTCHANGE
-    push dword 4096    ; Bytes to read (MEMORY_LOAD_SIZE)
+    ; Arguments for FAT_Read: (disk, file, size, buffer)
+    push dword 0x30000 ; Buffer to read into (MEMORY_LOAD_KERNEL)
+    push dword 4096    ; Bytes to read per chunk (MEMORY_LOAD_SIZE)
     push dword [fd_struct]
     lea eax, [disk_struct]
     push eax
     call FAT_Read
     add esp, 16
+
+    ; Check if FAT_Read returned 0 (end of file). This is how it knows when to stop.
     test eax, eax
     jz .done
-    ; memcpy is complex, for now we assume kernel is small and fits in one read
-    ; A proper implementation would copy from the load buffer to the final kernel address.
+
+    ; Copy the chunk from the load buffer to the final kernel address
+    mov ecx, eax       ; ECX = Number of bytes read
+    mov esi, 0x30000   ; ESI = Source (MEMORY_LOAD_KERNEL)
+    rep movsb          ; Copy ECX bytes from [ESI] to [EDI]
+
+    jmp .loop          ; Read the next chunk
 .done:
-    popa
+    pop edi
+    pop esi
+    pop ecx
     ret
 
 section .data

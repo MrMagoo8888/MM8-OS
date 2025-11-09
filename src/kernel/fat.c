@@ -140,7 +140,7 @@ bool FAT_Initialize(DISK* disk)
             return false;
         }
 
-    } else if (g_FatType == FAT_TYPE_FAT12) {
+    } else if (g_FatType == FAT_TYPE_FAT12 || g_FatType == FAT_TYPE_FAT16) {
         printf("FAT: Detected FAT12 filesystem\n");
         uint32_t rootDirLba = g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors + (g_Data->BS.BootSector.FatCount * g_Data->BS.BootSector.SectorsPerFat);
         rootDirSectors = ((g_Data->BS.BootSector.DirEntryCount * sizeof(FAT_DirectoryEntry)) + (g_Data->BS.BootSector.BytesPerSector - 1)) / g_Data->BS.BootSector.BytesPerSector;

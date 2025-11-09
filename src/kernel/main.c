@@ -58,10 +58,8 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* 
 
     heap_initialize(vbe_info);
     
-    // clrscr(); // This is for text mode, we'll use our new graphics function
-    //graphics_clear_screen(0xFF111122); // A dark blue color
-
-    graphics_clear_screen(0xFFFF5486); // A nice pink color
+    // Clear the screen to a nice pink color
+    graphics_clear_screen(0xFFFF5486);
     
     // mm8Splash(); // This will no longer work as it uses text-mode printf
 
@@ -97,24 +95,11 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* 
     // Enable interrupts now that all handlers are set up
     i686_EnableInterrupts();
 
-    // For now, printf will go to serial, but our graphical text works!
+    // This will go to serial, but our graphical text works!
     printf("MM8-OS Kernel Started.\n");
 
-    char input_buffer[256];
-
-    while (1) {
-        // This is a temporary prompt until we have a full graphical console
-        graphics_draw_string(0, g_vbe_screen_info->height - 10, "> ", 0xFFFFFFFF);
-
-        gets(input_buffer, sizeof(input_buffer));
-
-        add_to_history(input_buffer);
-        // TODO: We need to echo the input buffer to the screen graphically
-
-
-        command_dispatch(input_buffer); // invokes commands like help, cls, echo, read, edit
-    
-    }
+    // The main loop is now empty. We've drawn our graphics and will halt.
+    // In the future, this will be the event loop for the GUI.
 
     // This part is now unreachable
     for (;;);

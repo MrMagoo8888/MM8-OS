@@ -31,7 +31,7 @@ fi
 echo "Creating FAT32 filesystem on $LOOP_DEV..."
 # We use --mbr=y to write a Master Boot Record (MBR) to the disk image.
 # This creates a partition table and the 0xAA55 boot signature, which is required for the disk to be recognized as a valid, formatted drive.
-mkfs.fat -F 32 --mbr=y "$LOOP_DEV"
+mkfs.fat -F 16 --mbr=y "$LOOP_DEV"
 
 echo "Creating mount point $MOUNT_POINT..."
 mkdir -p "$MOUNT_POINT"
