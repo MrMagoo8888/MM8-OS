@@ -1,6 +1,7 @@
 #include "heap.h"
 #include "memory.h"
 #include "../bootloader/stage2/memdefs.h"
+#include "vbe.h"
 #include "stdio.h"
 #include "stdbool.h"
 
@@ -15,12 +16,12 @@ typedef struct block_header {
 // The start of our heap, which is a linked list of memory blocks
 static block_header_t* heap_start = NULL;
 
-void heap_initialize() {
+void heap_initialize(vbe_screen_t* vbe_info) {
     // The heap starts at the beginning of our defined free memory region
     heap_start = (block_header_t*)MEMORY_LOAD_KERNEL; // Using MEMORY_LOAD_KERNEL as heap start (0x30000)
 
-    // The total size of the heap region
-    size_t heap_size = MEMORY_LOAD_SIZE * 5; // 0x30000 to 0x80000 is 5 * 0x10000
+    // The heap ends right before the framebuffer starts.
+    size_t heap_size = vbe_info->physical_buffer - (uint32_t)heap_start;
 
     // Initially, we have one large free block
     heap_start->size = heap_size - sizeof(block_header_t);

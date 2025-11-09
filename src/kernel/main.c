@@ -56,7 +56,7 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* 
     HAL_Initialize();
     g_vbe_screen_info = vbe_info;
 
-    heap_initialize();
+    heap_initialize(vbe_info);
     
     // clrscr(); // This is for text mode, we'll use our new graphics function
     //graphics_clear_screen(0xFF111122); // A dark blue color

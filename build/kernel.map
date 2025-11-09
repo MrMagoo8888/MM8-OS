@@ -55,10 +55,10 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
                 0x00100000                        phys = 0x100000
                 0x00100000                        . = phys
 
-.entry          0x00100000      0x271
+.entry          0x00100000      0x27a
                 0x00100000                        __entry_start = .
  *(.entry)
- .entry         0x00100000      0x271 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .entry         0x00100000      0x27a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
                 0x00100000                start
 
 .text           0x00100280     0xb8f6
@@ -371,182 +371,181 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
                 0x00103030                graphics_draw_line
                 0x0010313b                graphics_draw_char
                 0x001031be                graphics_draw_string
- .text          0x00103213      0x1bf /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
+ .text          0x00103213      0x1c9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
                 0x00103213                heap_initialize
-                0x00103268                malloc
-                0x00103327                free
-                0x00103348                realloc
- .text          0x001033d2       0xd1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
-                0x001033d2                timer
-                0x001033d8                add_to_history
- .text          0x001034a3       0x3e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
-                0x001034a3                fabs
-                0x001034cc                strtod
- .text          0x001034e1      0x156 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
-                0x001034e1                memcpy
-                0x00103522                memset
-                0x00103555                memcmp
-                0x001035bf                memmove
- .text          0x00103637      0x8b7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
-                0x00103637                putchr
-                0x0010366b                putcolor
-                0x001036a2                getchr
-                0x001036c8                getcolor
-                0x001036f1                setcursor
-                0x00103766                clrscr
-                0x001037ea                scrollback
-                0x0010396d                refresh_screen_color
-                0x00103acf                view_scrollback_up
-                0x00103b3b                view_scrollback_down
-                0x00103bb2                putc
-                0x00103d49                puts
-                0x00103d97                printf
-                0x00103dbc                print_buffer
-                0x00103ea8                sprintf
-                0x00103ee4                sscanf
- .text          0x00103eee      0x175 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
-                0x00103eee                strcmp
-                0x00103f2d                strlen
-                0x00103f54                strcpy
-                0x00103f8e                strncmp
-                0x00104000                strchr
-                0x0010402e                strrchr
- .text          0x00104063        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/3dAniTest.obj
- .text          0x00104063       0x43 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
-                0x00104063                afk
- .text          0x001040a6      0x313 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
-                0x00104138                handle_color
- .text          0x001043b9      0x366 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
-                0x00104561                command_dispatch
- .text          0x0010471f      0x138 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
-                0x0010471f                credits_followers
-                0x001047a8                credits_streamers
-                0x001047d1                credits_me
-                0x0010482a                credits
- .text          0x00104857      0x2f9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
-                0x00104857                handle_json_test
- .text          0x00104b50       0x4e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
-                0x00104b50                mm8Splash
- .text          0x00104b9e       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
-                0x00104b9e                HAL_Initialize
- .text          0x00104bbb      0x45e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
-                0x00104fc8                handle_calc
- .text          0x00105019      0x540 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
-                0x001050cd                editor_handle_command
- .text          0x00105559       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
-                0x00105559                i686_GDT_Initialize
- .text          0x00105576       0xba /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
-                0x00105576                i686_IDT_SetGate
-                0x001055d7                i686_IDT_EnableGate
-                0x001055f7                i686_IDT_DisableGate
-                0x00105617                i686_IDT_Initialize
- .text          0x00105630       0x1b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
-                0x00105630                i686_iowait
- .text          0x0010564b       0xd9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
-                0x0010564b                i686_IRQ_Handler
-                0x001056bd                i686_IRQ_Initialize
-                0x00105700                i686_IRQ_RegisterHandler
- .text          0x00105724      0x1a1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
-                0x00105724                i686_ISR_Initialize
-                0x00105766                i686_ISR_Handler
-                0x001058a1                i686_ISR_RegisterHandler
- .text          0x001058c5     0x1489 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
-                0x001058c5                i686_ISR_InitializeGates
- .text          0x00106d4e      0x5d4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
-                0x00106dd1                keyboard_irq_handler
-                0x00107203                i686_Keyboard_Initialize
-                0x0010723e                gets
-                0x001072da                getch
- .text          0x00107322      0x2c6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
-                0x00107322                i686_PIC_Configure
-                0x0010741a                i686_PIC_SendEndOfInterrupt
-                0x0010744a                i686_PIC_Disable
-                0x00107484                i686_PIC_Mask
-                0x001074de                i686_PIC_Unmask
-                0x0010753a                i686_PIC_ReadIrqRequestRegister
-                0x00107591                i686_PIC_ReadInServiceRegister
- .text          0x001075e8        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
- .text          0x001075e8     0x432e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
-                0x001075e8                cJSON_GetErrorPtr
-                0x001075fa                cJSON_GetStringValue
-                0x00107621                cJSON_GetNumberValue
-                0x0010764d                cJSON_Version
-                0x0010778f                cJSON_InitHooks
-                0x00107857                cJSON_Delete
-                0x00107b72                cJSON_SetNumberHelper
-                0x00107bee                cJSON_SetValuestring
-                0x00108aeb                cJSON_ParseWithOpts
-                0x00108b28                cJSON_ParseWithLengthOpts
-                0x00108cb2                cJSON_Parse
-                0x00108ccc                cJSON_ParseWithLength
-                0x00108e5e                cJSON_Print
-                0x00108e7b                cJSON_PrintUnformatted
-                0x00108e98                cJSON_PrintBuffered
-                0x00108f51                cJSON_PrintPreallocated
-                0x00109e0c                cJSON_GetArraySize
-                0x00109e91                cJSON_GetArrayItem
-                0x00109f5c                cJSON_GetObjectItem
-                0x00109f77                cJSON_GetObjectItemCaseSensitive
-                0x00109f92                cJSON_HasObjectItem
-                0x0010a0cd                cJSON_AddItemToArray
-                0x0010a1c2                cJSON_AddItemToObject
-                0x0010a1e5                cJSON_AddItemToObjectCS
-                0x0010a208                cJSON_AddItemReferenceToArray
-                0x0010a23f                cJSON_AddItemReferenceToObject
-                0x0010a286                cJSON_AddNullToObject
-                0x0010a2cd                cJSON_AddTrueToObject
-                0x0010a314                cJSON_AddFalseToObject
-                0x0010a35b                cJSON_AddBoolToObject
-                0x0010a3ab                cJSON_AddNumberToObject
-                0x0010a40a                cJSON_AddStringToObject
-                0x0010a45a                cJSON_AddRawToObject
-                0x0010a4aa                cJSON_AddObjectToObject
-                0x0010a4f1                cJSON_AddArrayToObject
-                0x0010a538                cJSON_DetachItemViaPointer
-                0x0010a5da                cJSON_DetachItemFromArray
-                0x0010a607                cJSON_DeleteItemFromArray
-                0x0010a62a                cJSON_DetachItemFromObject
-                0x0010a657                cJSON_DetachItemFromObjectCaseSensitive
-                0x0010a684                cJSON_DeleteItemFromObject
-                0x0010a6aa                cJSON_DeleteItemFromObjectCaseSensitive
-                0x0010a6d0                cJSON_InsertItemInArray
-                0x0010a77c                cJSON_ReplaceItemViaPointer
-                0x0010a868                cJSON_ReplaceItemInArray
-                0x0010a948                cJSON_ReplaceItemInObject
-                0x0010a963                cJSON_ReplaceItemInObjectCaseSensitive
-                0x0010a97e                cJSON_CreateNull
-                0x0010a9ac                cJSON_CreateTrue
-                0x0010a9da                cJSON_CreateFalse
-                0x0010aa08                cJSON_CreateBool
-                0x0010aa44                cJSON_CreateNumber
-                0x0010aae0                cJSON_CreateString
-                0x0010ab46                cJSON_CreateStringReference
-                0x0010ab88                cJSON_CreateObjectReference
-                0x0010abca                cJSON_CreateArrayReference
-                0x0010ac0c                cJSON_CreateRaw
-                0x0010ac72                cJSON_CreateArray
-                0x0010aca0                cJSON_CreateObject
-                0x0010acce                cJSON_CreateIntArray
-                0x0010adbd                cJSON_CreateFloatArray
-                0x0010aea2                cJSON_CreateDoubleArray
-                0x0010af87                cJSON_CreateStringArray
-                0x0010b066                cJSON_Duplicate
-                0x0010b081                cJSON_Duplicate_rec
-                0x0010b3c5                cJSON_Minify
-                0x0010b48f                cJSON_IsInvalid
-                0x0010b4b2                cJSON_IsFalse
-                0x0010b4d6                cJSON_IsTrue
-                0x0010b4fa                cJSON_IsBool
-                0x0010b51d                cJSON_IsNull
-                0x0010b541                cJSON_IsNumber
-                0x0010b565                cJSON_IsString
-                0x0010b589                cJSON_IsArray
-                0x0010b5ad                cJSON_IsObject
-                0x0010b5d1                cJSON_IsRaw
-                0x0010b5f7                cJSON_Compare
-                0x0010b8de                cJSON_malloc
-                0x0010b8f6                cJSON_free
- *fill*         0x0010b916        0xa 
+                0x00103272                malloc
+                0x00103331                free
+                0x00103352                realloc
+ .text          0x001033dc       0xd1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+                0x001033dc                timer
+                0x001033e2                add_to_history
+ .text          0x001034ad       0x3e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
+                0x001034ad                fabs
+                0x001034d6                strtod
+ .text          0x001034eb      0x156 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+                0x001034eb                memcpy
+                0x0010352c                memset
+                0x0010355f                memcmp
+                0x001035c9                memmove
+ .text          0x00103641      0x8b7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x00103641                putchr
+                0x00103675                putcolor
+                0x001036ac                getchr
+                0x001036d2                getcolor
+                0x001036fb                setcursor
+                0x00103770                clrscr
+                0x001037f4                scrollback
+                0x00103977                refresh_screen_color
+                0x00103ad9                view_scrollback_up
+                0x00103b45                view_scrollback_down
+                0x00103bbc                putc
+                0x00103d53                puts
+                0x00103da1                printf
+                0x00103dc6                print_buffer
+                0x00103eb2                sprintf
+                0x00103eee                sscanf
+ .text          0x00103ef8      0x175 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+                0x00103ef8                strcmp
+                0x00103f37                strlen
+                0x00103f5e                strcpy
+                0x00103f98                strncmp
+                0x0010400a                strchr
+                0x00104038                strrchr
+ .text          0x0010406d        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/3dAniTest.obj
+ .text          0x0010406d       0x43 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
+                0x0010406d                afk
+ .text          0x001040b0      0x313 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
+                0x00104142                handle_color
+ .text          0x001043c3      0x366 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+                0x0010456b                command_dispatch
+ .text          0x00104729      0x138 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
+                0x00104729                credits_followers
+                0x001047b2                credits_streamers
+                0x001047db                credits_me
+                0x00104834                credits
+ .text          0x00104861      0x2f9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
+                0x00104861                handle_json_test
+ .text          0x00104b5a       0x4e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
+                0x00104b5a                mm8Splash
+ .text          0x00104ba8       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+                0x00104ba8                HAL_Initialize
+ .text          0x00104bc5      0x45e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
+                0x00104fd2                handle_calc
+ .text          0x00105023      0x540 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+                0x001050d7                editor_handle_command
+ .text          0x00105563       0x1d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+                0x00105563                i686_GDT_Initialize
+ .text          0x00105580       0xba /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x00105580                i686_IDT_SetGate
+                0x001055e1                i686_IDT_EnableGate
+                0x00105601                i686_IDT_DisableGate
+                0x00105621                i686_IDT_Initialize
+ .text          0x0010563a       0x1b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+                0x0010563a                i686_iowait
+ .text          0x00105655       0xd9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+                0x00105655                i686_IRQ_Handler
+                0x001056c7                i686_IRQ_Initialize
+                0x0010570a                i686_IRQ_RegisterHandler
+ .text          0x0010572e      0x1a1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+                0x0010572e                i686_ISR_Initialize
+                0x00105770                i686_ISR_Handler
+                0x001058ab                i686_ISR_RegisterHandler
+ .text          0x001058cf     0x1489 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+                0x001058cf                i686_ISR_InitializeGates
+ .text          0x00106d58      0x5d4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+                0x00106ddb                keyboard_irq_handler
+                0x0010720d                i686_Keyboard_Initialize
+                0x00107248                gets
+                0x001072e4                getch
+ .text          0x0010732c      0x2c6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+                0x0010732c                i686_PIC_Configure
+                0x00107424                i686_PIC_SendEndOfInterrupt
+                0x00107454                i686_PIC_Disable
+                0x0010748e                i686_PIC_Mask
+                0x001074e8                i686_PIC_Unmask
+                0x00107544                i686_PIC_ReadIrqRequestRegister
+                0x0010759b                i686_PIC_ReadInServiceRegister
+ .text          0x001075f2        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
+ .text          0x001075f2     0x432e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
+                0x001075f2                cJSON_GetErrorPtr
+                0x00107604                cJSON_GetStringValue
+                0x0010762b                cJSON_GetNumberValue
+                0x00107657                cJSON_Version
+                0x00107799                cJSON_InitHooks
+                0x00107861                cJSON_Delete
+                0x00107b7c                cJSON_SetNumberHelper
+                0x00107bf8                cJSON_SetValuestring
+                0x00108af5                cJSON_ParseWithOpts
+                0x00108b32                cJSON_ParseWithLengthOpts
+                0x00108cbc                cJSON_Parse
+                0x00108cd6                cJSON_ParseWithLength
+                0x00108e68                cJSON_Print
+                0x00108e85                cJSON_PrintUnformatted
+                0x00108ea2                cJSON_PrintBuffered
+                0x00108f5b                cJSON_PrintPreallocated
+                0x00109e16                cJSON_GetArraySize
+                0x00109e9b                cJSON_GetArrayItem
+                0x00109f66                cJSON_GetObjectItem
+                0x00109f81                cJSON_GetObjectItemCaseSensitive
+                0x00109f9c                cJSON_HasObjectItem
+                0x0010a0d7                cJSON_AddItemToArray
+                0x0010a1cc                cJSON_AddItemToObject
+                0x0010a1ef                cJSON_AddItemToObjectCS
+                0x0010a212                cJSON_AddItemReferenceToArray
+                0x0010a249                cJSON_AddItemReferenceToObject
+                0x0010a290                cJSON_AddNullToObject
+                0x0010a2d7                cJSON_AddTrueToObject
+                0x0010a31e                cJSON_AddFalseToObject
+                0x0010a365                cJSON_AddBoolToObject
+                0x0010a3b5                cJSON_AddNumberToObject
+                0x0010a414                cJSON_AddStringToObject
+                0x0010a464                cJSON_AddRawToObject
+                0x0010a4b4                cJSON_AddObjectToObject
+                0x0010a4fb                cJSON_AddArrayToObject
+                0x0010a542                cJSON_DetachItemViaPointer
+                0x0010a5e4                cJSON_DetachItemFromArray
+                0x0010a611                cJSON_DeleteItemFromArray
+                0x0010a634                cJSON_DetachItemFromObject
+                0x0010a661                cJSON_DetachItemFromObjectCaseSensitive
+                0x0010a68e                cJSON_DeleteItemFromObject
+                0x0010a6b4                cJSON_DeleteItemFromObjectCaseSensitive
+                0x0010a6da                cJSON_InsertItemInArray
+                0x0010a786                cJSON_ReplaceItemViaPointer
+                0x0010a872                cJSON_ReplaceItemInArray
+                0x0010a952                cJSON_ReplaceItemInObject
+                0x0010a96d                cJSON_ReplaceItemInObjectCaseSensitive
+                0x0010a988                cJSON_CreateNull
+                0x0010a9b6                cJSON_CreateTrue
+                0x0010a9e4                cJSON_CreateFalse
+                0x0010aa12                cJSON_CreateBool
+                0x0010aa4e                cJSON_CreateNumber
+                0x0010aaea                cJSON_CreateString
+                0x0010ab50                cJSON_CreateStringReference
+                0x0010ab92                cJSON_CreateObjectReference
+                0x0010abd4                cJSON_CreateArrayReference
+                0x0010ac16                cJSON_CreateRaw
+                0x0010ac7c                cJSON_CreateArray
+                0x0010acaa                cJSON_CreateObject
+                0x0010acd8                cJSON_CreateIntArray
+                0x0010adc7                cJSON_CreateFloatArray
+                0x0010aeac                cJSON_CreateDoubleArray
+                0x0010af91                cJSON_CreateStringArray
+                0x0010b070                cJSON_Duplicate
+                0x0010b08b                cJSON_Duplicate_rec
+                0x0010b3cf                cJSON_Minify
+                0x0010b499                cJSON_IsInvalid
+                0x0010b4bc                cJSON_IsFalse
+                0x0010b4e0                cJSON_IsTrue
+                0x0010b504                cJSON_IsBool
+                0x0010b527                cJSON_IsNull
+                0x0010b54b                cJSON_IsNumber
+                0x0010b56f                cJSON_IsString
+                0x0010b593                cJSON_IsArray
+                0x0010b5b7                cJSON_IsObject
+                0x0010b5db                cJSON_IsRaw
+                0x0010b601                cJSON_Compare
+                0x0010b8e8                cJSON_malloc
+                0x0010b900                cJSON_free
  .text          0x0010b920      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
                 0x0010b920                __udivdi3
  *fill*         0x0010ba3a        0x6 
@@ -696,75 +695,75 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
                 0x001135e3                        __end = .
 OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
 
-.debug_info     0x00000000     0x8cf3
+.debug_info     0x00000000     0x8d7e
  .debug_info    0x00000000       0x98 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
  .debug_info    0x00000098      0x2fc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
  .debug_info    0x00000394     0x1080 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
  .debug_info    0x00001414       0xa4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/font.obj
  .debug_info    0x000014b8      0x266 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/gprintf.obj
  .debug_info    0x0000171e      0x4fa /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/graphics.obj
- .debug_info    0x00001c18      0x226 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
- .debug_info    0x00001e3e      0x547 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_info    0x00002385       0xa4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
- .debug_info    0x00002429      0x278 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_info    0x000026a1      0x77a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_info    0x00002e1b      0x1c6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_info    0x00002fe1       0xb6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
- .debug_info    0x00003097      0x13c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
- .debug_info    0x000031d3      0x355 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
- .debug_info    0x00003528       0xcb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
- .debug_info    0x000035f3      0x40b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
- .debug_info    0x000039fe       0x9d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
- .debug_info    0x00003a9b       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_info    0x00003b40      0x2ad /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
- .debug_info    0x00003ded      0x41c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
- .debug_info    0x00004209      0x1f3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_info    0x000043fc      0x247 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_info    0x00004643       0x9e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_info    0x000046e1      0x2e0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_info    0x000049c1      0x28e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_info    0x00004c4f      0xcfb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_info    0x0000594a      0x5ba /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_info    0x00005f04      0x259 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_info    0x0000615d       0x40 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
- .debug_info    0x0000619d     0x24e7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
- .debug_info    0x00008684      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_info    0x000089b0      0x343 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .debug_info    0x00001c18      0x2ac /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
+ .debug_info    0x00001ec4      0x54c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_info    0x00002410       0xa4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
+ .debug_info    0x000024b4      0x278 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_info    0x0000272c      0x77a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_info    0x00002ea6      0x1c6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_info    0x0000306c       0xb6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
+ .debug_info    0x00003122      0x13c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
+ .debug_info    0x0000325e      0x355 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_info    0x000035b3       0xcb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
+ .debug_info    0x0000367e      0x40b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
+ .debug_info    0x00003a89       0x9d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
+ .debug_info    0x00003b26       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_info    0x00003bcb      0x2ad /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
+ .debug_info    0x00003e78      0x41c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_info    0x00004294      0x1f3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_info    0x00004487      0x247 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_info    0x000046ce       0x9e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_info    0x0000476c      0x2e0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_info    0x00004a4c      0x28e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_info    0x00004cda      0xcfb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_info    0x000059d5      0x5ba /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_info    0x00005f8f      0x259 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_info    0x000061e8       0x40 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
+ .debug_info    0x00006228     0x24e7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
+ .debug_info    0x0000870f      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_info    0x00008a3b      0x343 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_abbrev   0x00000000     0x27ff
+.debug_abbrev   0x00000000     0x281f
  .debug_abbrev  0x00000000       0x6c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
  .debug_abbrev  0x0000006c      0x173 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
  .debug_abbrev  0x000001df      0x2c3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
  .debug_abbrev  0x000004a2       0x70 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/font.obj
  .debug_abbrev  0x00000512      0x12d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/gprintf.obj
  .debug_abbrev  0x0000063f      0x161 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/graphics.obj
- .debug_abbrev  0x000007a0      0x141 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
- .debug_abbrev  0x000008e1      0x17c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_abbrev  0x00000a5d       0x8b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
- .debug_abbrev  0x00000ae8       0xec /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_abbrev  0x00000bd4      0x2ca /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_abbrev  0x00000e9e       0xc5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_abbrev  0x00000f63       0x9a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
- .debug_abbrev  0x00000ffd      0x10b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
- .debug_abbrev  0x00001108      0x1ca /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
- .debug_abbrev  0x000012d2       0x87 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
- .debug_abbrev  0x00001359      0x142 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
- .debug_abbrev  0x0000149b       0x85 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
- .debug_abbrev  0x00001520       0x5a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_abbrev  0x0000157a      0x195 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
- .debug_abbrev  0x0000170f      0x1b7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
- .debug_abbrev  0x000018c6       0xf0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_abbrev  0x000019b6      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_abbrev  0x00001ad8       0x6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_abbrev  0x00001b45      0x182 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_abbrev  0x00001cc7      0x150 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_abbrev  0x00001e17       0xbf /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_abbrev  0x00001ed6      0x1bd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_abbrev  0x00002093      0x15a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_abbrev  0x000021ed       0x3d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
- .debug_abbrev  0x0000222a      0x309 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
- .debug_abbrev  0x00002533      0x15b /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_abbrev  0x0000268e      0x171 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .debug_abbrev  0x000007a0      0x162 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
+ .debug_abbrev  0x00000902      0x17b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_abbrev  0x00000a7d       0x8b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
+ .debug_abbrev  0x00000b08       0xec /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_abbrev  0x00000bf4      0x2ca /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_abbrev  0x00000ebe       0xc5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_abbrev  0x00000f83       0x9a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
+ .debug_abbrev  0x0000101d      0x10b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
+ .debug_abbrev  0x00001128      0x1ca /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_abbrev  0x000012f2       0x87 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
+ .debug_abbrev  0x00001379      0x142 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
+ .debug_abbrev  0x000014bb       0x85 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
+ .debug_abbrev  0x00001540       0x5a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_abbrev  0x0000159a      0x195 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
+ .debug_abbrev  0x0000172f      0x1b7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_abbrev  0x000018e6       0xf0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_abbrev  0x000019d6      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_abbrev  0x00001af8       0x6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_abbrev  0x00001b65      0x182 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_abbrev  0x00001ce7      0x150 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_abbrev  0x00001e37       0xbf /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_abbrev  0x00001ef6      0x1bd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_abbrev  0x000020b3      0x15a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_abbrev  0x0000220d       0x3d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
+ .debug_abbrev  0x0000224a      0x309 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
+ .debug_abbrev  0x00002553      0x15b /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x000026ae      0x171 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_aranges  0x00000000      0x418
  .debug_aranges
@@ -834,80 +833,80 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
  .debug_aranges
                 0x000003f8       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_line     0x00000000     0x5505
+.debug_line     0x00000000     0x5510
  .debug_line    0x00000000       0x89 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
  .debug_line    0x00000089      0x287 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
  .debug_line    0x00000310      0x9fa /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
  .debug_line    0x00000d0a       0x40 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/font.obj
  .debug_line    0x00000d4a      0x1e7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/gprintf.obj
  .debug_line    0x00000f31      0x2c1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/graphics.obj
- .debug_line    0x000011f2      0x124 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
- .debug_line    0x00001316      0x190 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_line    0x000014a6       0x61 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
- .debug_line    0x00001507      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_line    0x00001629      0x40d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_line    0x00001a36      0x127 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_line    0x00001b5d        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/3dAniTest.obj
- .debug_line    0x00001b5d       0x6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
- .debug_line    0x00001bca      0x1b2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
- .debug_line    0x00001d7c      0x1f0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
- .debug_line    0x00001f6c       0x83 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
- .debug_line    0x00001fef      0x161 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
- .debug_line    0x00002150       0x61 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
- .debug_line    0x000021b1       0x6a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_line    0x0000221b      0x21b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
- .debug_line    0x00002436      0x341 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
- .debug_line    0x00002777       0x5c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_line    0x000027d3       0x89 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_line    0x0000285c       0x5e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_line    0x000028ba       0xc2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_line    0x0000297c       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_line    0x00002a50      0x25f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_line    0x00002caf      0x303 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_line    0x00002fb2      0x120 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_line    0x000030d2       0x3f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
- .debug_line    0x00003111     0x20a3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
- .debug_line    0x000051b4      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_line    0x00005334      0x1d1 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .debug_line    0x000011f2      0x12f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
+ .debug_line    0x00001321      0x190 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_line    0x000014b1       0x61 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
+ .debug_line    0x00001512      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_line    0x00001634      0x40d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_line    0x00001a41      0x127 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_line    0x00001b68        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/3dAniTest.obj
+ .debug_line    0x00001b68       0x6d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
+ .debug_line    0x00001bd5      0x1b2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
+ .debug_line    0x00001d87      0x1f0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_line    0x00001f77       0x83 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
+ .debug_line    0x00001ffa      0x161 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
+ .debug_line    0x0000215b       0x61 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
+ .debug_line    0x000021bc       0x6a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_line    0x00002226      0x21b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
+ .debug_line    0x00002441      0x341 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_line    0x00002782       0x5c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_line    0x000027de       0x89 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_line    0x00002867       0x5e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_line    0x000028c5       0xc2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_line    0x00002987       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_line    0x00002a5b      0x25f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_line    0x00002cba      0x303 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_line    0x00002fbd      0x120 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_line    0x000030dd       0x3f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
+ .debug_line    0x0000311c     0x20a3 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
+ .debug_line    0x000051bf      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_line    0x0000533f      0x1d1 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_str      0x00000000     0x58cd
+.debug_str      0x00000000     0x5921
  .debug_str     0x00000000       0x63 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
  .debug_str     0x00000063      0x19c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/disk.obj
  .debug_str     0x000001ff      0x93c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/fat.obj
  .debug_str     0x00000b3b       0xd5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/font.obj
  .debug_str     0x00000c10      0x154 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/gprintf.obj
  .debug_str     0x00000d64      0x232 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/graphics.obj
- .debug_str     0x00000f96      0x175 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
- .debug_str     0x0000110b      0x326 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- .debug_str     0x00001431       0x6a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
- .debug_str     0x0000149b      0x112 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
- .debug_str     0x000015ad      0x33e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
- .debug_str     0x000018eb       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
- .debug_str     0x0000198b       0x4b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/3dAniTest.obj
- .debug_str     0x000019d6       0xd6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
- .debug_str     0x00001aac      0x11e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
- .debug_str     0x00001bca      0x248 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
- .debug_str     0x00001e12       0xf2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
- .debug_str     0x00001f04      0x2d7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
- .debug_str     0x000021db       0xc5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
- .debug_str     0x000022a0      0x10c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
- .debug_str     0x000023ac      0x1bd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
- .debug_str     0x00002569      0x2a7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
- .debug_str     0x00002810      0x2ea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
- .debug_str     0x00002afa      0x281 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
- .debug_str     0x00002d7b       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
- .debug_str     0x00002e4f      0x21f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
- .debug_str     0x0000306e      0x1b6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
- .debug_str     0x00003224      0xd3c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
- .debug_str     0x00003f60      0x3e7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
- .debug_str     0x00004347      0x2b1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
- .debug_str     0x000045f8       0x67 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
- .debug_str     0x0000465f      0xea8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
- .debug_str     0x00005507      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_str     0x000056ea      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .debug_str     0x00000f96      0x1c9 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
+ .debug_str     0x0000115f      0x326 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .debug_str     0x00001485       0x6a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
+ .debug_str     0x000014ef      0x112 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+ .debug_str     0x00001601      0x33e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+ .debug_str     0x0000193f       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+ .debug_str     0x000019df       0x4b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/3dAniTest.obj
+ .debug_str     0x00001a2a       0xd6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
+ .debug_str     0x00001b00      0x11e /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
+ .debug_str     0x00001c1e      0x248 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+ .debug_str     0x00001e66       0xf2 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
+ .debug_str     0x00001f58      0x2d7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
+ .debug_str     0x0000222f       0xc5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
+ .debug_str     0x000022f4      0x10c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+ .debug_str     0x00002400      0x1bd /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
+ .debug_str     0x000025bd      0x2a7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+ .debug_str     0x00002864      0x2ea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+ .debug_str     0x00002b4e      0x281 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+ .debug_str     0x00002dcf       0xd4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+ .debug_str     0x00002ea3      0x21f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+ .debug_str     0x000030c2      0x1b6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+ .debug_str     0x00003278      0xd3c /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+ .debug_str     0x00003fb4      0x3e7 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+ .debug_str     0x0000439b      0x2b1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+ .debug_str     0x0000464c       0x67 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
+ .debug_str     0x000046b3      0xea8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
+ .debug_str     0x0000555b      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_str     0x0000573e      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_line_str
-                0x00000000     0x1746
+                0x00000000     0x174c
  .debug_line_str
                 0x00000000       0x72 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj
  .debug_line_str
@@ -921,61 +920,61 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/kernel.bin binary)
  .debug_line_str
                 0x0000032d       0xa1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/graphics.obj
  .debug_line_str
-                0x000003ce       0x95 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
+                0x000003ce       0x9b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/heap.obj
  .debug_line_str
-                0x00000463      0x116 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+                0x00000469      0x116 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
  .debug_line_str
-                0x00000579       0x6f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
+                0x0000057f       0x6f /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/math.obj
  .debug_line_str
-                0x000005e8       0x80 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
+                0x000005ee       0x80 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/memory.obj
  .debug_line_str
-                0x00000668      0x117 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
+                0x0000066e      0x117 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
  .debug_line_str
-                0x0000077f       0x75 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
+                0x00000785       0x75 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/string.obj
  .debug_line_str
-                0x000007f4       0x42 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/3dAniTest.obj
+                0x000007fa       0x42 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/3dAniTest.obj
  .debug_line_str
-                0x00000836       0xab /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
+                0x0000083c       0xab /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/afk.obj
  .debug_line_str
-                0x000008e1       0xb1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
+                0x000008e7       0xb1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/color.obj
  .debug_line_str
-                0x00000992      0x128 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
+                0x00000998      0x128 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/command.obj
  .debug_line_str
-                0x00000aba       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
+                0x00000ac0       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/credits.obj
  .debug_line_str
-                0x00000b4e       0xd1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
+                0x00000b54       0xd1 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/json.obj
  .debug_line_str
-                0x00000c1f       0x9a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
+                0x00000c25       0x9a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/commands/mm8Splash.obj
  .debug_line_str
-                0x00000cb9       0x98 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
+                0x00000cbf       0x98 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/hal/hal.obj
  .debug_line_str
-                0x00000d51       0xa8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
+                0x00000d57       0xa8 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/calc/calc.obj
  .debug_line_str
-                0x00000df9       0xea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
+                0x00000dff       0xea /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/apps/editor/editor.obj
  .debug_line_str
-                0x00000ee3       0x8b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
+                0x00000ee9       0x8b /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/gdt.obj
  .debug_line_str
-                0x00000f6e       0x91 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
+                0x00000f74       0x91 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/idt.obj
  .debug_line_str
-                0x00000fff       0x8d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
+                0x00001005       0x8d /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/io.obj
  .debug_line_str
-                0x0000108c       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
+                0x00001092       0xa5 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/irq.obj
  .debug_line_str
-                0x00001131       0xa4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
+                0x00001137       0xa4 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isr.obj
  .debug_line_str
-                0x000011d5       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
+                0x000011db       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/isrs_gen.obj
  .debug_line_str
-                0x00001275       0xe0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
+                0x0000127b       0xe0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/keyboard.obj
  .debug_line_str
-                0x00001355       0x90 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
+                0x0000135b       0x90 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/pic.obj
  .debug_line_str
-                0x000013e5       0xa6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
+                0x000013eb       0xa6 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/arch/i686/screen_defs.obj
  .debug_line_str
-                0x0000148b       0xcb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
+                0x00001491       0xcb /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/libs/cJSON/cJSON.obj
  .debug_line_str
-                0x00001556       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+                0x0000155c       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
  .debug_line_str
-                0x0000164e       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x00001654       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .comment        0x00000000      0x286
  .comment       0x00000000       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/ctype.obj

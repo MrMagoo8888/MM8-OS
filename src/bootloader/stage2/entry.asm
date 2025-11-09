@@ -238,6 +238,8 @@ vbe_set_mode:
 .mode   dw 0
 
 find_mode:
+
+    [bits 16] ; idk man
     push es
     mov ax, 0x4F00
     mov di, vbe_info_block
@@ -251,6 +253,8 @@ find_mode:
     mov si, [vbe_info_block.video_modes_ptr]
 
 .find_loop:
+
+    [bits 16] ;idk man
     mov ax, [es:si]
     add si, 2
     cmp ax, 0xFFFF
@@ -287,6 +291,8 @@ find_mode:
     ret
 
 set_mode:
+
+    [bits 16] ;idk man
     ; Populate the vbe_screen structure in the exact order the C kernel expects.
     mov ax, [vbe_set_mode.width]
     mov [vbe_screen.width], ax
@@ -299,13 +305,15 @@ set_mode:
     mov [vbe_screen.bytes_per_pixel], eax
     mov ax, [mode_info_block.pitch]
     mov [vbe_screen.bytes_per_line], ax
+    ; This is the key instruction:
+    ; It reads the framebuffer's physical address from the mode_info_block...
     mov eax, [mode_info_block.framebuffer]
-    mov [vbe_screen.physical_buffer], eax
+    mov [vbe_screen.physical_buffer], eax ; ...and stores it in our vbe_screen struct.
 
     push es
     mov ax, 0x4F02
     mov bx, [vbe_set_mode.mode]
-    or bx, 0xC000 ; enable Linear Frame Buffer and don't clear video memory
+    or bx, 0x4000 ; enable Linear Frame Buffer and clear video memory
     mov di, 0
     int 0x10
     pop es
@@ -322,7 +330,7 @@ set_mode:
 load_kernel_loop:
     pusha
 .loop:
-    push dword 0x10000 ; Buffer to read into (MEMORY_LOAD_KERNEL)
+    push dword 0x10000 ; Buffer to read into (MEMORY_LOAD_KERNEL) TESTCHANGE
     push dword 4096    ; Bytes to read (MEMORY_LOAD_SIZE)
     push dword [fd_struct]
     lea eax, [disk_struct]

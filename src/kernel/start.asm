@@ -17,7 +17,7 @@ _start:
     rep stosb
 
     ; Set up the stack. We'll place it right before the kernel's code at 0x100000
-    mov esp, 0x9FFFF
+    mov esp, 0x9FFFC ; Stack top just below 0xA0000, 4-byte aligned
 
     ; The boot drive number is in dl, push it as an argument for start.
     push edx
