@@ -52,10 +52,15 @@ void add_to_history(const char* command) {
 void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* vbe_info)
 {
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
-    
-    HAL_Initialize();
-    g_vbe_screen_info = vbe_info;
 
+    // Initialize hardware and interrupts first to prevent triple faults
+    HAL_Initialize();
+    i686_IRQ_RegisterHandler(0, timer);
+    i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
+    i686_EnableInterrupts();
+
+    g_vbe_screen_info = vbe_info;
+    
     heap_initialize(vbe_info);
     
     // Clear the screen to a nice pink color
@@ -88,12 +93,6 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* 
     } else if (!FAT_Initialize(&g_Disk)) {
         printf("FAT initialization failed on hard disk.\n");
     }
-
-    i686_IRQ_RegisterHandler(0, timer);
-    i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
-
-    // Enable interrupts now that all handlers are set up
-    i686_EnableInterrupts();
 
     // This will go to serial, but our graphical text works!
     printf("MM8-OS Kernel Started.\n");
