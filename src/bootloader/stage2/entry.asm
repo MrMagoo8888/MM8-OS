@@ -30,7 +30,7 @@ entry:
     ; call graphicsSwitch
     ;call graphicsSwitch
     
-    ; Set a VESA graphics mode (e.g., 1024x768x32)
+    ; Set a VESA graphics mode (e.g., 1024x768x32) It works the ax bx cl
     mov ax, 1024
     mov bx, 768
     mov cl, 32
