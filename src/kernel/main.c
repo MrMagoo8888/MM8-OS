@@ -88,18 +88,53 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* 
 
     // Initialize disk and FAT filesystem
     // We are booting from floppy, but we want to use the first hard disk (0x80) for our root filesystem.
-    if (!DISK_Initialize(&g_Disk, 0x80)) {
-        printf("Hard disk initialization failed.\n");
-    } else if (!FAT_Initialize(&g_Disk)) {
-        printf("FAT initialization failed on hard disk.\n");
+    if (!DISK_Initialize(&g_Disk, 0x80))
+    {
+        graphics_draw_string(20, 100, "Hard disk initialization failed.", 0xFFFF0000);
+    }
+    else if (!FAT_Initialize(&g_Disk))
+    {
+        graphics_draw_string(20, 100, "FAT initialization failed on hard disk.", 0xFFFF0000);
     }
 
-    // This will go to serial, but our graphical text works!
-    printf("MM8-OS Kernel Started.\n");
+    // --- Simple Graphical Console ---
+    char input_buffer[256];
+    int buffer_index = 0;
+    memset(input_buffer, 0, sizeof(input_buffer));
 
-    // The main loop is now empty. We've drawn our graphics and will halt.
-    // In the future, this will be the event loop for the GUI.
+    int prompt_x = 20;
+    int prompt_y = 100;
 
-    // This part is now unreachable
-    for (;;);
+    graphics_draw_string(prompt_x, prompt_y, "> ", 0xFFFFFFFF);
+
+    for (;;) {
+        char c = i686_Keyboard_Getchar();
+        if (c == 0) continue; // No new character
+
+        // Clear the previous input line before redrawing
+        graphics_draw_rect(prompt_x + 16, prompt_y, g_vbe_screen_info->width - (prompt_x + 16), 8, 0xFFFF5486);
+
+        if (c == '\n') {
+            // Process the command
+            command_dispatch(input_buffer);
+            add_to_history(input_buffer);
+
+            // Clear buffer for next command
+            memset(input_buffer, 0, sizeof(input_buffer));
+            buffer_index = 0;
+
+            // We could scroll or move the prompt down here, for now just redraw it.
+            // A 'cls' or 'help' command will clear the screen anyway.
+            graphics_draw_string(prompt_x, prompt_y, "> ", 0xFFFFFFFF);
+        } else if (c == '\b') {
+            if (buffer_index > 0) {
+                buffer_index--;
+                input_buffer[buffer_index] = '\0';
+            }
+        } else if (buffer_index < sizeof(input_buffer) - 1) {
+            input_buffer[buffer_index++] = c;
+        }
+
+        graphics_draw_string(prompt_x + 16, prompt_y, input_buffer, 0xFFFFFFFF);
+    }
 }

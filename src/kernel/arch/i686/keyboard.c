@@ -205,17 +205,16 @@ void keyboard_irq_handler(Registers* regs) {
                 g_InputBuffer[g_InputBufferIndex] = '\0';
                 g_InputLineReady = true;
                 g_HistoryNavIndex = -1; // Reset history navigation on enter
-                putc('\n');
+                // putc('\n'); // Graphical console will handle this
             } else if (c == '\b') {
                 if (g_InputBufferIndex > 0) {
                     g_InputBufferIndex--;
-                    // Let putc handle backspace logic on screen
-                    putc('\b');
+                    // putc('\b'); // Graphical console will handle this
                 }
             } else if (c != 0) {
                 if (g_InputBufferIndex < INPUT_BUFFER_SIZE - 1) {
                     g_InputBuffer[g_InputBufferIndex++] = c;
-                    putc(c); // Echo character
+                    // putc(c); // Echo character - graphical console handles drawing
                 }
             }
         }
@@ -270,6 +269,23 @@ int getch() {
     g_CharBuffer = -1;
 
     g_CurrentInputMode = INPUT_MODE_NONE;
+
+    __asm__ volatile("sti"); // Re-enable interrupts
+
+    return c;
+}
+
+char i686_Keyboard_Getchar() {
+    // This is a non-blocking version of getch() for the graphical console.
+    if (!g_CharReady) {
+        return 0; // No character available
+    }
+
+    __asm__ volatile("cli"); // Disable interrupts for critical section
+
+    char c = (char)g_CharBuffer;
+    g_CharReady = false;
+    g_CharBuffer = -1;
 
     __asm__ volatile("sti"); // Re-enable interrupts
 

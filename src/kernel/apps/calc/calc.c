@@ -1,7 +1,8 @@
 #include "calc.h"
 #include "stdio.h"
+#include "graphics.h"
 #include "string.h"
-#include "stdlib.h" // For gets
+#include <arch/i686/keyboard.h> // For gets
 #include "ctype.h" // For isdigit, to skip non-digit characters
 #include "stdbool.h" // For bool type
 
@@ -36,11 +37,12 @@ static const char* skip_whitespace(const char* str) {
     return str;
 }
 
-static void perform_single_calculation(const char* expression) {
+static void perform_single_calculation(const char* expression, int y_pos) {
     const char* current_ptr = expression;
+    char buffer[128];
 
     if (*current_ptr == '\0') { // Handle empty expression
-        printf("Supported operators: +, -, *, /\n");
+        graphics_draw_string(20, y_pos, "Supported operators: +, -, *, /", 0xFFFFFFFF);
         return;
     }
 
@@ -57,7 +59,7 @@ static void perform_single_calculation(const char* expression) {
     // Parse operator
     char op = *current_ptr;
     if (op == '\0') {
-        printf("Error: Missing operator or second number.\n");
+        graphics_draw_string(20, y_pos, "Error: Missing operator or second number.", 0xFFFF0000);
         return;
     }
     current_ptr++; // Advance past operator
@@ -65,7 +67,7 @@ static void perform_single_calculation(const char* expression) {
 
     // Parse second number
     if (*current_ptr == '\0') {
-        printf("Error: Missing second number.\n");
+        graphics_draw_string(20, y_pos, "Error: Missing second number.", 0xFFFF0000);
         return;
     }
     int num2 = simple_atoi_internal(current_ptr);
@@ -79,32 +81,45 @@ static void perform_single_calculation(const char* expression) {
         case '*': result = num1 * num2; break;
         case '/':
             if (num2 == 0) {
-                printf("Error: Division by zero.\n");
+                graphics_draw_string(20, y_pos, "Error: Division by zero.", 0xFFFF0000);
                 error = true;
             } else {
                 result = num1 / num2;
             }
             break;
-        default: printf("Error: Unsupported operator '%c'. Supported: +, -, *, /\n", op); error = true; break;
+        default:
+            sprintf(buffer, "Error: Unsupported operator '%c'.", op);
+            graphics_draw_string(20, y_pos, buffer, 0xFFFF0000);
+            error = true;
+            break;
     }
 
     if (!error) {
-        printf("Result: %d\n", result);
+        sprintf(buffer, "Result: %d", result);
+        graphics_draw_string(20, y_pos, buffer, 0xFFFFFFFF);
     }
 }
 
 static void run_calc_interactive_mode() {
-    clrscr();
-    printf("MM8-OS Calculator\n");
-    printf("Usage: <number1> <operator> <number2>\n");
-    printf("Supported operators: +, -, *, /\n");
-    printf("Type 'exit' to return to the main shell.\n");
-    printf("Type 'clear' or 'cls' to clear the screen.\n\n");
+    int y = 20;
+    graphics_clear_screen(0xFF000055); // Dark blue background for calc
+    graphics_draw_string(20, y, "MM8-OS Calculator", 0xFFFFFFFF); y+=10;
+    graphics_draw_string(20, y, "Usage: <num1> <op> <num2>", 0xFFFFFFFF); y+=10;
+    graphics_draw_string(20, y, "Type 'exit' to return.", 0xFFFFFFFF); y+=10;
+    y+=10;
+
+    int input_y = y;
+    int result_y = y + 10;
 
     char input_buffer[256];
     while (true) {
-        printf("calc> ");
-        gets(input_buffer, sizeof(input_buffer));
+        graphics_draw_rect(0, input_y, g_vbe_screen_info->width, 18, 0xFF000055); // Clear input/result lines
+        graphics_draw_string(20, input_y, "calc> ", 0xFFFFFFFF);
+        // This is a problem - gets() is blocking and doesn't work with our graphical model.
+        // For now, we will just exit. A proper graphical input box is needed.
+        // gets(input_buffer, sizeof(input_buffer));
+        graphics_draw_string(20, result_y, "Interactive mode not fully supported in graphics yet. Exiting.", 0xFFFFFF00);
+        break;
 
         // Convert input to lowercase for command comparison
         char lower_input[256];
@@ -114,25 +129,17 @@ static void run_calc_interactive_mode() {
         }
 
         if (strcmp(lower_input, "exit") == 0) {
-            printf("Exiting calculator.\n");
             break;
         }
-        if (strcmp(lower_input, "clear") == 0 || strcmp(lower_input, "cls") == 0) {
-            clrscr();
-            printf("MM8-OS Calculator\n");
-            printf("Usage: <number1> <operator> <number2>\n");
-            printf("Supported operators: +, -, *, /\n");
-            printf("Type 'exit' to return to the main shell.\n");
-            printf("Type 'clear' or 'cls' to clear the screen.\n\n");
-            continue;
-        }
+
         if (input_buffer[0] == '\0') {
             continue; // Ignore empty input
         }
 
-        perform_single_calculation(input_buffer);
+        perform_single_calculation(input_buffer, result_y);
     }
-    clrscr(); // Clear screen after exiting calc mode to return to a clean main shell
+    // Return to main console
+    graphics_clear_screen(0xFFFF5486);
 }
 
 void handle_calc(const char* input) {
@@ -142,6 +149,6 @@ void handle_calc(const char* input) {
     if (*args == '\0') {
         run_calc_interactive_mode();
     } else {
-        perform_single_calculation(args);
+        perform_single_calculation(args, 120);
     }
 }

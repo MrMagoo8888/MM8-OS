@@ -28,7 +28,7 @@ void heap_initialize(vbe_screen_t* vbe_info) {
     heap_start->is_free = true;
     heap_start->next = NULL;
 
-    printf("Heap initialized. Start: 0x%x, Size: %u bytes\n", heap_start, heap_size);
+    // printf("Heap initialized. Start: 0x%x, Size: %u bytes\n", heap_start, heap_size);
 }
 
 void* malloc(size_t size) {

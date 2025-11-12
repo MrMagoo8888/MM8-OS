@@ -33,3 +33,5 @@ void gets(char* buffer, int size);
 
 // Reads a single character or special key code from the keyboard.
 int getch();
+
+char i686_Keyboard_Getchar();
