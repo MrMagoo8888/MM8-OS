@@ -57,6 +57,13 @@ entry:
     mov ds, ax
     mov ss, ax
 
+    ; --- VBE DEBUG: Draw one white pixel at (0,0) ---
+    ; If this pixel appears, VBE setup is correct. The problem is likely
+    ; in the kernel loading or the kernel's drawing code.
+    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
+    mov dword [edi], 0x00FFFFFF           ; Write a white pixel (0x00RRGGBB for 32bpp)
+    ; --- END VBE DEBUG ---
+
     ; Load the kernel from disk
     ; This logic is moved from the old bootloader's main.c
     mov esp, 0x7C00 ; Set up a temporary stack for C calls
