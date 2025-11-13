@@ -66,7 +66,10 @@ entry:
 
     ; Load the kernel from disk
     ; This logic is moved from the old bootloader's main.c
-    mov esp, 0x7C00 ; Set up a temporary stack for C calls
+    ; Set up a temporary stack for C calls.
+    ; 0x7C00 is where stage1 bootloader is. Stack grows down, so using 0x7C00
+    ; would corrupt stage2 code/data below it. Let's use a safer address.
+    mov esp, 0x7B00
 
     push dword [g_BootDrive]
     lea eax, [disk_struct]
@@ -89,11 +92,23 @@ entry:
     call load_kernel_loop
 
     ; Now, call the loaded kernel with the correct arguments
+    ; Set up a new, safe stack for the kernel. The old stack at 0x7B00 is too
+    ; close to the bootloader code and data area (loaded at 0x500).
+    mov esp, 0x90000
+
+    cli ; VERY IMPORTANT: Disable interrupts before jumping to kernel
     push vbe_screen
     xor edx, edx
     mov dl, [g_BootDrive]
     push edx
     call 0x100000 ; Call kernel at its loaded address
+
+    ; --- KERNEL RETURN/FAIL DEBUG ---
+    ; If this red pixel appears next to the white one, it means the kernel
+    ; call returned, which indicates a problem with the kernel itself.
+    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
+    add edi, 4                            ; Move to the next pixel (assuming 32bpp)
+    mov dword [edi], 0x00FF0000           ; Write a red pixel
 
     cli
     hlt

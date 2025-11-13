@@ -16,14 +16,23 @@ _start:
     mov al, 0
     rep stosb
 
+    
+
     ; The arguments from the bootloader are on the stack.
     ; [esp+8] = vbe_info pointer, [esp+4] = bootDrive
     ; We must retrieve them before changing the stack pointer.
     mov ebp, esp
 
-    ; Set up the stack. We'll place it right before the kernel's code at 0x100000
-    ;mov esp, 0x9FFFC ; Stack top just below 0xA0000, 4-byte aligned
-    mov esp, 0x10000
+    ; The bootloader already set up a safe stack for us at 0x90000.
+    ; We should not change esp here.
+
+    ; --- KERNEL ENTRY DEBUG ---
+    ; Draw a red pixel at (0, 1) to confirm we've reached the kernel's _start.
+    ; The white pixel at (0, 0) is from the bootloader.
+    mov edi, [ebp + 8]      ; Get vbe_info pointer from the stack
+    mov edi, [edi + 12]     ; Get physical_buffer from vbe_info (offset of physical_buffer is 12)
+    add edi, 4              ; Move to the next pixel (x=1, y=0)
+    mov dword [edi], 0x00FF0000 ; Write a red pixel
 
     ; Push arguments for the C start() function in reverse order.
     push dword [ebp + 8] ; Push vbe_info pointer

@@ -12,6 +12,7 @@ SOURCES_C = $(wildcard *.c) \
 			$(wildcard */*.c) \
 			$(wildcard */*/*.c) \
 			$(wildcard */*/*/*.c) \
+			gprintf.c \
 			arch/i686/isrs_gen.c
 
 OBJECTS_C = $(patsubst %.c, $(BUILD_DIR)/kernel/c/%.obj, $(SOURCES_C))
@@ -22,19 +23,12 @@ HEADERS_ASM = $(wildcard *.inc) \
 			  $(wildcard */*/*/*.inc) \
 			  arch/i686/isrs_gen.inc
 
-SOURCES_ASM = $(wildcard *.asm) \
-			  $(wildcard */*.asm) \
-			  $(wildcard */*/*.asm) \
-			  $(wildcard */*/*/*.asm) \
-			  $(wildcard arch/i686/*.asm) \
-			  $(wildcard *.s) \
-			  $(wildcard */*.s) \
-			  $(wildcard */*/*.s) \
-			  $(wildcard */*/*/*.s) \
-			  $(wildcard arch/i686/*.s)
+SOURCES_ASM_S = $(wildcard *.s) $(wildcard */*.s) $(wildcard */*/*.s) $(wildcard */*/*/*.s)
+SOURCES_ASM_ASM = $(wildcard *.asm) $(wildcard */*.asm) $(wildcard */*/*.asm) $(wildcard */*/*/*.asm)
 
-
-OBJECTS_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM))
+OBJECTS_ASM_S = $(patsubst %.s, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM_S))
+OBJECTS_ASM_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM_ASM))
+OBJECTS_ASM = $(OBJECTS_ASM_S) $(OBJECTS_ASM_ASM)
 
 .PHONY: all kernel clean always
 
@@ -52,6 +46,11 @@ $(BUILD_DIR)/kernel/c/%.obj: %.c $(HEADERS_C)
 	@echo "--> Compiled: " $<
 
 $(BUILD_DIR)/kernel/asm/%.obj: %.asm $(HEADERS_ASM)
+	@mkdir -p $(@D)
+	@$(TARGET_ASM) $(TARGET_ASMFLAGS) -o $@ $<
+	@echo "--> Compiled: " $<
+
+$(BUILD_DIR)/kernel/asm/%.obj: %.s $(HEADERS_ASM)
 	@mkdir -p $(@D)
 	@$(TARGET_ASM) $(TARGET_ASMFLAGS) -o $@ $<
 	@echo "--> Compiled: " $<

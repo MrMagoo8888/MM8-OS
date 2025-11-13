@@ -49,92 +49,30 @@ void add_to_history(const char* command) {
     }
 }
 
+// Your kernel's entry point
+// The arguments are on the stack, so we can access them as function parameters.
 void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* vbe_info)
 {
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
 
-    // Initialize hardware and interrupts first to prevent triple faults
-    HAL_Initialize();
-    i686_IRQ_RegisterHandler(0, timer);
-    i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
-    i686_EnableInterrupts();
+    // Cast the framebuffer address to a pointer we can use
+    // Assuming vbe_info->physical_buffer points to the start of the framebuffer
+    unsigned int* framebuffer = (unsigned int*)vbe_info->physical_buffer;
+    
+    // Calculate the total number of pixels on the screen
+    unsigned int total_pixels = vbe_info->width * vbe_info->height;
+    
+    // Define a color (e.g., blue in 0x00RRGGBB format)
+    unsigned int blue = 0x000000FF; // ARGB, so 0x00RRGGBB
 
-    g_vbe_screen_info = vbe_info;
-    
-    heap_initialize(vbe_info);
-    
-    // Clear the screen to a nice pink color
-    graphics_clear_screen(0xFFFF5486);
-    
-    // mm8Splash(); // This will no longer work as it uses text-mode printf
-
-    // Let's draw something to test!
-    graphics_draw_rect(100, 100, 200, 150, 0xFF00FF00); // A green rectangle
-    graphics_draw_rect(120, 120, 160, 110, 0xFFFF0000); // A red rectangle inside
-    graphics_draw_line(0, 0, g_vbe_screen_info->width - 1, g_vbe_screen_info->height - 10, 0xFFFFFFFF); // A white diagonal line
-    
-    // Let's test our new graphics text functions!
-    graphics_draw_string(20, 20, "MM8-OS Graphical Mode!", 0xFFFFFFFF);
-    graphics_draw_string(20, 30, "----------------------", 0xFFFFFFFF);
-    
-    char buffer[256];
-    sprintf(buffer, "Resolution: %dx%d %dbpp", g_vbe_screen_info->width, g_vbe_screen_info->height, g_vbe_screen_info->bpp);
-    graphics_draw_string(20, 50, buffer, 0xFF00FFFF); // Cyan
-    
-    sprintf(buffer, "Framebuffer: 0x%x", g_vbe_screen_info->physical_buffer);
-    graphics_draw_string(20, 60, buffer, 0xFF00FFFF); // Cyan
-    
-    graphics_draw_string(20, 80, "Type 'help' for a list of commands.", 0xFFFFFF00); // Yellow
-
-    // Initialize disk and FAT filesystem
-    // We are booting from floppy, but we want to use the first hard disk (0x80) for our root filesystem.
-    if (!DISK_Initialize(&g_Disk, 0x80))
-    {
-        graphics_draw_string(20, 100, "Hard disk initialization failed.", 0xFFFF0000);
+    // Loop through every pixel and set it to our color
+    for (unsigned int i = 0; i < total_pixels; i++) {
+        framebuffer[i] = blue;
     }
-    else if (!FAT_Initialize(&g_Disk))
-    {
-        graphics_draw_string(20, 100, "FAT initialization failed on hard disk.", 0xFFFF0000);
-    }
-
-    // --- Simple Graphical Console ---
-    char input_buffer[256];
-    int buffer_index = 0;
-    memset(input_buffer, 0, sizeof(input_buffer));
-
-    int prompt_x = 20;
-    int prompt_y = 100;
-
-    graphics_draw_string(prompt_x, prompt_y, "> ", 0xFFFFFFFF);
-
+    
+    // At this point, the screen should be blue.
+    // We halt the CPU to prevent it from executing random memory.
     for (;;) {
-        char c = i686_Keyboard_Getchar();
-        if (c == 0) continue; // No new character
-
-        // Clear the previous input line before redrawing
-        graphics_draw_rect(prompt_x + 16, prompt_y, g_vbe_screen_info->width - (prompt_x + 16), 8, 0xFFFF5486);
-
-        if (c == '\n') {
-            // Process the command
-            command_dispatch(input_buffer);
-            add_to_history(input_buffer);
-
-            // Clear buffer for next command
-            memset(input_buffer, 0, sizeof(input_buffer));
-            buffer_index = 0;
-
-            // We could scroll or move the prompt down here, for now just redraw it.
-            // A 'cls' or 'help' command will clear the screen anyway.
-            graphics_draw_string(prompt_x, prompt_y, "> ", 0xFFFFFFFF);
-        } else if (c == '\b') {
-            if (buffer_index > 0) {
-                buffer_index--;
-                input_buffer[buffer_index] = '\0';
-            }
-        } else if (buffer_index < sizeof(input_buffer) - 1) {
-            input_buffer[buffer_index++] = c;
-        }
-
-        graphics_draw_string(prompt_x + 16, prompt_y, input_buffer, 0xFFFFFFFF);
+        __asm__("hlt");
     }
 }

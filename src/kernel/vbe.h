@@ -7,8 +7,8 @@ typedef struct __attribute__((packed)) {
     uint16_t width;
     uint16_t height;
     uint8_t  bpp;
-    uint8_t  _padding; // Add padding byte to align with assembly
-    uint32_t bytes_per_line;
+    uint32_t bytes_per_pixel; // This was missing
+    uint16_t bytes_per_line;  // This was the wrong size (pitch)
     uint32_t physical_buffer;
 } vbe_screen_t;
 
