@@ -39,6 +39,7 @@ entry:
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
     call LoadGDT            ; 3 - Load GDT
+    call LoadIDT            ; Load a basic IDT to prevent triple faults
 
     ; 4 - set protection enable flag in CR0
     mov eax, cr0
@@ -172,6 +173,11 @@ LoadGDT:
     lgdt [g_GDTDesc]
     ret
 
+LoadIDT:
+    [bits 16]
+    lidt [g_IDTDesc]
+    ret
+
 
 
 KbdControllerDataPort               equ 0x60
@@ -220,6 +226,11 @@ g_GDT:      ; NULL descriptor
 
 g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
+
+g_IDT:      ; A basic, empty IDT. The kernel will fill this in.
+g_IDTDesc:  dw (g_IDTDesc - g_IDT - 1)  ; Limit (size of IDT)
+            dd g_IDT                    ; Base address of IDT
+
 
 g_BootDrive: db 0
 

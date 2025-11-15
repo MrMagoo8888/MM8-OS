@@ -46,7 +46,7 @@ start:
     ; Setup a safe stack high in memory, away from the bootloader code.
     mov ax, 0x9000
     mov ss, ax                  ; ss = 0x9000
-    mov sp, 0xFC00              ; Stack starts at 0x9FC00 and grows downwards.
+    mov sp, 0xFC00              ; Stack starts at 0x9FC00 and grows downwards. Original 0xFC00 ; 0x9000
                                 ; This provides a ~63KB stack, which is plenty.
 
     ; some BIOSes might start us at 07C0:0000 instead of 0000:7C00, make sure we are in the
