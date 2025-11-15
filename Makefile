@@ -31,20 +31,20 @@ bootloader: stage1 stage2
 stage1: $(BUILD_DIR)/stage1.bin
 
 $(BUILD_DIR)/stage1.bin: always
-	@$(MAKE) -C src/bootloader/stage1 BUILD_DIR=$(abspath $(BUILD_DIR))
+	@$(MAKE) -C src/bootloader/stage1 -f makefile.mk BUILD_DIR=$(abspath $(BUILD_DIR))
 
 stage2: $(BUILD_DIR)/stage2.bin
 
 $(BUILD_DIR)/stage2.bin: always
-	@$(MAKE) -C src/bootloader/stage2 BUILD_DIR=$(abspath $(BUILD_DIR))
+	@$(MAKE) -C src/bootloader/stage2 -f makefile.mk BUILD_DIR=$(abspath $(BUILD_DIR))
 
 #
 # Kernel
 #
 kernel: $(BUILD_DIR)/kernel.bin
 
-$(BUILD_DIR)/kernel.bin: always
-	@$(MAKE) -C src/kernel BUILD_DIR=$(abspath $(BUILD_DIR))
+$(BUILD_DIR)/kernel.bin:
+	@$(MAKE) -C src/kernel -f Makefile.mk BUILD_DIR=$(abspath $(BUILD_DIR))
 
 #
 # Tools
@@ -64,7 +64,4 @@ always:
 # Clean
 #
 clean:
-	@$(MAKE) -C src/bootloader/stage1 BUILD_DIR=$(abspath $(BUILD_DIR)) clean
-	@$(MAKE) -C src/bootloader/stage2 BUILD_DIR=$(abspath $(BUILD_DIR)) clean
-	@$(MAKE) -C src/kernel BUILD_DIR=$(abspath $(BUILD_DIR)) clean
-	@rm -rf $(BUILD_DIR)/*
+	@rm -rf $(BUILD_DIR)

@@ -1,5 +1,5 @@
 TARGET_ASMFLAGS += -f elf
-TARGET_CFLAGS += -ffreestanding -nostdlib -I.
+TARGET_CFLAGS += -ffreestanding -nostdlib -I. -I./libs/cjson
 TARGET_LIBS += -lgcc
 TARGET_LINKFLAGS += -T linker.ld -nostdlib
 
@@ -11,8 +11,9 @@ HEADERS_C = $(wildcard *.h) \
 SOURCES_C = $(wildcard *.c) \
 			$(wildcard */*.c) \
 			$(wildcard */*/*.c) \
+			math.c \
+			libs/cjson/cJSON.c \
 			$(wildcard */*/*/*.c) \
-			gprintf.c \
 			arch/i686/isrs_gen.c
 
 OBJECTS_C = $(patsubst %.c, $(BUILD_DIR)/kernel/c/%.obj, $(SOURCES_C))
@@ -23,12 +24,19 @@ HEADERS_ASM = $(wildcard *.inc) \
 			  $(wildcard */*/*/*.inc) \
 			  arch/i686/isrs_gen.inc
 
-SOURCES_ASM_S = $(wildcard *.s) $(wildcard */*.s) $(wildcard */*/*.s) $(wildcard */*/*/*.s)
-SOURCES_ASM_ASM = $(wildcard *.asm) $(wildcard */*.asm) $(wildcard */*/*.asm) $(wildcard */*/*/*.asm)
+SOURCES_ASM = $(wildcard *.asm) \
+			  $(wildcard */*.asm) \
+			  $(wildcard */*/*.asm) \
+			  $(wildcard */*/*/*.asm) \
+			  $(wildcard arch/i686/*.asm) \
+			  $(wildcard *.s) \
+			  $(wildcard */*.s) \
+			  $(wildcard */*/*.s) \
+			  $(wildcard */*/*/*.s) \
+			  $(wildcard arch/i686/*.s)
 
-OBJECTS_ASM_S = $(patsubst %.s, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM_S))
-OBJECTS_ASM_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM_ASM))
-OBJECTS_ASM = $(OBJECTS_ASM_S) $(OBJECTS_ASM_ASM)
+
+OBJECTS_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM))
 
 .PHONY: all kernel clean always
 
@@ -50,13 +58,9 @@ $(BUILD_DIR)/kernel/asm/%.obj: %.asm $(HEADERS_ASM)
 	@$(TARGET_ASM) $(TARGET_ASMFLAGS) -o $@ $<
 	@echo "--> Compiled: " $<
 
-$(BUILD_DIR)/kernel/asm/%.obj: %.s $(HEADERS_ASM)
-	@mkdir -p $(@D)
-	@$(TARGET_ASM) $(TARGET_ASMFLAGS) -o $@ $<
-	@echo "--> Compiled: " $<
-
 arch/i686/isrs_gen.c arch/i686/isrs_gen.inc:
 	@$(SOURCE_DIR)/build_tools/generate_isrs.sh $@
 
 clean:
-	rm -f $(BUILD_DIR)/kernel.bin
+	@rm -f $(BUILD_DIR)/kernel.bin
+	@rm -rf $(BUILD_DIR)/kernel
