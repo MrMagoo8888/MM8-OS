@@ -117,18 +117,18 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/bootloader/stage1/CMakeFiles/stage1.bin.dir/rule:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage1/CMakeFiles/stage1.bin.dir/rule
-.PHONY : src/bootloader/stage1/CMakeFiles/stage1.bin.dir/rule
+src/bootloader/stage1/CMakeFiles/build_stage1.dir/rule:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage1/CMakeFiles/build_stage1.dir/rule
+.PHONY : src/bootloader/stage1/CMakeFiles/build_stage1.dir/rule
 
 # Convenience name for target.
-stage1.bin: src/bootloader/stage1/CMakeFiles/stage1.bin.dir/rule
-.PHONY : stage1.bin
+build_stage1: src/bootloader/stage1/CMakeFiles/build_stage1.dir/rule
+.PHONY : build_stage1
 
 # fast build rule for target.
-stage1.bin/fast:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/stage1.bin.dir/build.make src/bootloader/stage1/CMakeFiles/stage1.bin.dir/build
-.PHONY : stage1.bin/fast
+build_stage1/fast:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/build_stage1.dir/build.make src/bootloader/stage1/CMakeFiles/build_stage1.dir/build
+.PHONY : build_stage1/fast
 
 # Help Target
 help:
@@ -138,7 +138,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... stage1.bin"
+	@echo "... build_stage1"
 .PHONY : help
 
 

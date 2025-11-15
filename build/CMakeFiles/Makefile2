@@ -84,7 +84,6 @@ preinstall: src/kernel/preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/floppy_image.dir/clean
-clean: CMakeFiles/format_hdd.dir/clean
 clean: src/bootloader/stage1/clean
 clean: src/bootloader/stage2/clean
 clean: src/kernel/clean
@@ -106,7 +105,7 @@ src/bootloader/stage1/preinstall:
 .PHONY : src/bootloader/stage1/preinstall
 
 # Recursive "clean" directory target.
-src/bootloader/stage1/clean: src/bootloader/stage1/CMakeFiles/stage1.bin.dir/clean
+src/bootloader/stage1/clean: src/bootloader/stage1/CMakeFiles/build_stage1.dir/clean
 .PHONY : src/bootloader/stage1/clean
 
 #=============================================================================
@@ -151,17 +150,17 @@ src/kernel/clean: src/kernel/CMakeFiles/kernel.bin.dir/clean
 # Target rules for target CMakeFiles/floppy_image.dir
 
 # All Build rule for target.
-CMakeFiles/floppy_image.dir/all: src/bootloader/stage1/CMakeFiles/stage1.bin.dir/all
+CMakeFiles/floppy_image.dir/all: src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
 CMakeFiles/floppy_image.dir/all: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
 CMakeFiles/floppy_image.dir/all: src/kernel/CMakeFiles/kernel.bin.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=1,2 "Built target floppy_image"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=2 "Built target floppy_image"
 .PHONY : CMakeFiles/floppy_image.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/floppy_image.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 53
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 52
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/floppy_image.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 0
 .PHONY : CMakeFiles/floppy_image.dir/rule
@@ -171,11 +170,11 @@ floppy_image: CMakeFiles/floppy_image.dir/rule
 .PHONY : floppy_image
 
 # codegen rule for target.
-CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage1/CMakeFiles/stage1.bin.dir/all
+CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
 CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
 CMakeFiles/floppy_image.dir/codegen: src/kernel/CMakeFiles/kernel.bin.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=1,2 "Finished codegen for target floppy_image"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=2 "Finished codegen for target floppy_image"
 .PHONY : CMakeFiles/floppy_image.dir/codegen
 
 # clean rule for target.
@@ -184,68 +183,36 @@ CMakeFiles/floppy_image.dir/clean:
 .PHONY : CMakeFiles/floppy_image.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/format_hdd.dir
+# Target rules for target src/bootloader/stage1/CMakeFiles/build_stage1.dir
 
 # All Build rule for target.
-CMakeFiles/format_hdd.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/format_hdd.dir/build.make CMakeFiles/format_hdd.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/format_hdd.dir/build.make CMakeFiles/format_hdd.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=3 "Built target format_hdd"
-.PHONY : CMakeFiles/format_hdd.dir/all
+src/bootloader/stage1/CMakeFiles/build_stage1.dir/all:
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/build_stage1.dir/build.make src/bootloader/stage1/CMakeFiles/build_stage1.dir/depend
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/build_stage1.dir/build.make src/bootloader/stage1/CMakeFiles/build_stage1.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=1 "Built target build_stage1"
+.PHONY : src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/format_hdd.dir/rule: cmake_check_build_system
+src/bootloader/stage1/CMakeFiles/build_stage1.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 1
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/format_hdd.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 0
-.PHONY : CMakeFiles/format_hdd.dir/rule
+.PHONY : src/bootloader/stage1/CMakeFiles/build_stage1.dir/rule
 
 # Convenience name for target.
-format_hdd: CMakeFiles/format_hdd.dir/rule
-.PHONY : format_hdd
+build_stage1: src/bootloader/stage1/CMakeFiles/build_stage1.dir/rule
+.PHONY : build_stage1
 
 # codegen rule for target.
-CMakeFiles/format_hdd.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/format_hdd.dir/build.make CMakeFiles/format_hdd.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=3 "Finished codegen for target format_hdd"
-.PHONY : CMakeFiles/format_hdd.dir/codegen
+src/bootloader/stage1/CMakeFiles/build_stage1.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/build_stage1.dir/build.make src/bootloader/stage1/CMakeFiles/build_stage1.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=1 "Finished codegen for target build_stage1"
+.PHONY : src/bootloader/stage1/CMakeFiles/build_stage1.dir/codegen
 
 # clean rule for target.
-CMakeFiles/format_hdd.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/format_hdd.dir/build.make CMakeFiles/format_hdd.dir/clean
-.PHONY : CMakeFiles/format_hdd.dir/clean
-
-#=============================================================================
-# Target rules for target src/bootloader/stage1/CMakeFiles/stage1.bin.dir
-
-# All Build rule for target.
-src/bootloader/stage1/CMakeFiles/stage1.bin.dir/all:
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/stage1.bin.dir/build.make src/bootloader/stage1/CMakeFiles/stage1.bin.dir/depend
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/stage1.bin.dir/build.make src/bootloader/stage1/CMakeFiles/stage1.bin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=43 "Built target stage1.bin"
-.PHONY : src/bootloader/stage1/CMakeFiles/stage1.bin.dir/all
-
-# Build rule for subdir invocation for target.
-src/bootloader/stage1/CMakeFiles/stage1.bin.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 1
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage1/CMakeFiles/stage1.bin.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 0
-.PHONY : src/bootloader/stage1/CMakeFiles/stage1.bin.dir/rule
-
-# Convenience name for target.
-stage1.bin: src/bootloader/stage1/CMakeFiles/stage1.bin.dir/rule
-.PHONY : stage1.bin
-
-# codegen rule for target.
-src/bootloader/stage1/CMakeFiles/stage1.bin.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/stage1.bin.dir/build.make src/bootloader/stage1/CMakeFiles/stage1.bin.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=43 "Finished codegen for target stage1.bin"
-.PHONY : src/bootloader/stage1/CMakeFiles/stage1.bin.dir/codegen
-
-# clean rule for target.
-src/bootloader/stage1/CMakeFiles/stage1.bin.dir/clean:
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/stage1.bin.dir/build.make src/bootloader/stage1/CMakeFiles/stage1.bin.dir/clean
-.PHONY : src/bootloader/stage1/CMakeFiles/stage1.bin.dir/clean
+src/bootloader/stage1/CMakeFiles/build_stage1.dir/clean:
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage1/CMakeFiles/build_stage1.dir/build.make src/bootloader/stage1/CMakeFiles/build_stage1.dir/clean
+.PHONY : src/bootloader/stage1/CMakeFiles/build_stage1.dir/clean
 
 #=============================================================================
 # Target rules for target src/bootloader/stage2/CMakeFiles/stage2.bin.dir
@@ -254,7 +221,7 @@ src/bootloader/stage1/CMakeFiles/stage1.bin.dir/clean:
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all:
 	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/depend
 	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=44,45,46,47,48,49,50,51,52,53,54 "Built target stage2.bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=42,43,44,45,46,47,48,49,50,51,52 "Built target stage2.bin"
 .PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
 
 # Build rule for subdir invocation for target.
@@ -271,7 +238,7 @@ stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule
 # codegen rule for target.
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=44,45,46,47,48,49,50,51,52,53,54 "Finished codegen for target stage2.bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=42,43,44,45,46,47,48,49,50,51,52 "Finished codegen for target stage2.bin"
 .PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen
 
 # clean rule for target.
@@ -286,7 +253,7 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/clean:
 src/kernel/CMakeFiles/kernel.bin.dir/all:
 	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/depend
 	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42 "Built target kernel.bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41 "Built target kernel.bin"
 .PHONY : src/kernel/CMakeFiles/kernel.bin.dir/all
 
 # Build rule for subdir invocation for target.
@@ -303,7 +270,7 @@ kernel.bin: src/kernel/CMakeFiles/kernel.bin.dir/rule
 # codegen rule for target.
 src/kernel/CMakeFiles/kernel.bin.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42 "Finished codegen for target kernel.bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41 "Finished codegen for target kernel.bin"
 .PHONY : src/kernel/CMakeFiles/kernel.bin.dir/codegen
 
 # clean rule for target.

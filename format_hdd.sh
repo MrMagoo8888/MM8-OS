@@ -28,10 +28,17 @@ if [ -z "$LOOP_DEV" ]; then
     exit 1
 fi
 
-echo "Creating FAT32 filesystem on $LOOP_DEV..."
-# We use --mbr=y to write a Master Boot Record (MBR) to the disk image.
-# This creates a partition table and the 0xAA55 boot signature, which is required for the disk to be recognized as a valid, formatted drive.
-mkfs.fat -F 16 --mbr=y "$LOOP_DEV"
+echo "Creating FAT16 filesystem on $LOOP_DEV..."
+# The --mbr=no flag is crucial. It tells mkfs.fat to format the entire device
+# as a single volume without a partition table, making it a "superfloppy".
+mkfs.fat -F 16 -n "MM8OS_HDD" --mbr=no "$LOOP_DEV"
+
+echo "Writing custom bootloader to MBR..."
+# 1. Write a JMP instruction at the start of the sector
+printf '\xeb\x3c\x90' | dd of="$LOOP_DEV" bs=1 count=3 conv=notrunc
+# 2. Write our bootloader code, skipping the BPB area.
+#    bs=1 count=450 skip=62: Skips the 62-byte BPB area in our assembled file.
+dd if="build/stage1.bin" of="$LOOP_DEV" bs=1 count=450 skip=62 seek=62 conv=notrunc
 
 echo "Creating mount point $MOUNT_POINT..."
 mkdir -p "$MOUNT_POINT"
@@ -39,20 +46,9 @@ mkdir -p "$MOUNT_POINT"
 echo "Mounting $LOOP_DEV to $MOUNT_POINT..."
 mount "$LOOP_DEV" "$MOUNT_POINT"
 
-echo "Copying test files to the disk image..."
-cp "$TEST_FILE" "$MOUNT_POINT/test.txt"
-
-cat > "$MOUNT_POINT/test.json" << EOL
-{
-    "message": "Hello from JSON!",
-    "kernel": "MM8-OS",
-    "year": 2025,
-    "is_awesome": true,
-    "features": [
-        "FAT32", "malloc", "cJSON"
-    ]
-}
-EOL
+echo "Copying OS files to the disk image..."
+cp "build/src/bootloader/stage2/stage2.bin" "$MOUNT_POINT/STAGE2.BIN"
+cp "build/src/kernel/kernel.bin" "$MOUNT_POINT/KERNEL.BIN"
 
 echo "Unmounting and detaching loopback device..."
 umount "$MOUNT_POINT"
@@ -60,4 +56,4 @@ losetup -d "$LOOP_DEV"
 
 echo ""
 echo "Hard disk image formatted successfully."
-echo "You can now run './run.sh' and use the 'read /test.txt' command."
+echo "You can now run './run.sh' to boot from the hard disk."

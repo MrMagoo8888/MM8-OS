@@ -70,7 +70,7 @@ src/bootloader/stage1/CMakeFiles/stage1.bin: stage1.bin
 
 stage1.bin: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage1/boot.asm
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Assembling stage1.bin"
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1 && /usr/bin/nasm /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage1/boot.asm -f bin -o /home/mm8/Documents/OS/MM8/MM8-OS/build/stage1.bin
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1 && sh -c "/usr/bin/nasm /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage1/boot.asm -f bin -o /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1/boot.tmp &&             dd if=/dev/zero of=/home/mm8/Documents/OS/MM8/MM8-OS/build/stage1.bin bs=512 count=1 &&             dd if=/home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1/boot.tmp of=/home/mm8/Documents/OS/MM8/MM8-OS/build/stage1.bin conv=notrunc &&             printf '\\\\x55\\\\xaa' | dd of=/home/mm8/Documents/OS/MM8/MM8-OS/build/stage1.bin bs=1 seek=510 conv=notrunc"
 
 src/bootloader/stage1/CMakeFiles/stage1.bin.dir/codegen:
 .PHONY : src/bootloader/stage1/CMakeFiles/stage1.bin.dir/codegen

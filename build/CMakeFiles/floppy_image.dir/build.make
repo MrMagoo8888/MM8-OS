@@ -68,28 +68,13 @@ include CMakeFiles/floppy_image.dir/progress.make
 
 CMakeFiles/floppy_image: src/bootloader/stage2/stage2.bin
 CMakeFiles/floppy_image: src/kernel/kernel.bin
-CMakeFiles/floppy_image: main_hdd.img
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building main_floppy.img"
-	/usr/bin/cmake -E echo "--> Creating Floppy Image: /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img"
-	dd if=/dev/zero of=/home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img bs=512 count=2880
-	mkfs.fat -F 12 -n MM8OS /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img
-	dd if=/home/mm8/Documents/OS/MM8/MM8-OS/build/stage1.bin of=/home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img conv=notrunc
-	mcopy -i /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2/stage2.bin ::stage2.bin
-	mcopy -i /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img /home/mm8/Documents/OS/MM8/MM8-OS/build/src/kernel/kernel.bin ::kernel.bin
-	mcopy -i /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img /home/mm8/Documents/OS/MM8/MM8-OS/test.txt ::test.txt
-	mcopy -i /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img /home/mm8/Documents/OS/MM8/MM8-OS/test.json ::test.json
-	mmd -i /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img ::mydir
-	mcopy -i /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img /home/mm8/Documents/OS/MM8/MM8-OS/test.txt ::mydir/test.txt
-
-main_hdd.img:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Creating empty 32MB HDD image"
-	dd if=/dev/zero of=/home/mm8/Documents/OS/MM8/MM8-OS/build/main_hdd.img bs=1M count=32
+	sh -c "         echo '--> Creating Floppy Image: /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img' &&         dd if=/dev/zero of=/home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img bs=512 count=2880 &&         mkfs.fat -F 12 -n 'MM8OS' -r 224 /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img >/dev/null 2>&1 &&         dd if=/home/mm8/Documents/OS/MM8/MM8-OS/build/stage1.bin of=/home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img conv=notrunc >/dev/null 2>&1 &&         mcopy -i /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2/stage2.bin '::STAGE2.BIN' >/dev/null 2>&1 &&         mcopy -i /home/mm8/Documents/OS/MM8/MM8-OS/build/main_floppy.img /home/mm8/Documents/OS/MM8/MM8-OS/build/src/kernel/kernel.bin '::KERNEL.BIN' >/dev/null 2>&1"
 
 CMakeFiles/floppy_image.dir/codegen:
 .PHONY : CMakeFiles/floppy_image.dir/codegen
 
 floppy_image: CMakeFiles/floppy_image
-floppy_image: main_hdd.img
 floppy_image: CMakeFiles/floppy_image.dir/build.make
 .PHONY : floppy_image
 

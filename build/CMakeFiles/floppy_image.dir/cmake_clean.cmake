@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/floppy_image"
-  "main_hdd.img"
 )
 
 # Per-language clean rules from dependency scanning.

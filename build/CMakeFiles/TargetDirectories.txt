@@ -1,8 +1,7 @@
 /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles/floppy_image.dir
-/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles/format_hdd.dir
 /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles/edit_cache.dir
 /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles/rebuild_cache.dir
-/home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1/CMakeFiles/stage1.bin.dir
+/home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1/CMakeFiles/build_stage1.dir
 /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1/CMakeFiles/edit_cache.dir
 /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1/CMakeFiles/rebuild_cache.dir
 /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2/CMakeFiles/stage2.bin.dir
