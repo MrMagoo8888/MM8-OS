@@ -1,0 +1,10 @@
+# Hashes of file build rules.
+837fff18da2a605f7b44348b86c3e2e6 CMakeFiles/floppy_image
+24c21614b300553c30301c8fd9040422 fat_tool_build-prefix/src/fat_tool_build-stamp/fat_tool_build-configure
+6d93a0133e93830ae24832c481100f6a fat_tool_build-prefix/src/fat_tool_build-stamp/fat_tool_build-download
+efa248be25a5427331b321b0f8b1bd4e fat_tool_build-prefix/src/fat_tool_build-stamp/fat_tool_build-mkdir
+56900b7f81ea417a633f524d434555c4 fat_tool_build-prefix/src/fat_tool_build-stamp/fat_tool_build-patch
+fec642530c452fa75c974778400090e4 fat_tool_build-prefix/src/fat_tool_build-stamp/fat_tool_build-update
+136df4092952ab8d54e305e6bef9a1bd src/bootloader/stage1/CMakeFiles/stage1.bin
+836bf97e1dc9edc44efdd563ba38d141 src/kernel/arch/i686/isrs_gen.c
+631e6558dd72725611b6f4e5ed9f2884 stage1.bin

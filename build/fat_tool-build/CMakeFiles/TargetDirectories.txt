@@ -1,0 +1,7 @@
+/home/mm8/Documents/OS/MM8/MM8-OS/build/fat_tool-build/CMakeFiles/fat.dir
+/home/mm8/Documents/OS/MM8/MM8-OS/build/fat_tool-build/CMakeFiles/edit_cache.dir
+/home/mm8/Documents/OS/MM8/MM8-OS/build/fat_tool-build/CMakeFiles/rebuild_cache.dir
+/home/mm8/Documents/OS/MM8/MM8-OS/build/fat_tool-build/CMakeFiles/list_install_components.dir
+/home/mm8/Documents/OS/MM8/MM8-OS/build/fat_tool-build/CMakeFiles/install.dir
+/home/mm8/Documents/OS/MM8/MM8-OS/build/fat_tool-build/CMakeFiles/install/local.dir
+/home/mm8/Documents/OS/MM8/MM8-OS/build/fat_tool-build/CMakeFiles/install/strip.dir

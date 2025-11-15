@@ -1,0 +1,1 @@
+/usr/bin/cc -Wl,--dependency-file=CMakeFiles/fat.dir/link.d CMakeFiles/fat.dir/fat.c.o -o fat
