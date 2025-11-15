@@ -58,36 +58,38 @@ entry:
     mov ds, ax
     mov ss, ax
 
-    ; --- VBE DEBUG: Draw one white pixel at (0,0) ---
+    ; --- VBE DEBUG: Draw one white pixel at (0,16) ---
     ; If this pixel appears, VBE setup is correct. The problem is likely
     ; in the kernel loading or the kernel's drawing code.
-    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
+    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address (pixel at 0,0)
+    add edi, 64                           ; Move down 64 bytes (pixel at 0,16) to avoid overwriting bootloader debug info
     mov dword [edi], 0x00FFFFFF           ; Write a white pixel (0x00RRGGBB for 32bpp)
     ; --- END VBE DEBUG ---
 
     ; Load the kernel from disk
     ; This logic is moved from the old bootloader's main.c
     ; Set up a temporary stack for C calls.
-    ; 0x7C00 is where stage1 bootloader is. Stack grows down, so using 0x7C00
-    ; would corrupt stage2 code/data below it. Let's use a safer address.
-    mov esp, 0x7B00
+    ; The bootloader is loaded at 0x8000, so we need a stack far away from it.
+    ; 0x70000 is a safe area in low memory.
+    mov esp, 0x70000
+    mov ebp, esp ; IMPORTANT: Set up base pointer for C function stack frames
 
     push dword [g_BootDrive]
     lea eax, [disk_struct]
     push eax
     call DISK_Initialize
-    add esp, 8
+    add esp, 8 ; Clean up stack (2 dword arguments)
 
     lea eax, [disk_struct]
     push eax
     call FAT_Initialize
-    add esp, 4
+    add esp, 4 ; Clean up stack (1 dword argument)
 
     push dword kernel_filename
     lea eax, [disk_struct]
     push eax
     call FAT_Open
-    add esp, 8
+    add esp, 8 ; Clean up stack (2 dword arguments)
     mov [fd_struct], eax
 
     call load_kernel_loop
@@ -97,19 +99,30 @@ entry:
     ; close to the bootloader code and data area (loaded at 0x500).
     mov esp, 0x90000
 
+    ; --- PRE-KERNEL CALL CANARY ---
+    ; If this white pixel appears, it means kernel loading is complete and
+    ; we are about to jump to the kernel's entry point.
+    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
+    ; add edi, 8                           ; Move to pixel (2,0)
+    mov dword [edi], 0x00FFFFFF          ; Write a white pixel
+
     cli ; VERY IMPORTANT: Disable interrupts before jumping to kernel
-    push vbe_screen
+    cld ; IMPORTANT: Ensure string instructions/C code increment pointers correctly
+    mov eax, vbe_screen ; Load the ADDRESS of the vbe_screen struct
+    push eax            ; Push the pointer to the struct
     xor edx, edx
     mov dl, [g_BootDrive]
-    push edx
+    push edx            ; Push the boot drive number
     call 0x100000 ; Call kernel at its loaded address
 
     ; --- KERNEL RETURN/FAIL DEBUG ---
-    ; If this red pixel appears next to the white one, it means the kernel
+    ; If this red pixel appears, it means the kernel
     ; call returned, which indicates a problem with the kernel itself.
     mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
-    add edi, 4                            ; Move to the next pixel (assuming 32bpp)
-    mov dword [edi], 0x00FF0000           ; Write a red pixel
+    add edi, 4                           ; Move to the next pixel (x=1, y=0)
+    mov dword [edi], 0x000000FF          ; Write a red pixel (0x00RRGGBB for 32bpp)
+    
+    ; --- END KERNEL RETURN/FAIL DEBUG ---
 
     cli
     hlt
@@ -177,8 +190,6 @@ LoadIDT:
     [bits 16]
     lidt [g_IDTDesc]
     ret
-
-
 
 KbdControllerDataPort               equ 0x60
 KbdControllerCommandPort            equ 0x64
@@ -386,8 +397,11 @@ load_kernel_loop:
     ret
 
 section .data
+kernel_filename: db "/kernel.bin", 0
+
+section .bss
+
 ; This structure holds the VBE mode information passed to the kernel.
-; Moved from .bss to .data to prevent the kernel's BSS clear from zeroing it.
 vbe_screen:
     .width           resw 1
     .height          resw 1
@@ -395,10 +409,6 @@ vbe_screen:
     .bytes_per_pixel resd 1
     .bytes_per_line  resw 1
     .physical_buffer resd 1
-
-kernel_filename: db "/kernel.bin", 0
-
-section .bss
 
 vbe_info_block:
     .signature       resb 4

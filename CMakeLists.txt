@@ -20,7 +20,7 @@ add_custom_target(floppy_image ALL
     # Chain all image creation steps into a single command to ensure execution order.
     COMMAND sh -c " \
         echo '--> Creating Floppy Image: ${FLOPPY_IMG}' && \
-        dd if=/dev/zero of=${FLOPPY_IMG} bs=512 count=2880 && \
+        dd if=/dev/zero of=${FLOPPY_IMG} bs=512 count=2880 >/dev/null 2>&1 && \
         mkfs.fat -F 12 -n 'MM8OS' -r 224 ${FLOPPY_IMG} >/dev/null 2>&1 && \
         dd if=${CMAKE_BINARY_DIR}/stage1.bin of=${FLOPPY_IMG} conv=notrunc >/dev/null 2>&1 && \
         mcopy -i ${FLOPPY_IMG} ${CMAKE_BINARY_DIR}/src/bootloader/stage2/stage2.bin '::STAGE2.BIN' >/dev/null 2>&1 && \

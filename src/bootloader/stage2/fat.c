@@ -223,7 +223,8 @@ uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
             // Special handling for root directory
             if (fd->Public.Handle == ROOT_DIRECTORY_HANDLE)
             {
-                ++fd->CurrentCluster;
+                // For the root directory, the cluster number is the LBA of the next sector
+                fd->CurrentCluster = fd->FirstCluster + (fd->Public.Position / SECTOR_SIZE);
 
                 // read next sector
                 if (!DISK_ReadSectors(disk, fd->CurrentCluster, 1, fd->Buffer))

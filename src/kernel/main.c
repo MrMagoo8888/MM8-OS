@@ -51,7 +51,7 @@ void add_to_history(const char* command) {
 
 // Your kernel's entry point
 // The arguments are on the stack, so we can access them as function parameters.
-void __attribute__((section(".entry"))) start(uint16_t bootDrive, vbe_screen_t* vbe_info)
+void kmain(uint16_t bootDrive, vbe_screen_t* vbe_info)
 {
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
 
