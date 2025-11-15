@@ -130,6 +130,19 @@ floppy_image/fast:
 .PHONY : floppy_image/fast
 
 #=============================================================================
+# Target rules for targets named format_hdd
+
+# Build rule for target.
+format_hdd: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 format_hdd
+.PHONY : format_hdd
+
+# fast build rule for target.
+format_hdd/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/format_hdd.dir/build.make CMakeFiles/format_hdd.dir/build
+.PHONY : format_hdd/fast
+
+#=============================================================================
 # Target rules for targets named stage1.bin
 
 # Build rule for target.
@@ -177,6 +190,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... floppy_image"
+	@echo "... format_hdd"
 	@echo "... stage1.bin"
 	@echo "... kernel.bin"
 	@echo "... stage2.bin"

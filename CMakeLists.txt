@@ -11,11 +11,18 @@ add_subdirectory(src/kernel)
 # --- Custom Target for Floppy Image Creation ---
 # This replaces the floppy_image target from your Makefile
 
-set(FLOPPY_IMG ${CMAKE_BINARY_DIR}/main_floppy.img)
+set(FLOPPY_IMG  ${CMAKE_BINARY_DIR}/main_floppy.img)
+set(HDD_IMG     ${CMAKE_BINARY_DIR}/main_hdd.img)
+
+# --- Create an empty HDD image file ---
+# This command runs as part of the default build to ensure the file exists.
+add_custom_command(OUTPUT ${HDD_IMG}
+    COMMAND dd if=/dev/zero of=${HDD_IMG} bs=1M count=32
+    COMMENT "Creating empty 32MB HDD image")
 
 add_custom_target(floppy_image ALL
     # This target depends on the bootloader and kernel binaries
-    DEPENDS stage1.bin stage2.bin kernel.bin
+    DEPENDS stage1.bin stage2.bin kernel.bin ${HDD_IMG}
 
     # The sequence of commands to build the image
     COMMAND ${CMAKE_COMMAND} -E echo "--> Creating Floppy Image: ${FLOPPY_IMG}"
@@ -34,4 +41,12 @@ add_custom_target(floppy_image ALL
     # Use VERBATIM to handle shell redirection and special characters correctly
     VERBATIM
     COMMENT "Building main_floppy.img"
+)
+
+# --- Custom target to format the HDD ---
+# This target is NOT part of the default build and must be run manually.
+# It requires sudo because it uses losetup and mount.
+add_custom_target(format_hdd
+    COMMAND sudo ${CMAKE_SOURCE_DIR}/format_hdd.sh
+    COMMENT "Formatting HDD image (requires sudo). Run with: cmake --build build --target format_hdd"
 )

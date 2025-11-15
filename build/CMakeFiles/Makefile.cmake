@@ -57,6 +57,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/floppy_image.dir/DependInfo.cmake"
+  "CMakeFiles/format_hdd.dir/DependInfo.cmake"
   "src/bootloader/stage1/CMakeFiles/stage1.bin.dir/DependInfo.cmake"
   "src/bootloader/stage2/CMakeFiles/stage2.bin.dir/DependInfo.cmake"
   "src/kernel/CMakeFiles/kernel.bin.dir/DependInfo.cmake"

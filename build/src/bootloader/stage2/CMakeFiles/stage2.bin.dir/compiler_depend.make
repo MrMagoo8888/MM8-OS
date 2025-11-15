@@ -13,6 +13,8 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/disk.c.obj: /home/mm8/Documents/
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdio.h \
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.h
 
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/entry.asm
+
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/fat.c.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/fat.c \
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/ctype.h \
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/disk.h \
@@ -57,6 +59,10 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj: /home/mm8/Documen
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdint.h \
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.h
 
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.asm
+
+
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.asm:
 
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.c:
 
@@ -69,10 +75,6 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj: /home/mm8/Documen
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/main.c:
 
 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/include/stddef.h:
-
-/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.h:
-
-/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/string.h:
 
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/ctype.h:
 
@@ -97,6 +99,12 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj: /home/mm8/Documen
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/fat.h:
 
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.h:
+
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.h:
+
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/string.h:
+
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/entry.asm:
 
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/fat.c:
 
