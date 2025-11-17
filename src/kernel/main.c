@@ -49,29 +49,18 @@ void add_to_history(const char* command) {
     }
 }
 
-// Your kernel's entry point
-// The arguments are on the stack, so we can access them as function parameters.
-void kmain(uint16_t bootDrive, vbe_screen_t* vbe_info)
-{
-    memset(&__bss_start, 0, (&__end) - (&__bss_start));
+void kernel_main(vbe_screen_t* vbe_info, uint32_t boot_drive) {
+    // Cast the physical buffer address to a volatile pointer.
+    volatile uint32_t* framebuffer = (volatile uint32_t*)vbe_info->physical_buffer;
 
-    // Cast the framebuffer address to a pointer we can use
-    // Assuming vbe_info->physical_buffer points to the start of the framebuffer
-    unsigned int* framebuffer = (unsigned int*)vbe_info->physical_buffer;
-    
-    // Calculate the total number of pixels on the screen
-    unsigned int total_pixels = vbe_info->width * vbe_info->height;
-    
-    // Define a color (e.g., blue in 0x00RRGGBB format)
-    unsigned int blue = 0x000000FF; // ARGB, so 0x00RRGGBB
+    // Calculate the memory offset for the pixel at (x=20, y=20).
+    uint32_t pixels_per_line = vbe_info->bytes_per_line / vbe_info->bytes_per_pixel;
+    uint32_t pixel_offset = (20 * pixels_per_line) + 20;
 
-    // Loop through every pixel and set it to our color
-    for (unsigned int i = 0; i < total_pixels; i++) {
-        framebuffer[i] = blue;
-    }
-    
-    // At this point, the screen should be blue.
-    // We halt the CPU to prevent it from executing random memory.
+    // Draw a bright green pixel.
+    framebuffer[pixel_offset] = 0x0000FF00; // 0x00RRGGBB
+
+    // Halt the system
     for (;;) {
         __asm__("hlt");
     }

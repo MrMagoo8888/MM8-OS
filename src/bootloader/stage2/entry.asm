@@ -35,6 +35,7 @@ entry:
     mov bx, 768
     mov cl, 32
     call vbe_set_mode
+    jc .vbe_failed ; If VBE setup fails, print an error and halt.
 
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
@@ -53,7 +54,7 @@ entry:
     ; we are now in protected mode!
     [bits 32]
     
-    ; 6 - setup segment registers
+    ; 6 - setup segment registers ; ONE PIXEl IS THE BEST THING IN MY LIFE RN I HAVE ONE!!
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
@@ -70,9 +71,8 @@ entry:
     ; This logic is moved from the old bootloader's main.c
     ; Set up a temporary stack for C calls.
     ; The bootloader is loaded at 0x8000, so we need a stack far away from it.
-    ; 0x70000 is a safe area in low memory.
-    mov esp, 0x70000
-    mov ebp, esp ; IMPORTANT: Set up base pointer for C function stack frames
+    mov esp, 0x70000 ; Stack grows downwards, so start it at the top of a safe region.
+    xor ebp, ebp     ; C functions will set up their own base pointer. Zeroing it is good practice.
 
     push dword [g_BootDrive]
     lea eax, [disk_struct]
@@ -103,27 +103,46 @@ entry:
     ; If this white pixel appears, it means kernel loading is complete and
     ; we are about to jump to the kernel's entry point.
     mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
-    ; add edi, 8                           ; Move to pixel (2,0)
-    mov dword [edi], 0x00FFFFFF          ; Write a white pixel
+    add edi, 8                           ; Move to pixel (2,0) to not overwrite the first debug pixel
+    ;mov dword [edi], 0x0000FF00          ; Write a green pixel
+    mov dword [edi], 0x00FFFFFF 
 
     cli ; VERY IMPORTANT: Disable interrupts before jumping to kernel
     cld ; IMPORTANT: Ensure string instructions/C code increment pointers correctly
-    mov eax, vbe_screen ; Load the ADDRESS of the vbe_screen struct
-    push eax            ; Push the pointer to the struct
     xor edx, edx
     mov dl, [g_BootDrive]
     push edx            ; Push the boot drive number
+    mov eax, vbe_screen ; Load the ADDRESS of the vbe_screen struct (the info for the kernel)
+    push eax            ; Push the pointer to the struct
     call 0x100000 ; Call kernel at its loaded address
 
     ; --- KERNEL RETURN/FAIL DEBUG ---
     ; If this red pixel appears, it means the kernel
     ; call returned, which indicates a problem with the kernel itself.
     mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
-    add edi, 4                           ; Move to the next pixel (x=1, y=0)
-    mov dword [edi], 0x000000FF          ; Write a red pixel (0x00RRGGBB for 32bpp)
-    
+    add edi, 12                          ; Move to the next pixel (x=3, y=0)
+    ; mov dword [edi], 0x000000FF          ; Write a red pixel (0x00RRGGBB for 32bpp)
+    mov dword [edi], 0x00FFFFFF 
     ; --- END KERNEL RETURN/FAIL DEBUG ---
 
+    cli
+    hlt
+
+.vbe_failed:
+    ; If VBE fails, we can't draw pixels. Fall back to text mode to show an error.
+    mov ax, 0x0003  ; Standard 80x25 text mode
+    int 0x10
+
+    mov si, vbe_error_msg
+    mov ah, 0x0E    ; Teletype output function
+    mov bh, 0       ; Page number
+.char_loop:
+    lodsb           ; Load character from SI into AL
+    test al, al     ; Check for null terminator
+    jz .halt
+    int 0x10        ; Print character
+    jmp .char_loop
+.halt:
     cli
     hlt
 
@@ -397,19 +416,11 @@ load_kernel_loop:
     ret
 
 section .data
+vbe_error_msg: db "VBE Error: Failed to set graphics mode.", 0
 kernel_filename: db "/kernel.bin", 0
 
 section .bss
-
 ; This structure holds the VBE mode information passed to the kernel.
-vbe_screen:
-    .width           resw 1
-    .height          resw 1
-    .bpp             resb 1
-    .bytes_per_pixel resd 1
-    .bytes_per_line  resw 1
-    .physical_buffer resd 1
-
 vbe_info_block:
     .signature       resb 4
     .version         resw 1
@@ -456,6 +467,14 @@ mode_info_block:
     .dcf             resb 1
     .framebuffer     resd 1
                      resb 206
+
+vbe_screen:
+    .width           resw 1
+    .height          resw 1
+    .bpp             resb 1
+    .bytes_per_pixel resd 1
+    .bytes_per_line  resw 1
+    .physical_buffer resd 1
 
 disk_struct: resb 128 ; Reserve space for DISK struct
 fd_struct:   resd 1   ; Reserve space for FAT_File*
