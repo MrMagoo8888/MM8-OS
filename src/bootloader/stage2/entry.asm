@@ -13,6 +13,7 @@ extern FAT_Read
 extern FAT_Close
 
 global entry
+global vbe_screen
 
 entry:
     cli
@@ -60,12 +61,12 @@ entry:
     mov ss, ax
 
     ; --- VBE DEBUG: Draw one white pixel at (0,16) ---
-    ; If this pixel appears, VBE setup is correct. The problem is likely
-    ; in the kernel loading or the kernel's drawing code.
-    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address (pixel at 0,0)
-    add edi, 64                           ; Move down 64 bytes (pixel at 0,16) to avoid overwriting bootloader debug info
-    mov dword [edi], 0x00FFFFFF           ; Write a white pixel (0x00RRGGBB for 32bpp)
-    ; --- END VBE DEBUG ---
+    ; If these pixels appear, VBE setup is correct.
+    ; We draw Red, Green, Blue at (0,0), (1,0), (2,0)
+    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
+    mov dword [edi],     0x00FF0000      ; Red pixel at (0,0)
+    mov dword [edi + 4], 0x0000FF00      ; Green pixel at (1,0)
+    mov dword [edi + 8], 0x000000FF      ; Blue pixel at (2,0)
 
     ; Load the kernel from disk
     ; This logic is moved from the old bootloader's main.c
@@ -91,7 +92,8 @@ entry:
     call FAT_Open
     add esp, 8 ; Clean up stack (2 dword arguments)
     mov [fd_struct], eax
-
+    
+    push dword MEMORY_KERNEL_ADDR
     call load_kernel_loop
 
     ; Now, call the loaded kernel with the correct arguments
@@ -101,11 +103,9 @@ entry:
 
     ; --- PRE-KERNEL CALL CANARY ---
     ; If this white pixel appears, it means kernel loading is complete and
-    ; we are about to jump to the kernel's entry point.
+    ; we are about to jump to the kernel's entry point. We draw white at (3,0).
     mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
-    add edi, 8                           ; Move to pixel (2,0) to not overwrite the first debug pixel
-    ;mov dword [edi], 0x0000FF00          ; Write a green pixel
-    mov dword [edi], 0x00FFFFFF 
+    mov dword [edi + 12], 0x00FFFFFF      ; Write a white pixel
 
     cli ; VERY IMPORTANT: Disable interrupts before jumping to kernel
     cld ; IMPORTANT: Ensure string instructions/C code increment pointers correctly
@@ -118,11 +118,25 @@ entry:
 
     ; --- KERNEL RETURN/FAIL DEBUG ---
     ; If this red pixel appears, it means the kernel
-    ; call returned, which indicates a problem with the kernel itself.
-    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
-    add edi, 12                          ; Move to the next pixel (x=3, y=0)
-    ; mov dword [edi], 0x000000FF          ; Write a red pixel (0x00RRGGBB for 32bpp)
-    mov dword [edi], 0x00FFFFFF 
+    ; call returned. We draw a large yellow square to indicate this.
+    mov edi, [vbe_screen.physical_buffer] ; EDI = Base framebuffer address
+    movzx ebx, word [vbe_screen.bytes_per_line] ; EBX = pitch (bytes per line)
+
+    mov ecx, 32 ; Height of the square (32 rows)
+.fail_y_loop:
+    push edi ; Save current line's starting address
+    push ecx ; Save outer loop counter
+
+    mov ecx, 32 ; Width of the square (32 pixels)
+.fail_x_loop:
+    mov dword [edi], 0x00FFFF00 ; Draw yellow pixel (Red+Green)
+    add edi, 4 ; Move to next pixel in the row
+    loop .fail_x_loop
+
+    pop ecx ; Restore outer loop counter
+    pop edi ; Restore line's starting address
+    add edi, ebx ; Move to the start of the next line
+    loop .fail_y_loop
     ; --- END KERNEL RETURN/FAIL DEBUG ---
 
     cli
@@ -217,6 +231,10 @@ KbdControllerEnableKeyboard         equ 0xAE
 KbdControllerReadCtrlOutputPort     equ 0xD0
 KbdControllerWriteCtrlOutputPort    equ 0xD1
 
+MEMORY_KERNEL_ADDR                  equ 0x100000
+MEMORY_LOAD_KERNEL                  equ 0x30000
+MEMORY_LOAD_SIZE                    equ 4096
+
 ScreenBuffer                        equ 0xB8000
 
 g_GDT:      ; NULL descriptor
@@ -254,15 +272,17 @@ g_GDT:      ; NULL descriptor
             db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
             db 0                        ; base high
 
-g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
-            dd g_GDT                    ; address of GDT
-
 g_IDT:      ; A basic, empty IDT. The kernel will fill this in.
 g_IDTDesc:  dw (g_IDTDesc - g_IDT - 1)  ; Limit (size of IDT)
             dd g_IDT                    ; Base address of IDT
 
 
 g_BootDrive: db 0
+
+g_GDT_end:
+g_GDTDesc:  dw g_GDT_end - g_GDT - 1    ; limit = size of GDT
+            dd g_GDT                    ; address of GDT
+
 
 graphicsSwitch: 
     ; switch to graphics mode 0x13
@@ -298,11 +318,13 @@ vbe_set_mode:
 
 find_mode:
 
-    push es
+    ; Set ES to CS so that the BIOS writes to our data segment.
+    mov ax, cs
+    mov es, ax
+
     mov ax, 0x4F00
     mov di, vbe_info_block
     int 0x10
-    pop es
     cmp ax, 0x4F
     jne .error
 
@@ -317,12 +339,14 @@ find_mode:
     cmp ax, 0xFFFF
     je .error
 
-    push es
     mov cx, ax
     mov ax, 0x4F01
+    ; IMPORTANT: Reset ES to our data segment before this BIOS call.
+    ; The BIOS will write to the buffer at ES:DI.
+    push cs
+    pop es
     mov di, mode_info_block
     int 0x10
-    pop es
     cmp ax, 0x4F
     jne .error
 
@@ -356,7 +380,7 @@ set_mode:
     mov [vbe_screen.height], ax
     mov al, [vbe_set_mode.bpp]
     mov [vbe_screen.bpp], al
-    movzx eax, al
+    movzx eax, al ; bpp (e.g., 32)
     shr eax, 3
     mov [vbe_screen.bytes_per_pixel], eax
     mov ax, [mode_info_block.pitch]
@@ -366,13 +390,12 @@ set_mode:
     mov eax, [mode_info_block.framebuffer]
     mov [vbe_screen.physical_buffer], eax ; ...and stores it in our vbe_screen struct.
 
-    push es
     mov ax, 0x4F02
     mov bx, [vbe_set_mode.mode]
     or bx, 0x4000 ; enable Linear Frame Buffer and clear video memory
-    mov di, 0
+    xor edi, edi ; Per VBE spec, ES:DI should be 0 if not passing CRTC info.
+                 ; Zeroing the full 32-bit register is good practice.
     int 0x10
-    pop es
     cmp ax, 0x4F
     jne .error
 
@@ -384,28 +407,30 @@ set_mode:
     ret
 
 load_kernel_loop:
-    ; Save registers we will modify, but NOT eax, as it holds the return value of FAT_Read
+    ; IN: [esp + 4] = Destination address
+    push ebp
+    mov ebp, esp
     push ecx
     push esi
     push edi
-    mov edi, 0x100000 ; EDI = Destination pointer (MEMORY_KERNEL_ADDR)
+    mov edi, [ebp + 8] ; EDI = Destination pointer from argument
 .loop:
     ; Arguments for FAT_Read: (disk, file, size, buffer)
-    push dword 0x30000 ; Buffer to read into (MEMORY_LOAD_KERNEL)
-    push dword 4096    ; Bytes to read per chunk (MEMORY_LOAD_SIZE)
-    push dword [fd_struct]
     lea eax, [disk_struct]
     push eax
+    push dword [fd_struct]
+    push dword MEMORY_LOAD_SIZE   ; Bytes to read per chunk
+    push dword MEMORY_LOAD_KERNEL ; Buffer to read into
     call FAT_Read
     add esp, 16
 
-    ; Check if FAT_Read returned 0 (end of file). This is how it knows when to stop.
-    test eax, eax
-    jz .done
+    ; Check if FAT_Read returned <= 0 (end of file or error).
+    test eax, eax      ; Sets SF if eax is negative, ZF if eax is zero
+    jle .done          ; Jump if Less or Equal to zero
 
     ; Copy the chunk from the load buffer to the final kernel address
     mov ecx, eax       ; ECX = Number of bytes read
-    mov esi, 0x30000   ; ESI = Source (MEMORY_LOAD_KERNEL)
+    mov esi, MEMORY_LOAD_KERNEL   ; ESI = Source
     rep movsb          ; Copy ECX bytes from [ESI] to [EDI]
 
     jmp .loop          ; Read the next chunk
@@ -413,9 +438,12 @@ load_kernel_loop:
     pop edi
     pop esi
     pop ecx
-    ret
+    mov esp, ebp
+    pop ebp
+    ret 4
 
 section .data
+
 vbe_error_msg: db "VBE Error: Failed to set graphics mode.", 0
 kernel_filename: db "/kernel.bin", 0
 

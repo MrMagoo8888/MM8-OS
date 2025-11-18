@@ -114,10 +114,24 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/fat.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/stage2.bin.dir/fat.c.s"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -S /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/fat.c -o CMakeFiles/stage2.bin.dir/fat.c.s
 
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/font.c
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj"
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -MD -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj -MF CMakeFiles/stage2.bin.dir/font.c.obj.d -o CMakeFiles/stage2.bin.dir/font.c.obj -c /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/font.c
+
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/stage2.bin.dir/font.c.i"
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -E /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/font.c > CMakeFiles/stage2.bin.dir/font.c.i
+
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/stage2.bin.dir/font.c.s"
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -S /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/font.c -o CMakeFiles/stage2.bin.dir/font.c.s
+
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/main.c
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -MD -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj -MF CMakeFiles/stage2.bin.dir/main.c.obj.d -o CMakeFiles/stage2.bin.dir/main.c.obj -c /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/main.c
 
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.i: cmake_force
@@ -131,7 +145,7 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.s: cmake_force
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/memory.c
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -MD -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj -MF CMakeFiles/stage2.bin.dir/memory.c.obj.d -o CMakeFiles/stage2.bin.dir/memory.c.obj -c /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/memory.c
 
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.i: cmake_force
@@ -145,7 +159,7 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.s: cmake_force
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdio.c
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -MD -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj -MF CMakeFiles/stage2.bin.dir/stdio.c.obj.d -o CMakeFiles/stage2.bin.dir/stdio.c.obj -c /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdio.c
 
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.i: cmake_force
@@ -159,7 +173,7 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.s: cmake_force
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/string.c
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -MD -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj -MF CMakeFiles/stage2.bin.dir/string.c.obj.d -o CMakeFiles/stage2.bin.dir/string.c.obj -c /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/string.c
 
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.i: cmake_force
@@ -173,7 +187,7 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.s: cmake_force
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.c
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -MD -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj -MF CMakeFiles/stage2.bin.dir/utility.c.obj.d -o CMakeFiles/stage2.bin.dir/utility.c.obj -c /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.c
 
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.i: cmake_force
@@ -184,16 +198,30 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/stage2.bin.dir/utility.c.s"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -S /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.c -o CMakeFiles/stage2.bin.dir/utility.c.s
 
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/vga_text.c
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj"
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -MD -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj -MF CMakeFiles/stage2.bin.dir/vga_text.c.obj.d -o CMakeFiles/stage2.bin.dir/vga_text.c.obj -c /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/vga_text.c
+
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/stage2.bin.dir/vga_text.c.i"
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -E /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/vga_text.c > CMakeFiles/stage2.bin.dir/vga_text.c.i
+
+src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/stage2.bin.dir/vga_text.c.s"
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -ffreestanding -nostdlib -S /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/vga_text.c -o CMakeFiles/stage2.bin.dir/vga_text.c.s
+
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/entry.asm
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building ASM_NASM object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building ASM_NASM object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /usr/bin/nasm $(ASM_NASM_INCLUDES) $(ASM_NASM_FLAGS) -f elf32 -MD CMakeFiles/stage2.bin.dir/entry.asm.obj.d -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj -o CMakeFiles/stage2.bin.dir/entry.asm.obj /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/entry.asm
 
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/flags.make
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.asm
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building ASM_NASM object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building ASM_NASM object src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && /usr/bin/nasm $(ASM_NASM_INCLUDES) $(ASM_NASM_FLAGS) -f elf32 -MD CMakeFiles/stage2.bin.dir/x86.asm.obj.d -MT src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj -o CMakeFiles/stage2.bin.dir/x86.asm.obj /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.asm
 
 # Object files for target stage2.bin
@@ -201,11 +229,13 @@ stage2_bin_OBJECTS = \
 "CMakeFiles/stage2.bin.dir/ctype.c.obj" \
 "CMakeFiles/stage2.bin.dir/disk.c.obj" \
 "CMakeFiles/stage2.bin.dir/fat.c.obj" \
+"CMakeFiles/stage2.bin.dir/font.c.obj" \
 "CMakeFiles/stage2.bin.dir/main.c.obj" \
 "CMakeFiles/stage2.bin.dir/memory.c.obj" \
 "CMakeFiles/stage2.bin.dir/stdio.c.obj" \
 "CMakeFiles/stage2.bin.dir/string.c.obj" \
 "CMakeFiles/stage2.bin.dir/utility.c.obj" \
+"CMakeFiles/stage2.bin.dir/vga_text.c.obj" \
 "CMakeFiles/stage2.bin.dir/entry.asm.obj" \
 "CMakeFiles/stage2.bin.dir/x86.asm.obj"
 
@@ -215,16 +245,18 @@ stage2_bin_EXTERNAL_OBJECTS =
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/ctype.c.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/disk.c.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/fat.c.obj
+src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj
+src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make
 src/bootloader/stage2/stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking C executable stage2.bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking C executable stage2.bin"
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage2 && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/stage2.bin.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

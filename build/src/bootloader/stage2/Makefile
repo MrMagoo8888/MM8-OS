@@ -210,6 +210,30 @@ fat.c.s:
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/fat.c.s
 .PHONY : fat.c.s
 
+font.obj: font.c.obj
+.PHONY : font.obj
+
+# target to build an object file
+font.c.obj:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj
+.PHONY : font.c.obj
+
+font.i: font.c.i
+.PHONY : font.i
+
+# target to preprocess a source file
+font.c.i:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.i
+.PHONY : font.c.i
+
+font.s: font.c.s
+.PHONY : font.s
+
+# target to generate assembly for a file
+font.c.s:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.s
+.PHONY : font.c.s
+
 main.obj: main.c.obj
 .PHONY : main.obj
 
@@ -330,6 +354,30 @@ utility.c.s:
 	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.s
 .PHONY : utility.c.s
 
+vga_text.obj: vga_text.c.obj
+.PHONY : vga_text.obj
+
+# target to build an object file
+vga_text.c.obj:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj
+.PHONY : vga_text.c.obj
+
+vga_text.i: vga_text.c.i
+.PHONY : vga_text.i
+
+# target to preprocess a source file
+vga_text.c.i:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.i
+.PHONY : vga_text.c.i
+
+vga_text.s: vga_text.c.s
+.PHONY : vga_text.s
+
+# target to generate assembly for a file
+vga_text.c.s:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.s
+.PHONY : vga_text.c.s
+
 x86.obj: x86.asm.obj
 .PHONY : x86.obj
 
@@ -357,6 +405,9 @@ help:
 	@echo "... fat.obj"
 	@echo "... fat.i"
 	@echo "... fat.s"
+	@echo "... font.obj"
+	@echo "... font.i"
+	@echo "... font.s"
 	@echo "... main.obj"
 	@echo "... main.i"
 	@echo "... main.s"
@@ -372,6 +423,9 @@ help:
 	@echo "... utility.obj"
 	@echo "... utility.i"
 	@echo "... utility.s"
+	@echo "... vga_text.obj"
+	@echo "... vga_text.i"
+	@echo "... vga_text.s"
 	@echo "... x86.obj"
 .PHONY : help
 

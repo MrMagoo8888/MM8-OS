@@ -47,6 +47,8 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj: /home/mm8/Documents
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdbool.h \
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdint.h \
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/stdio.h \
+  /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/vbe.h \
+  /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/vga_text.h \
   /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.h \
   /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/include/stdarg.h
 
@@ -62,9 +64,11 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj: /home/mm8/Documen
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.asm
 
 
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.c:
+
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/x86.asm:
 
-/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/utility.c:
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/vga_text.h:
 
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/string.c:
 
@@ -105,6 +109,8 @@ src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj: /home/mm8/Documents
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/string.h:
 
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/entry.asm:
+
+/home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/vbe.h:
 
 /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage2/fat.c:
 

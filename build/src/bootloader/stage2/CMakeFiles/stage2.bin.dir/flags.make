@@ -21,6 +21,8 @@ C_FLAGS =
 
 # Custom flags: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/fat.c.obj_FLAGS = -ffreestanding -nostdlib
 
+# Custom flags: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj_FLAGS = -ffreestanding -nostdlib
+
 # Custom flags: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj_FLAGS = -ffreestanding -nostdlib
 
 # Custom flags: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj_FLAGS = -ffreestanding -nostdlib
@@ -30,6 +32,8 @@ C_FLAGS =
 # Custom flags: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj_FLAGS = -ffreestanding -nostdlib
 
 # Custom flags: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj_FLAGS = -ffreestanding -nostdlib
+
+# Custom flags: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj_FLAGS = -ffreestanding -nostdlib
 
 # Custom flags: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj_FLAGS = -f elf32
 

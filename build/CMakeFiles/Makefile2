@@ -160,7 +160,7 @@ CMakeFiles/floppy_image.dir/all: src/kernel/CMakeFiles/kernel.bin.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/floppy_image.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 52
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 54
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/floppy_image.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 0
 .PHONY : CMakeFiles/floppy_image.dir/rule
@@ -221,12 +221,12 @@ src/bootloader/stage1/CMakeFiles/build_stage1.dir/clean:
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all:
 	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/depend
 	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=42,43,44,45,46,47,48,49,50,51,52 "Built target stage2.bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=42,43,44,45,46,47,48,49,50,51,52,53,54 "Built target stage2.bin"
 .PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
 
 # Build rule for subdir invocation for target.
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 11
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 13
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 0
 .PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule
@@ -238,7 +238,7 @@ stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule
 # codegen rule for target.
 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=42,43,44,45,46,47,48,49,50,51,52 "Finished codegen for target stage2.bin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=42,43,44,45,46,47,48,49,50,51,52,53,54 "Finished codegen for target stage2.bin"
 .PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen
 
 # clean rule for target.
