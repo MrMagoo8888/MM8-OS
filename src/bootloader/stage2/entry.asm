@@ -1,16 +1,9 @@
 bits 16
 
 section .entry
-
-extern __bss_start
-extern __end
-
-; C functions from our bootloader library
-extern DISK_Initialize
-extern FAT_Initialize
-extern FAT_Open
-extern FAT_Read
-extern FAT_Close
+ 
+; C entry point
+extern start
 
 global entry
 global vbe_screen
@@ -59,6 +52,9 @@ entry:
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
 
     ; --- VBE DEBUG: Draw one white pixel at (0,16) ---
     ; If these pixels appear, VBE setup is correct.
@@ -68,38 +64,13 @@ entry:
     mov dword [edi + 4], 0x0000FF00      ; Green pixel at (1,0)
     mov dword [edi + 8], 0x000000FF      ; Blue pixel at (2,0)
 
-    ; Load the kernel from disk
-    ; This logic is moved from the old bootloader's main.c
-    ; Set up a temporary stack for C calls.
-    ; The bootloader is loaded at 0x8000, so we need a stack far away from it.
+    ; Set up stack and call our C entry point
     mov esp, 0x70000 ; Stack grows downwards, so start it at the top of a safe region.
     xor ebp, ebp     ; C functions will set up their own base pointer. Zeroing it is good practice.
-
-    push dword [g_BootDrive]
-    lea eax, [disk_struct]
-    push eax
-    call DISK_Initialize
-    add esp, 8 ; Clean up stack (2 dword arguments)
-
-    lea eax, [disk_struct]
-    push eax
-    call FAT_Initialize
-    add esp, 4 ; Clean up stack (1 dword argument)
-
-    push dword kernel_filename
-    lea eax, [disk_struct]
-    push eax
-    call FAT_Open
-    add esp, 8 ; Clean up stack (2 dword arguments)
-    mov [fd_struct], eax
-    
-    push dword MEMORY_KERNEL_ADDR
-    call load_kernel_loop
-
-    ; Now, call the loaded kernel with the correct arguments
-    ; Set up a new, safe stack for the kernel. The old stack at 0x7B00 is too
-    ; close to the bootloader code and data area (loaded at 0x500).
-    mov esp, 0x90000
+    push word [g_BootDrive] ; Pass boot drive as argument to start()
+    call start
+    ; The start() function should not return. If it does, something is wrong.
+    ; We will fall through to the kernel return failure code.
 
     ; --- PRE-KERNEL CALL CANARY ---
     ; If this white pixel appears, it means kernel loading is complete and
@@ -107,14 +78,7 @@ entry:
     mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
     mov dword [edi + 12], 0x00FFFFFF      ; Write a white pixel
 
-    cli ; VERY IMPORTANT: Disable interrupts before jumping to kernel
-    cld ; IMPORTANT: Ensure string instructions/C code increment pointers correctly
-    xor edx, edx
-    mov dl, [g_BootDrive]
-    push edx            ; Push the boot drive number
-    mov eax, vbe_screen ; Load the ADDRESS of the vbe_screen struct (the info for the kernel)
-    push eax            ; Push the pointer to the struct
-    call 0x100000 ; Call kernel at its loaded address
+    ; The 'start' function in main.c now handles jumping to the kernel.
 
     ; --- KERNEL RETURN/FAIL DEBUG ---
     ; If this red pixel appears, it means the kernel
@@ -406,46 +370,9 @@ set_mode:
     stc
     ret
 
-load_kernel_loop:
-    ; IN: [esp + 4] = Destination address
-    push ebp
-    mov ebp, esp
-    push ecx
-    push esi
-    push edi
-    mov edi, [ebp + 8] ; EDI = Destination pointer from argument
-.loop:
-    ; Arguments for FAT_Read: (disk, file, size, buffer)
-    lea eax, [disk_struct]
-    push eax
-    push dword [fd_struct]
-    push dword MEMORY_LOAD_SIZE   ; Bytes to read per chunk
-    push dword MEMORY_LOAD_KERNEL ; Buffer to read into
-    call FAT_Read
-    add esp, 16
-
-    ; Check if FAT_Read returned <= 0 (end of file or error).
-    test eax, eax      ; Sets SF if eax is negative, ZF if eax is zero
-    jle .done          ; Jump if Less or Equal to zero
-
-    ; Copy the chunk from the load buffer to the final kernel address
-    mov ecx, eax       ; ECX = Number of bytes read
-    mov esi, MEMORY_LOAD_KERNEL   ; ESI = Source
-    rep movsb          ; Copy ECX bytes from [ESI] to [EDI]
-
-    jmp .loop          ; Read the next chunk
-.done:
-    pop edi
-    pop esi
-    pop ecx
-    mov esp, ebp
-    pop ebp
-    ret 4
-
 section .data
 
 vbe_error_msg: db "VBE Error: Failed to set graphics mode.", 0
-kernel_filename: db "/kernel.bin", 0
 
 section .bss
 ; This structure holds the VBE mode information passed to the kernel.
@@ -500,9 +427,8 @@ vbe_screen:
     .width           resw 1
     .height          resw 1
     .bpp             resb 1
+                     resb 3  ; Padding to align bytes_per_pixel to a 4-byte boundary
     .bytes_per_pixel resd 1
     .bytes_per_line  resw 1
+                     resb 2  ; Padding to align physical_buffer
     .physical_buffer resd 1
-
-disk_struct: resb 128 ; Reserve space for DISK struct
-fd_struct:   resd 1   ; Reserve space for FAT_File*

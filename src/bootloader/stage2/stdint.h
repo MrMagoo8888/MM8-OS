@@ -32,6 +32,9 @@
   #error "Unsupported architecture for custom stdint.h"
 #endif
 
+// Pointer-sized integer types
+typedef int32_t intptr_t;
+typedef uint32_t uintptr_t;
 // Add integer types for minimum/maximum sizes and pointer-related types
 // ... (e.g., INT8_MIN, INT8_MAX, UINTPTR_MAX, etc.)
 

@@ -52,14 +52,10 @@ void vga_text_scroll(uint32_t bg) {
            scroll_height * vbe_screen.bytes_per_line);
 
     // Clear the last row
-    uint32_t* last_row_start = (uint32_t*)(framebuffer + scroll_height * vbe_screen.bytes_per_line);
-    uint32_t pitch_dwords = vbe_screen.bytes_per_line / 4;
-
-    for (uint32_t y = 0; y < FONT_HEIGHT; y++) {
-        for (uint32_t x = 0; x < vbe_screen.width; x++) {
-            last_row_start[y * pitch_dwords + x] = bg;
-        }
-    }
+    uint8_t* last_row_start = framebuffer + scroll_height * vbe_screen.bytes_per_line;
+    uint32_t clear_size = FONT_HEIGHT * vbe_screen.bytes_per_line;
+    // This is less efficient than a proper memset32, but good enough for now.
+    memset(last_row_start, 0, clear_size);
 }
 
 uint32_t vga_text_get_width() {

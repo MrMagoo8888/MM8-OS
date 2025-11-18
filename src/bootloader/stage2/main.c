@@ -16,6 +16,8 @@ typedef void (*KernelStart)();
 void __attribute__((cdecl)) start(uint16_t bootDrive)
 {
     clrscr();
+    printf("MM8-OS Bootloader v1.0\n");
+    printf("----------------------\n\n");
 
     DISK disk;
     if (!DISK_Initialize(&disk, bootDrive))
