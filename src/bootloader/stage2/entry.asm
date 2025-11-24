@@ -9,7 +9,7 @@ global entry
 global vbe_screen
 
 entry:
-    cli
+    cli 
 
     ; save boot drive
     mov [g_BootDrive], dl
@@ -196,10 +196,10 @@ KbdControllerReadCtrlOutputPort     equ 0xD0
 KbdControllerWriteCtrlOutputPort    equ 0xD1
 
 MEMORY_KERNEL_ADDR                  equ 0x100000
-MEMORY_LOAD_KERNEL                  equ 0x30000
+MEMORY_LOAD_KERNEL                  equ 0x90000
 MEMORY_LOAD_SIZE                    equ 4096
 
-ScreenBuffer                        equ 0xB8000
+; ScreenBuffer                        equ 0xB8000
 
 g_GDT:      ; NULL descriptor
             dq 0
@@ -246,13 +246,6 @@ g_BootDrive: db 0
 g_GDT_end:
 g_GDTDesc:  dw g_GDT_end - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
-
-
-graphicsSwitch: 
-    ; switch to graphics mode 0x13
-    mov ax, 0x0013
-    int 0x10
-    ret
 
 ; Sets a VESA mode
 ; IN: AX = width, BX = height, CL = bpp

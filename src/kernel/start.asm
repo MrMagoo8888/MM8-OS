@@ -18,7 +18,7 @@ _start:
     ; The arguments from the bootloader are on the stack.
     ; [esp+8] = vbe_info pointer, [esp+4] = bootDrive
     ; We must retrieve them before changing the stack pointer.
-    mov ebp, esp
+    
 
     ; --- KERNEL ENTRY DEBUG ---
     ; Draw a red pixel at (0, 1) to confirm we've reached the kernel's _start.
