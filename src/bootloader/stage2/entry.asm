@@ -47,24 +47,21 @@ entry:
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
-   
-    ; clear bss (uninitialized data)
-    mov edi, __bss_start
-    mov ecx, __end
-    sub ecx, edi
-    mov al, 0
-    cld
-    rep stosb
-
-     ; --- VBE DEBUG: Draw one white pixel at (0,16) ---
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    
+       ; --- VBE DEBUG: Draw one white pixel at (0,16) ---
     ; If these pixels appear, VBE setup is correct.
     ; We draw Red, Green, Blue at (0,0), (1,0), (2,0)
     mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
     mov dword [edi],     0x00FF0000      ; Red pixel at (0,0)
     mov dword [edi + 4], 0x0000FF00      ; Green pixel at (1,0)
     mov dword [edi + 8], 0x000000FF      ; Blue pixel at (2,0)
-
-    ; expect boot drive in dl, send it as argument to cstart function
+   
+    ; Push arguments for the kernel's start function in reverse order.
+    ; The kernel expects: start(bootDrive, vbe_screen_ptr)
+    push vbe_screen
     xor edx, edx
     mov dl, [g_BootDrive]
     push edx
