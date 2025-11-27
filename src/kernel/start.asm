@@ -31,7 +31,7 @@ _start:
     ; Push arguments for the C start() function in reverse order.
     push dword [ebp + 8] ; Push vbe_info pointer
     push dword [ebp + 4] ; Push bootDrive
-    call kernel_main
+    ; call kernel_main
 
     cli
 .hang:

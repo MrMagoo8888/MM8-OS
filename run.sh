@@ -7,4 +7,4 @@ if [ ! -f "build/main_floppy.img" ]; then
     exit 1
 fi
 
-qemu-system-i386 -boot order=a -drive file=build/main_floppy.img,format=raw,if=floppy
+qemu-system-i386 -boot order=a -drive file=build/main_floppy.img,format=raw,if=floppy -d int -D qemu.log 

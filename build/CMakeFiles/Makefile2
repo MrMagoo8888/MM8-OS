@@ -150,9 +150,9 @@ src/kernel/clean: src/kernel/CMakeFiles/kernel.bin.dir/clean
 # Target rules for target CMakeFiles/floppy_image.dir
 
 # All Build rule for target.
+CMakeFiles/floppy_image.dir/all: src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
 CMakeFiles/floppy_image.dir/all: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
 CMakeFiles/floppy_image.dir/all: src/kernel/CMakeFiles/kernel.bin.dir/all
-CMakeFiles/floppy_image.dir/all: src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=2 "Built target floppy_image"
@@ -170,9 +170,9 @@ floppy_image: CMakeFiles/floppy_image.dir/rule
 .PHONY : floppy_image
 
 # codegen rule for target.
+CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
 CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
 CMakeFiles/floppy_image.dir/codegen: src/kernel/CMakeFiles/kernel.bin.dir/all
-CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/codegen
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=2 "Finished codegen for target floppy_image"
 .PHONY : CMakeFiles/floppy_image.dir/codegen

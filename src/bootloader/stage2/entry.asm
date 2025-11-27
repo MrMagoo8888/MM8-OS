@@ -1,15 +1,16 @@
 bits 16
 
 section .entry
- 
-; C entry point
-extern start
 
+extern __bss_start
+extern __end
+
+extern start
 global entry
 global vbe_screen
 
 entry:
-    cli 
+    cli
 
     ; save boot drive
     mov [g_BootDrive], dl
@@ -20,21 +21,15 @@ entry:
     mov sp, 0xFFF0
     mov bp, sp
 
-    ; Graphic Mode STILL WORK IN PROGRESS Edit: Nov 4 2025 - Fuckkkkk
-    ; call graphicsSwitch
-    ;call graphicsSwitch
-    
-    ; Set a VESA graphics mode (e.g., 1024x768x32) It works the ax bx cl
     mov ax, 1024
     mov bx, 768
     mov cl, 32
     call vbe_set_mode
-    jc .vbe_failed ; If VBE setup fails, print an error and halt.
+    jc .vbe_failed
 
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
     call LoadGDT            ; 3 - Load GDT
-    call LoadIDT            ; Load a basic IDT to prevent triple faults
 
     ; 4 - set protection enable flag in CR0
     mov eax, cr0
@@ -48,15 +43,20 @@ entry:
     ; we are now in protected mode!
     [bits 32]
     
-    ; 6 - setup segment registers ; ONE PIXEl IS THE BEST THING IN MY LIFE RN I HAVE ONE!!
+    ; 6 - setup segment registers
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
+   
+    ; clear bss (uninitialized data)
+    mov edi, __bss_start
+    mov ecx, __end
+    sub ecx, edi
+    mov al, 0
+    cld
+    rep stosb
 
-    ; --- VBE DEBUG: Draw one white pixel at (0,16) ---
+     ; --- VBE DEBUG: Draw one white pixel at (0,16) ---
     ; If these pixels appear, VBE setup is correct.
     ; We draw Red, Green, Blue at (0,0), (1,0), (2,0)
     mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
@@ -64,29 +64,15 @@ entry:
     mov dword [edi + 4], 0x0000FF00      ; Green pixel at (1,0)
     mov dword [edi + 8], 0x000000FF      ; Blue pixel at (2,0)
 
-    ; Set up stack and call our C entry point
-    mov esp, 0x70000 ; Stack grows downwards, so start it at the top of a safe region.
-    xor ebp, ebp     ; C functions will set up their own base pointer. Zeroing it is good practice.
-    push word [g_BootDrive] ; Pass boot drive as argument to start()
+    ; expect boot drive in dl, send it as argument to cstart function
+    xor edx, edx
+    mov dl, [g_BootDrive]
+    push edx
     call start
-    ; The start() function should not return. If it does, something is wrong.
-    ; We will fall through to the kernel return failure code.
 
-    ; --- PRE-KERNEL CALL CANARY ---
-    ; If this white pixel appears, it means kernel loading is complete and
-    ; we are about to jump to the kernel's entry point. We draw white at (3,0).
-    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
-    mov dword [edi + 12], 0x00FFFFFF      ; Write a white pixel
+    cli
+    hlt
 
-    ; The 'start' function in main.c now handles jumping to the kernel.
-
-    ; --- KERNEL RETURN/FAIL DEBUG ---
-    ; If this red pixel appears, it means the kernel
-    ; call returned. We draw a large yellow square to indicate this.
-    mov edi, [vbe_screen.physical_buffer] ; EDI = Base framebuffer address
-    movzx ebx, word [vbe_screen.bytes_per_line] ; EBX = pitch (bytes per line)
-
-    mov ecx, 32 ; Height of the square (32 rows)
 .fail_y_loop:
     push edi ; Save current line's starting address
     push ecx ; Save outer loop counter
@@ -177,16 +163,136 @@ A20WaitOutput:
     jz A20WaitOutput
     ret
 
+; vbe_set_mode:
+; Sets a VESA mode
+; In\	AX = Width
+; In\	BX = Height
+; In\	CL = Bits per pixel
+; Out\	FLAGS = Carry clear on success
+; Out\	Width, height, bpp, physical buffer, all set in vbe_screen structure
+
+vbe_set_mode:
+	mov [.width], ax
+	mov [.height], bx
+	mov [.bpp], cl
+
+	sti
+
+	push es					; some VESA BIOSes destroy ES, or so I read
+	mov ax, 0x4F00				; get VBE BIOS info
+	mov di, vbe_info_block
+	int 0x10
+	pop es
+
+	cmp ax, 0x4F				; BIOS doesn't support VBE?
+	jne .error
+
+	mov ax, word[vbe_info_block.video_modes_ptr]
+	mov [.offset], ax
+	mov ax, word[vbe_info_block.video_modes_ptr+2]
+	mov [.segment], ax
+
+	mov ax, [.segment]
+	mov fs, ax
+	mov si, [.offset]
+
+.find_mode:
+	mov dx, [fs:si]
+	add si, 2
+	mov [.offset], si
+	mov [.mode], dx
+	mov ax, 0
+	mov fs, ax
+
+	cmp [.mode], 0x0FFFF			; end of list?
+	je .error
+
+	push es
+	mov ax, 0x4F01				; get VBE mode info
+	mov cx, [.mode]
+	mov di, mode_info_block
+	int 0x10
+	pop es
+
+	cmp ax, 0x4F
+	jne .error
+
+	mov ax, [.width]
+	cmp ax, [mode_info_block.width]
+	jne .next_mode
+
+	mov ax, [.height]
+	cmp ax, [mode_info_block.height]
+	jne .next_mode
+
+	mov al, [.bpp]
+	cmp al, [mode_info_block.bpp]
+	jne .next_mode
+
+	; If we make it here, we've found the correct mode!
+	mov ax, [.width]
+	mov word[vbe_screen.width], ax
+	mov ax, [.height]
+	mov word[vbe_screen.height], ax
+	mov eax, [mode_info_block.framebuffer]
+	mov dword[vbe_screen.physical_buffer], eax
+	mov ax, [mode_info_block.pitch]
+	mov word[vbe_screen.bytes_per_line], ax
+	mov eax, 0
+	mov al, [.bpp]
+	mov byte[vbe_screen.bpp], al
+	shr eax, 3
+	mov dword[vbe_screen.bytes_per_pixel], eax
+
+	mov ax, [.width]
+	shr ax, 3
+	dec ax
+	mov word[vbe_screen.x_cur_max], ax
+
+	mov ax, [.height]
+	shr ax, 4
+	dec ax
+	mov word[vbe_screen.y_cur_max], ax
+
+	; Set the mode
+	push es
+	mov ax, 0x4F02
+	mov bx, [.mode]
+	or bx, 0x4000			; enable LFB
+	mov di, 0			; not sure if some BIOSes need this... anyway it doesn't hurt
+	int 0x10
+	pop es
+
+	cmp ax, 0x4F
+	jne .error
+
+	clc
+	ret
+
+.next_mode:
+	mov ax, [.segment]
+	mov fs, ax
+	mov si, [.offset]
+	jmp .find_mode
+
+.error:
+	stc
+	ret
+
+.width				dw 0
+.height				dw 0
+.bpp				db 0
+.segment			dw 0
+.offset				dw 0
+.mode				dw 0
+
 
 LoadGDT:
     [bits 16]
     lgdt [g_GDTDesc]
     ret
 
-LoadIDT:
-    [bits 16]
-    lidt [g_IDTDesc]
-    ret
+
 
 KbdControllerDataPort               equ 0x60
 KbdControllerCommandPort            equ 0x64
@@ -195,11 +301,7 @@ KbdControllerEnableKeyboard         equ 0xAE
 KbdControllerReadCtrlOutputPort     equ 0xD0
 KbdControllerWriteCtrlOutputPort    equ 0xD1
 
-MEMORY_KERNEL_ADDR                  equ 0x100000
-MEMORY_LOAD_KERNEL                  equ 0x90000
-MEMORY_LOAD_SIZE                    equ 4096
-
-; ScreenBuffer                        equ 0xB8000
+ScreenBuffer                        equ 0xB8000
 
 g_GDT:      ; NULL descriptor
             dq 0
@@ -236,139 +338,17 @@ g_GDT:      ; NULL descriptor
             db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
             db 0                        ; base high
 
-g_IDT:      ; A basic, empty IDT. The kernel will fill this in.
-g_IDTDesc:  dw (g_IDTDesc - g_IDT - 1)  ; Limit (size of IDT)
-            dd g_IDT                    ; Base address of IDT
-
-
-g_BootDrive: db 0
-
-g_GDT_end:
-g_GDTDesc:  dw g_GDT_end - g_GDT - 1    ; limit = size of GDT
+g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
 
-; Sets a VESA mode
-; IN: AX = width, BX = height, CL = bpp
-; OUT: Carry flag set on error
-vbe_set_mode:
-    mov [.width], ax
-    mov [.height], bx
-    mov [.bpp], cl
-
-    call find_mode
-    jc .error
-
-    call set_mode
-    jc .error
-
-    clc
-    ret
-
-.error:
-    stc
-    ret
-
-.width  dw 0
-.height dw 0
-.bpp    db 0
-.mode   dw 0
-
-find_mode:
-
-    ; Set ES to CS so that the BIOS writes to our data segment.
-    mov ax, cs
-    mov es, ax
-
-    mov ax, 0x4F00
-    mov di, vbe_info_block
-    int 0x10
-    cmp ax, 0x4F
-    jne .error
-
-    mov ax, [vbe_info_block.video_modes_ptr + 2]
-    mov es, ax
-    mov si, [vbe_info_block.video_modes_ptr]
-
-.find_loop:
-
-    mov ax, [es:si]
-    add si, 2
-    cmp ax, 0xFFFF
-    je .error
-
-    mov cx, ax
-    mov ax, 0x4F01
-    ; IMPORTANT: Reset ES to our data segment before this BIOS call.
-    ; The BIOS will write to the buffer at ES:DI.
-    push cs
-    pop es
-    mov di, mode_info_block
-    int 0x10
-    cmp ax, 0x4F
-    jne .error
-
-    mov ax, [vbe_set_mode.width]
-    cmp ax, [mode_info_block.width]
-    jne .find_loop
-
-    mov ax, [vbe_set_mode.height]
-    cmp ax, [mode_info_block.height]
-    jne .find_loop
-
-    mov al, [vbe_set_mode.bpp]
-    cmp al, [mode_info_block.bpp]
-    jne .find_loop
-
-    mov ax, [es:si-2]
-    mov [vbe_set_mode.mode], ax
-    clc
-    ret
-
-.error:
-    stc
-    ret
-
-set_mode:
-
-    ; Populate the vbe_screen structure in the exact order the C kernel expects.
-    mov ax, [vbe_set_mode.width]
-    mov [vbe_screen.width], ax
-    mov ax, [vbe_set_mode.height]
-    mov [vbe_screen.height], ax
-    mov al, [vbe_set_mode.bpp]
-    mov [vbe_screen.bpp], al
-    movzx eax, al ; bpp (e.g., 32)
-    shr eax, 3
-    mov [vbe_screen.bytes_per_pixel], eax
-    mov ax, [mode_info_block.pitch]
-    mov [vbe_screen.bytes_per_line], ax
-    ; This is the key instruction:
-    ; It reads the framebuffer's physical address from the mode_info_block...
-    mov eax, [mode_info_block.framebuffer]
-    mov [vbe_screen.physical_buffer], eax ; ...and stores it in our vbe_screen struct.
-
-    mov ax, 0x4F02
-    mov bx, [vbe_set_mode.mode]
-    or bx, 0x4000 ; enable Linear Frame Buffer and clear video memory
-    xor edi, edi ; Per VBE spec, ES:DI should be 0 if not passing CRTC info.
-                 ; Zeroing the full 32-bit register is good practice.
-    int 0x10
-    cmp ax, 0x4F
-    jne .error
-
-    clc
-    ret
-
-.error:
-    stc
-    ret
+g_BootDrive: db 0
 
 section .data
 
 vbe_error_msg: db "VBE Error: Failed to set graphics mode.", 0
 
 section .bss
-; This structure holds the VBE mode information passed to the kernel.
+
 vbe_info_block:
     .signature       resb 4
     .version         resw 1
