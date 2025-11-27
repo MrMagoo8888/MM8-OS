@@ -204,7 +204,7 @@ vbe_set_mode:
 	mov ax, 0
 	mov fs, ax
 
-	cmp [.mode], 0x0FFFF			; end of list?
+	cmp word [.mode], 0x0FFFF			; end of list?
 	je .error
 
 	push es
@@ -243,16 +243,6 @@ vbe_set_mode:
 	mov byte[vbe_screen.bpp], al
 	shr eax, 3
 	mov dword[vbe_screen.bytes_per_pixel], eax
-
-	mov ax, [.width]
-	shr ax, 3
-	dec ax
-	mov word[vbe_screen.x_cur_max], ax
-
-	mov ax, [.height]
-	shr ax, 4
-	dec ax
-	mov word[vbe_screen.y_cur_max], ax
 
 	; Set the mode
 	push es
@@ -337,6 +327,8 @@ g_GDT:      ; NULL descriptor
             db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
             db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
             db 0                        ; base high
+
+g_GDT_end:
 
 g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
