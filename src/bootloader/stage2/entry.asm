@@ -392,5 +392,5 @@ vbe_screen:
                      resb 3  ; Padding to align bytes_per_pixel to a 4-byte boundary
     .bytes_per_pixel resd 1
     .bytes_per_line  resw 1
-                     resb 2  ; Padding to align physical_buffer
+                     resb 6  ; Padding to align physical_buffer to offset 20
     .physical_buffer resd 1
