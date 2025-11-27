@@ -60,8 +60,8 @@ entry:
     mov dword [edi + 8], 0x000000FF      ; Blue pixel at (2,0)
    
     ; Push arguments for the kernel's start function in reverse order.
-    ; The kernel expects: start(bootDrive, vbe_screen_ptr)
-    push vbe_screen
+    ; The kernel expects: start(bootDrive, framebuffer_address)
+    push dword [vbe_screen.physical_buffer]
     xor edx, edx
     mov dl, [g_BootDrive]
     push edx
