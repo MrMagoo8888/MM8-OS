@@ -18,9 +18,14 @@ entry:
     ; setup stack
     mov ax, ds
     mov ss, ax
-    mov sp, 0xFFF0
+    mov sp, 0x7C00
     mov bp, sp
 
+    ; When removed, bootloader text appears then: 
+    ;  Servicing hardware INT=0x0e
+    ;  Servicing hardware INT=0x0e
+    ;  Servicing hardware INT=0x08
+    ;  Servicing hardware INT=0x0e
     mov ax, 1024
     mov bx, 768
     mov cl, 32
@@ -172,8 +177,6 @@ vbe_set_mode:
 	mov [.width], ax
 	mov [.height], bx
 	mov [.bpp], cl
-
-	sti
 
 	push es					; some VESA BIOSes destroy ES, or so I read
 	mov ax, 0x4F00				; get VBE BIOS info
@@ -327,7 +330,7 @@ g_GDT:      ; NULL descriptor
 
 g_GDT_end:
 
-g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
+g_GDTDesc:  dw g_GDT_end - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
 
 g_BootDrive: db 0
