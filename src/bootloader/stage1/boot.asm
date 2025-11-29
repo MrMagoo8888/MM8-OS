@@ -30,7 +30,7 @@ ebr_drive_number:           db 0                    ; 0x00 floppy, 0x80 hdd, use
                             db 0                    ; reserved
 ebr_signature:              db 29h
 ebr_volume_id:              db 12h, 34h, 56h, 78h   ; serial number, value doesn't matter
-ebr_volume_label:           db 'MRMG8888 OS'        ; 11 bytes, padded with spaces
+ebr_volume_label:           db 'NANOBYTE OS'        ; 11 bytes, padded with spaces
 ebr_system_id:              db 'FAT12   '           ; 8 bytes
 
 ;
@@ -43,11 +43,9 @@ start:
     mov ds, ax
     mov es, ax
     
-    ; Setup a safe stack high in memory, away from the bootloader code.
-    mov ax, 0x9000
-    mov ss, ax                  ; ss = 0x9000
-    mov sp, 0xFC00              ; Stack starts at 0x9FC00 and grows downwards. Original 0xFC00 ; 0x9000
-                                ; This provides a ~63KB stack, which is plenty.
+    ; setup stack
+    mov ss, ax
+    mov sp, 0x7C00              ; stack grows downwards from where we are loaded in memory
 
     ; some BIOSes might start us at 07C0:0000 instead of 0000:7C00, make sure we are in the
     ; expected location
@@ -365,8 +363,8 @@ disk_reset:
 
 
 msg_loading:            db 'Loading...', ENDL, 0
-msg_read_failed:        db 'Read disk failed!', ENDL, 0
-msg_stage2_not_found:   db 'STAGE2.BIN unfound!', ENDL, 0
+msg_read_failed:        db 'Read from disk failed!', ENDL, 0
+msg_stage2_not_found:   db 'STAGE2.BIN file not found!', ENDL, 0
 file_stage2_bin:        db 'STAGE2  BIN'
 kernel_cluster:         dw 0
 

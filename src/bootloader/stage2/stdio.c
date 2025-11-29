@@ -2,46 +2,28 @@
 #include "x86.h"
 #include "stdbool.h"
 
-#include "vbe.h"
-#include "vga_text.h"
-
 #include <stdarg.h>
 
 
-unsigned SCREEN_WIDTH;
-unsigned SCREEN_HEIGHT;
-const uint8_t DEFAULT_TEXT_COLOR = 0x7;
-
-const uint32_t DEFAULT_VGA_FG_COLOR = 0x00AAAAAA; // Light Gray
-const uint32_t DEFAULT_VGA_BG_COLOR = 0x00000000; // Black
+const unsigned SCREEN_WIDTH = 80;
+const unsigned SCREEN_HEIGHT = 25;
+const uint8_t DEFAULT_COLOR = 0x7;
 
 uint8_t* g_ScreenBuffer = (uint8_t*)0xB8000;
 int g_ScreenX = 0, g_ScreenY = 0;
 
-bool is_vbe_mode() {
-    // If the physical_buffer is set, we are in VBE mode.
-    return vbe_screen.physical_buffer != 0;
-}
-
 void putchr(int x, int y, char c)
 {
-    if (is_vbe_mode()) {
-        vga_text_put_char(x, y, c, DEFAULT_VGA_FG_COLOR, DEFAULT_VGA_BG_COLOR);
-    } else {
-        g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)] = c;
-    }
+    g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)] = c;
 }
 
 void putcolor(int x, int y, uint8_t color)
 {
-    if (!is_vbe_mode()) {
-        g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1] = color;
-    }
+    g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1] = color;
 }
 
 char getchr(int x, int y)
 {
-    // This is only used for scrolling in text mode, so no VBE implementation needed.
     return g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)];
 }
 
@@ -52,7 +34,6 @@ uint8_t getcolor(int x, int y)
 
 void setcursor(int x, int y)
 {
-    if (is_vbe_mode()) return; // No cursor in graphics mode yet
     int pos = y * SCREEN_WIDTH + x;
 
     x86_outb(0x3D4, 0x0F);
@@ -63,20 +44,12 @@ void setcursor(int x, int y)
 
 void clrscr()
 {
-    if (is_vbe_mode()) {
-        SCREEN_WIDTH = vga_text_get_width();
-        SCREEN_HEIGHT = vga_text_get_height();
-        vga_text_clear(DEFAULT_VGA_BG_COLOR);
-    } else {
-        SCREEN_WIDTH = 80;
-        SCREEN_HEIGHT = 25;
-        for (int y = 0; y < SCREEN_HEIGHT; y++)
-            for (int x = 0; x < SCREEN_WIDTH; x++)
-            {
-                putchr(x, y, '\0');
-                putcolor(x, y, DEFAULT_TEXT_COLOR);
-            }
-    }
+    for (int y = 0; y < SCREEN_HEIGHT; y++)
+        for (int x = 0; x < SCREEN_WIDTH; x++)
+        {
+            putchr(x, y, '\0');
+            putcolor(x, y, DEFAULT_COLOR);
+        }
 
     g_ScreenX = 0;
     g_ScreenY = 0;
@@ -85,24 +58,20 @@ void clrscr()
 
 void scrollback(int lines)
 {
-    if (is_vbe_mode()) {
-        vga_text_scroll(DEFAULT_VGA_BG_COLOR);
-    } else {
-        for (int y = lines; y < SCREEN_HEIGHT; y++)
-            for (int x = 0; x < SCREEN_WIDTH; x++)
-            {
-                putchr(x, y - lines, getchr(x, y));
-                putcolor(x, y - lines, getcolor(x, y));
-            }
+    for (int y = lines; y < SCREEN_HEIGHT; y++)
+        for (int x = 0; x < SCREEN_WIDTH; x++)
+        {
+            putchr(x, y - lines, getchr(x, y));
+            putcolor(x, y - lines, getcolor(x, y));
+        }
 
-        for (int y = SCREEN_HEIGHT - lines; y < SCREEN_HEIGHT; y++)
-            for (int x = 0; x < SCREEN_WIDTH; x++)
-            {
-                putchr(x, y, '\0');
-                putcolor(x, y, DEFAULT_TEXT_COLOR);
-            }
-    }
-    
+    for (int y = SCREEN_HEIGHT - lines; y < SCREEN_HEIGHT; y++)
+        for (int x = 0; x < SCREEN_WIDTH; x++)
+        {
+            putchr(x, y, '\0');
+            putcolor(x, y, DEFAULT_COLOR);
+        }
+
     g_ScreenY -= lines;
 }
 

@@ -5,9 +5,18 @@ section .entry
 extern __bss_start
 extern __end
 
+; C functions from our bootloader library
+extern DISK_Initialize
+extern FAT_Initialize
+extern FAT_Open
+extern FAT_Read
+extern FAT_Close
+
 extern start
 global entry
 global vbe_screen
+
+section .text
 
 entry:
     cli
@@ -18,19 +27,17 @@ entry:
     ; setup stack
     mov ax, ds
     mov ss, ax
-    mov sp, 0x7C00
+    mov sp, 0xFFF0
     mov bp, sp
 
-    ; When removed, bootloader text appears then: 
-    ;  Servicing hardware INT=0x0e
-    ;  Servicing hardware INT=0x0e
-    ;  Servicing hardware INT=0x08
-    ;  Servicing hardware INT=0x0e
+
+    ; set VESA mode 1024x768x32bpp
     mov ax, 1024
     mov bx, 768
     mov cl, 32
     call vbe_set_mode
     jc .vbe_failed
+
 
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
@@ -52,65 +59,26 @@ entry:
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    
-       ; --- VBE DEBUG: Draw one white pixel at (0,16) ---
-    ; If these pixels appear, VBE setup is correct.
-    ; We draw Red, Green, Blue at (0,0), (1,0), (2,0)
-    mov edi, [vbe_screen.physical_buffer] ; Get the framebuffer address
-    mov dword [edi],     0x00FF0000      ; Red pixel at (0,0)
-    mov dword [edi + 4], 0x0000FF00      ; Green pixel at (1,0)
-    mov dword [edi + 8], 0x000000FF      ; Blue pixel at (2,0)
    
-    ; Push arguments for the kernel's start function in reverse order.
-    ; The kernel expects: start(bootDrive, framebuffer_address)
-    push dword [vbe_screen.physical_buffer]
+    ; clear bss (uninitialized data)
+    ;mov edi, __bss_start
+    ;mov ecx, __end
+    ;sub ecx, edi
+    ;mov al, 0
+    ;cld
+    ;rep stosb
+
+    ; Pass arguments to C kernel (start function)
+    ; Arguments are pushed in reverse order (right to left)
+    push dword [vbe_screen.physical_buffer] ; push framebuffer address
     xor edx, edx
     mov dl, [g_BootDrive]
-    push edx
+    push edx                                ; push boot drive
     call start
 
     cli
     hlt
 
-.fail_y_loop:
-    push edi ; Save current line's starting address
-    push ecx ; Save outer loop counter
-
-    mov ecx, 32 ; Width of the square (32 pixels)
-.fail_x_loop:
-    mov dword [edi], 0x00FFFF00 ; Draw yellow pixel (Red+Green)
-    add edi, 4 ; Move to next pixel in the row
-    loop .fail_x_loop
-
-    pop ecx ; Restore outer loop counter
-    pop edi ; Restore line's starting address
-    add edi, ebx ; Move to the start of the next line
-    loop .fail_y_loop
-    ; --- END KERNEL RETURN/FAIL DEBUG ---
-
-    cli
-    hlt
-
-.vbe_failed:
-    ; If VBE fails, we can't draw pixels. Fall back to text mode to show an error.
-    mov ax, 0x0003  ; Standard 80x25 text mode
-    int 0x10
-
-    mov si, vbe_error_msg
-    mov ah, 0x0E    ; Teletype output function
-    mov bh, 0       ; Page number
-.char_loop:
-    lodsb           ; Load character from SI into AL
-    test al, al     ; Check for null terminator
-    jz .halt
-    int 0x10        ; Print character
-    jmp .char_loop
-.halt:
-    cli
-    hlt
 
 
 EnableA20:
@@ -165,6 +133,63 @@ A20WaitOutput:
     jz A20WaitOutput
     ret
 
+
+LoadGDT:
+    [bits 16]
+    lgdt [g_GDTDesc]
+    ret
+
+
+
+KbdControllerDataPort               equ 0x60
+KbdControllerCommandPort            equ 0x64
+KbdControllerDisableKeyboard        equ 0xAD
+KbdControllerEnableKeyboard         equ 0xAE
+KbdControllerReadCtrlOutputPort     equ 0xD0
+KbdControllerWriteCtrlOutputPort    equ 0xD1
+
+ScreenBuffer                        equ 0xB8000
+
+g_GDT:      ; NULL descriptor
+            dq 0
+
+            ; 32-bit code segment
+            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
+            dw 0                        ; base (bits 0-15) = 0x0
+            db 0                        ; base (bits 16-23)
+            db 10011010b                ; access (present, ring 0, code segment, executable, direction 0, readable)
+            db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
+            db 0                        ; base high
+
+            ; 32-bit data segment
+            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
+            dw 0                        ; base (bits 0-15) = 0x0
+            db 0                        ; base (bits 16-23)
+            db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
+            db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
+            db 0                        ; base high
+
+            ; 16-bit code segment
+            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
+            dw 0                        ; base (bits 0-15) = 0x0
+            db 0                        ; base (bits 16-23)
+            db 10011010b                ; access (present, ring 0, code segment, executable, direction 0, readable)
+            db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
+            db 0                        ; base high
+
+            ; 16-bit data segment
+            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
+            dw 0                        ; base (bits 0-15) = 0x0
+            db 0                        ; base (bits 16-23)
+            db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
+            db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
+            db 0                        ; base high
+
+g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
+            dd g_GDT                    ; address of GDT
+
+g_BootDrive: db 0
+
 ; vbe_set_mode:
 ; Sets a VESA mode
 ; In\	AX = Width
@@ -178,6 +203,8 @@ vbe_set_mode:
 	mov [.height], bx
 	mov [.bpp], cl
 
+	sti
+
 	push es					; some VESA BIOSes destroy ES, or so I read
 	mov ax, 0x4F00				; get VBE BIOS info
 	mov di, vbe_info_block
@@ -187,9 +214,9 @@ vbe_set_mode:
 	cmp ax, 0x4F				; BIOS doesn't support VBE?
 	jne .error
 
-	mov ax, word[vbe_info_block.video_modes_ptr]
+	mov ax, word[vbe_info_block.video_modes]
 	mov [.offset], ax
-	mov ax, word[vbe_info_block.video_modes_ptr+2]
+	mov ax, word[vbe_info_block.video_modes+2]
 	mov [.segment], ax
 
 	mov ax, [.segment]
@@ -244,6 +271,16 @@ vbe_set_mode:
 	shr eax, 3
 	mov dword[vbe_screen.bytes_per_pixel], eax
 
+	mov ax, [.width]
+	shr ax, 3
+	dec ax
+	mov word[vbe_screen.x_cur_max], ax
+
+	mov ax, [.height]
+	shr ax, 4
+	dec ax
+	mov word[vbe_screen.y_cur_max], ax
+
 	; Set the mode
 	push es
 	mov ax, 0x4F02
@@ -269,71 +306,17 @@ vbe_set_mode:
 	stc
 	ret
 
+.vbe_failed:
+    ; If VBE fails, we can't draw pixels. Fall back to text mode to show an error.
+    mov ax, 0x0003  ; Standard 80x25 text mode
+    int 0x10
+
 .width				dw 0
 .height				dw 0
 .bpp				db 0
 .segment			dw 0
 .offset				dw 0
 .mode				dw 0
-
-
-LoadGDT:
-    [bits 16]
-    lgdt [g_GDTDesc]
-    ret
-
-
-
-KbdControllerDataPort               equ 0x60
-KbdControllerCommandPort            equ 0x64
-KbdControllerDisableKeyboard        equ 0xAD
-KbdControllerEnableKeyboard         equ 0xAE
-KbdControllerReadCtrlOutputPort     equ 0xD0
-KbdControllerWriteCtrlOutputPort    equ 0xD1
-
-ScreenBuffer                        equ 0xB8000
-
-g_GDT:      ; NULL descriptor
-            dq 0
-
-            ; 32-bit code segment
-            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
-            dw 0                        ; base (bits 0-15) = 0x0
-            db 0                        ; base (bits 16-23)
-            db 10011010b                ; access (present, ring 0, code segment, executable, direction 0, readable)
-            db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
-            db 0                        ; base high
-
-            ; 32-bit data segment
-            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
-            dw 0                        ; base (bits 0-15) = 0x0
-            db 0                        ; base (bits 16-23)
-            db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
-            db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
-            db 0                        ; base high
-
-            ; 16-bit code segment
-            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
-            dw 0                        ; base (bits 0-15) = 0x0
-            db 0                        ; base (bits 16-23)
-            db 10011010b                ; access (present, ring 0, code segment, executable, direction 0, readable)
-            db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
-            db 0                        ; base high
-
-            ; 16-bit data segment
-            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
-            dw 0                        ; base (bits 0-15) = 0x0
-            db 0                        ; base (bits 16-23)
-            db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
-            db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
-            db 0                        ; base high
-
-g_GDT_end:
-
-g_GDTDesc:  dw g_GDT_end - g_GDT - 1    ; limit = size of GDT
-            dd g_GDT                    ; address of GDT
-
-g_BootDrive: db 0
 
 section .data
 
@@ -347,6 +330,7 @@ vbe_info_block:
     .oem_string_ptr  resd 1
     .capabilities    resd 1
     .video_modes_ptr resd 1
+    .video_modes     resd 1
     .total_memory    resw 1
     .oem_sw_rev      resw 1
     .oem_vendor_ptr  resd 1
@@ -397,3 +381,5 @@ vbe_screen:
     .bytes_per_line  resw 1
                      resb 6  ; Padding to align physical_buffer to offset 20
     .physical_buffer resd 1
+    .x_cur_max        resw 1
+    .y_cur_max        resw 1
