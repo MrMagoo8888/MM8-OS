@@ -143,30 +143,30 @@ build_stage1/fast:
 .PHONY : build_stage1/fast
 
 #=============================================================================
-# Target rules for targets named stage2.bin
+# Target rules for targets named stage2.elf
 
 # Build rule for target.
-stage2.bin: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 stage2.bin
-.PHONY : stage2.bin
+stage2.elf: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 stage2.elf
+.PHONY : stage2.elf
 
 # fast build rule for target.
-stage2.bin/fast:
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build
-.PHONY : stage2.bin/fast
+stage2.elf/fast:
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build
+.PHONY : stage2.elf/fast
 
 #=============================================================================
-# Target rules for targets named kernel.bin
+# Target rules for targets named kernel.elf
 
 # Build rule for target.
-kernel.bin: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 kernel.bin
-.PHONY : kernel.bin
+kernel.elf: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 kernel.elf
+.PHONY : kernel.elf
 
 # fast build rule for target.
-kernel.bin/fast:
-	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/build
-.PHONY : kernel.bin/fast
+kernel.elf/fast:
+	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/build
+.PHONY : kernel.elf/fast
 
 # Help Target
 help:
@@ -178,8 +178,8 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... build_stage1"
 	@echo "... floppy_image"
-	@echo "... kernel.bin"
-	@echo "... stage2.bin"
+	@echo "... kernel.elf"
+	@echo "... stage2.elf"
 .PHONY : help
 
 

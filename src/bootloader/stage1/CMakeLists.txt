@@ -2,7 +2,7 @@ set(OUTPUT_NAME ${CMAKE_BINARY_DIR}/stage1.bin)
 
 add_custom_command(
     OUTPUT ${OUTPUT_NAME}
-    COMMAND ${NASM_COMPILER} -f bin -o ${OUTPUT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/boot.asm
+    COMMAND ${CMAKE_ASM_NASM_COMPILER} -f bin -o ${OUTPUT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/boot.asm
     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/boot.asm
     COMMENT "Assembling stage1.bin"
 )

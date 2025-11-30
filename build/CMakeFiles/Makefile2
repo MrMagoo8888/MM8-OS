@@ -112,11 +112,11 @@ src/bootloader/stage1/clean: src/bootloader/stage1/CMakeFiles/build_stage1.dir/c
 # Directory level rules for directory src/bootloader/stage2
 
 # Recursive "all" directory target.
-src/bootloader/stage2/all: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
+src/bootloader/stage2/all: src/bootloader/stage2/CMakeFiles/stage2.elf.dir/all
 .PHONY : src/bootloader/stage2/all
 
 # Recursive "codegen" directory target.
-src/bootloader/stage2/codegen: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen
+src/bootloader/stage2/codegen: src/bootloader/stage2/CMakeFiles/stage2.elf.dir/codegen
 .PHONY : src/bootloader/stage2/codegen
 
 # Recursive "preinstall" directory target.
@@ -124,18 +124,18 @@ src/bootloader/stage2/preinstall:
 .PHONY : src/bootloader/stage2/preinstall
 
 # Recursive "clean" directory target.
-src/bootloader/stage2/clean: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/clean
+src/bootloader/stage2/clean: src/bootloader/stage2/CMakeFiles/stage2.elf.dir/clean
 .PHONY : src/bootloader/stage2/clean
 
 #=============================================================================
 # Directory level rules for directory src/kernel
 
 # Recursive "all" directory target.
-src/kernel/all: src/kernel/CMakeFiles/kernel.bin.dir/all
+src/kernel/all: src/kernel/CMakeFiles/kernel.elf.dir/all
 .PHONY : src/kernel/all
 
 # Recursive "codegen" directory target.
-src/kernel/codegen: src/kernel/CMakeFiles/kernel.bin.dir/codegen
+src/kernel/codegen: src/kernel/CMakeFiles/kernel.elf.dir/codegen
 .PHONY : src/kernel/codegen
 
 # Recursive "preinstall" directory target.
@@ -143,7 +143,7 @@ src/kernel/preinstall:
 .PHONY : src/kernel/preinstall
 
 # Recursive "clean" directory target.
-src/kernel/clean: src/kernel/CMakeFiles/kernel.bin.dir/clean
+src/kernel/clean: src/kernel/CMakeFiles/kernel.elf.dir/clean
 .PHONY : src/kernel/clean
 
 #=============================================================================
@@ -151,8 +151,8 @@ src/kernel/clean: src/kernel/CMakeFiles/kernel.bin.dir/clean
 
 # All Build rule for target.
 CMakeFiles/floppy_image.dir/all: src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
-CMakeFiles/floppy_image.dir/all: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
-CMakeFiles/floppy_image.dir/all: src/kernel/CMakeFiles/kernel.bin.dir/all
+CMakeFiles/floppy_image.dir/all: src/bootloader/stage2/CMakeFiles/stage2.elf.dir/all
+CMakeFiles/floppy_image.dir/all: src/kernel/CMakeFiles/kernel.elf.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=2 "Built target floppy_image"
@@ -160,7 +160,7 @@ CMakeFiles/floppy_image.dir/all: src/kernel/CMakeFiles/kernel.bin.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/floppy_image.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 54
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 53
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/floppy_image.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 0
 .PHONY : CMakeFiles/floppy_image.dir/rule
@@ -171,8 +171,8 @@ floppy_image: CMakeFiles/floppy_image.dir/rule
 
 # codegen rule for target.
 CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage1/CMakeFiles/build_stage1.dir/all
-CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
-CMakeFiles/floppy_image.dir/codegen: src/kernel/CMakeFiles/kernel.bin.dir/all
+CMakeFiles/floppy_image.dir/codegen: src/bootloader/stage2/CMakeFiles/stage2.elf.dir/all
+CMakeFiles/floppy_image.dir/codegen: src/kernel/CMakeFiles/kernel.elf.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/floppy_image.dir/build.make CMakeFiles/floppy_image.dir/codegen
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=2 "Finished codegen for target floppy_image"
 .PHONY : CMakeFiles/floppy_image.dir/codegen
@@ -215,68 +215,68 @@ src/bootloader/stage1/CMakeFiles/build_stage1.dir/clean:
 .PHONY : src/bootloader/stage1/CMakeFiles/build_stage1.dir/clean
 
 #=============================================================================
-# Target rules for target src/bootloader/stage2/CMakeFiles/stage2.bin.dir
+# Target rules for target src/bootloader/stage2/CMakeFiles/stage2.elf.dir
 
 # All Build rule for target.
-src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all:
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/depend
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=42,43,44,45,46,47,48,49,50,51,52,53,54 "Built target stage2.bin"
-.PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
+src/bootloader/stage2/CMakeFiles/stage2.elf.dir/all:
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/depend
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=41,42,43,44,45,46,47,48,49,50,51,52,53 "Built target stage2.elf"
+.PHONY : src/bootloader/stage2/CMakeFiles/stage2.elf.dir/all
 
 # Build rule for subdir invocation for target.
-src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule: cmake_check_build_system
+src/bootloader/stage2/CMakeFiles/stage2.elf.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 13
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage2/CMakeFiles/stage2.elf.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 0
-.PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule
+.PHONY : src/bootloader/stage2/CMakeFiles/stage2.elf.dir/rule
 
 # Convenience name for target.
-stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule
-.PHONY : stage2.bin
+stage2.elf: src/bootloader/stage2/CMakeFiles/stage2.elf.dir/rule
+.PHONY : stage2.elf
 
 # codegen rule for target.
-src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=42,43,44,45,46,47,48,49,50,51,52,53,54 "Finished codegen for target stage2.bin"
-.PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/codegen
+src/bootloader/stage2/CMakeFiles/stage2.elf.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=41,42,43,44,45,46,47,48,49,50,51,52,53 "Finished codegen for target stage2.elf"
+.PHONY : src/bootloader/stage2/CMakeFiles/stage2.elf.dir/codegen
 
 # clean rule for target.
-src/bootloader/stage2/CMakeFiles/stage2.bin.dir/clean:
-	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/clean
-.PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/clean
+src/bootloader/stage2/CMakeFiles/stage2.elf.dir/clean:
+	$(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/clean
+.PHONY : src/bootloader/stage2/CMakeFiles/stage2.elf.dir/clean
 
 #=============================================================================
-# Target rules for target src/kernel/CMakeFiles/kernel.bin.dir
+# Target rules for target src/kernel/CMakeFiles/kernel.elf.dir
 
 # All Build rule for target.
-src/kernel/CMakeFiles/kernel.bin.dir/all:
-	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/depend
-	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41 "Built target kernel.bin"
-.PHONY : src/kernel/CMakeFiles/kernel.bin.dir/all
+src/kernel/CMakeFiles/kernel.elf.dir/all:
+	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/depend
+	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40 "Built target kernel.elf"
+.PHONY : src/kernel/CMakeFiles/kernel.elf.dir/all
 
 # Build rule for subdir invocation for target.
-src/kernel/CMakeFiles/kernel.bin.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 39
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/kernel/CMakeFiles/kernel.bin.dir/all
+src/kernel/CMakeFiles/kernel.elf.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 38
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/kernel/CMakeFiles/kernel.elf.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles 0
-.PHONY : src/kernel/CMakeFiles/kernel.bin.dir/rule
+.PHONY : src/kernel/CMakeFiles/kernel.elf.dir/rule
 
 # Convenience name for target.
-kernel.bin: src/kernel/CMakeFiles/kernel.bin.dir/rule
-.PHONY : kernel.bin
+kernel.elf: src/kernel/CMakeFiles/kernel.elf.dir/rule
+.PHONY : kernel.elf
 
 # codegen rule for target.
-src/kernel/CMakeFiles/kernel.bin.dir/codegen:
-	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41 "Finished codegen for target kernel.bin"
-.PHONY : src/kernel/CMakeFiles/kernel.bin.dir/codegen
+src/kernel/CMakeFiles/kernel.elf.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40 "Finished codegen for target kernel.elf"
+.PHONY : src/kernel/CMakeFiles/kernel.elf.dir/codegen
 
 # clean rule for target.
-src/kernel/CMakeFiles/kernel.bin.dir/clean:
-	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/clean
-.PHONY : src/kernel/CMakeFiles/kernel.bin.dir/clean
+src/kernel/CMakeFiles/kernel.elf.dir/clean:
+	$(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/clean
+.PHONY : src/kernel/CMakeFiles/kernel.elf.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

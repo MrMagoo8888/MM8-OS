@@ -1,9 +1,9 @@
-set(CMAKE_HOST_SYSTEM "Linux-6.17.0-6-generic")
+set(CMAKE_HOST_SYSTEM "Linux-6.17.0-7-generic")
 set(CMAKE_HOST_SYSTEM_NAME "Linux")
-set(CMAKE_HOST_SYSTEM_VERSION "6.17.0-6-generic")
+set(CMAKE_HOST_SYSTEM_VERSION "6.17.0-7-generic")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
 
-include("/home/mm8/Documents/OS/MM8/MM8-OS/build_scripts/toolchain.cmake")
+include("/home/mm8/Documents/OS/MM8/MM8-OS/toolchain.cmake")
 
 set(CMAKE_SYSTEM "Generic")
 set(CMAKE_SYSTEM_NAME "Generic")

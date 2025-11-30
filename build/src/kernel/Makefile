@@ -117,25 +117,25 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/kernel/CMakeFiles/kernel.bin.dir/rule:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/kernel/CMakeFiles/kernel.bin.dir/rule
-.PHONY : src/kernel/CMakeFiles/kernel.bin.dir/rule
+src/kernel/CMakeFiles/kernel.elf.dir/rule:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/kernel/CMakeFiles/kernel.elf.dir/rule
+.PHONY : src/kernel/CMakeFiles/kernel.elf.dir/rule
 
 # Convenience name for target.
-kernel.bin: src/kernel/CMakeFiles/kernel.bin.dir/rule
-.PHONY : kernel.bin
+kernel.elf: src/kernel/CMakeFiles/kernel.elf.dir/rule
+.PHONY : kernel.elf
 
 # fast build rule for target.
-kernel.bin/fast:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/build
-.PHONY : kernel.bin/fast
+kernel.elf/fast:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/build
+.PHONY : kernel.elf/fast
 
 apps/calc/calc.obj: apps/calc/calc.c.obj
 .PHONY : apps/calc/calc.obj
 
 # target to build an object file
 apps/calc/calc.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/apps/calc/calc.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
 .PHONY : apps/calc/calc.c.obj
 
 apps/calc/calc.i: apps/calc/calc.c.i
@@ -143,7 +143,7 @@ apps/calc/calc.i: apps/calc/calc.c.i
 
 # target to preprocess a source file
 apps/calc/calc.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/apps/calc/calc.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/apps/calc/calc.c.i
 .PHONY : apps/calc/calc.c.i
 
 apps/calc/calc.s: apps/calc/calc.c.s
@@ -151,7 +151,7 @@ apps/calc/calc.s: apps/calc/calc.c.s
 
 # target to generate assembly for a file
 apps/calc/calc.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/apps/calc/calc.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/apps/calc/calc.c.s
 .PHONY : apps/calc/calc.c.s
 
 apps/editor/editor.obj: apps/editor/editor.c.obj
@@ -159,7 +159,7 @@ apps/editor/editor.obj: apps/editor/editor.c.obj
 
 # target to build an object file
 apps/editor/editor.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/apps/editor/editor.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/apps/editor/editor.c.obj
 .PHONY : apps/editor/editor.c.obj
 
 apps/editor/editor.i: apps/editor/editor.c.i
@@ -167,7 +167,7 @@ apps/editor/editor.i: apps/editor/editor.c.i
 
 # target to preprocess a source file
 apps/editor/editor.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/apps/editor/editor.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/apps/editor/editor.c.i
 .PHONY : apps/editor/editor.c.i
 
 apps/editor/editor.s: apps/editor/editor.c.s
@@ -175,7 +175,7 @@ apps/editor/editor.s: apps/editor/editor.c.s
 
 # target to generate assembly for a file
 apps/editor/editor.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/apps/editor/editor.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/apps/editor/editor.c.s
 .PHONY : apps/editor/editor.c.s
 
 arch/i686/gdt.obj: arch/i686/gdt.asm.obj
@@ -183,7 +183,7 @@ arch/i686/gdt.obj: arch/i686/gdt.asm.obj
 
 # target to build an object file
 arch/i686/gdt.asm.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/gdt.asm.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/gdt.asm.obj
 .PHONY : arch/i686/gdt.asm.obj
 
 arch/i686/gdt.obj: arch/i686/gdt.c.obj
@@ -191,7 +191,7 @@ arch/i686/gdt.obj: arch/i686/gdt.c.obj
 
 # target to build an object file
 arch/i686/gdt.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/gdt.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/gdt.c.obj
 .PHONY : arch/i686/gdt.c.obj
 
 arch/i686/gdt.i: arch/i686/gdt.c.i
@@ -199,7 +199,7 @@ arch/i686/gdt.i: arch/i686/gdt.c.i
 
 # target to preprocess a source file
 arch/i686/gdt.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/gdt.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/gdt.c.i
 .PHONY : arch/i686/gdt.c.i
 
 arch/i686/gdt.s: arch/i686/gdt.c.s
@@ -207,7 +207,7 @@ arch/i686/gdt.s: arch/i686/gdt.c.s
 
 # target to generate assembly for a file
 arch/i686/gdt.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/gdt.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/gdt.c.s
 .PHONY : arch/i686/gdt.c.s
 
 arch/i686/idt.obj: arch/i686/idt.asm.obj
@@ -215,7 +215,7 @@ arch/i686/idt.obj: arch/i686/idt.asm.obj
 
 # target to build an object file
 arch/i686/idt.asm.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/idt.asm.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/idt.asm.obj
 .PHONY : arch/i686/idt.asm.obj
 
 arch/i686/idt.obj: arch/i686/idt.c.obj
@@ -223,7 +223,7 @@ arch/i686/idt.obj: arch/i686/idt.c.obj
 
 # target to build an object file
 arch/i686/idt.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/idt.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/idt.c.obj
 .PHONY : arch/i686/idt.c.obj
 
 arch/i686/idt.i: arch/i686/idt.c.i
@@ -231,7 +231,7 @@ arch/i686/idt.i: arch/i686/idt.c.i
 
 # target to preprocess a source file
 arch/i686/idt.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/idt.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/idt.c.i
 .PHONY : arch/i686/idt.c.i
 
 arch/i686/idt.s: arch/i686/idt.c.s
@@ -239,7 +239,7 @@ arch/i686/idt.s: arch/i686/idt.c.s
 
 # target to generate assembly for a file
 arch/i686/idt.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/idt.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/idt.c.s
 .PHONY : arch/i686/idt.c.s
 
 arch/i686/io.obj: arch/i686/io.asm.obj
@@ -247,7 +247,7 @@ arch/i686/io.obj: arch/i686/io.asm.obj
 
 # target to build an object file
 arch/i686/io.asm.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/io.asm.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/io.asm.obj
 .PHONY : arch/i686/io.asm.obj
 
 arch/i686/io.obj: arch/i686/io.c.obj
@@ -255,7 +255,7 @@ arch/i686/io.obj: arch/i686/io.c.obj
 
 # target to build an object file
 arch/i686/io.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/io.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/io.c.obj
 .PHONY : arch/i686/io.c.obj
 
 arch/i686/io.i: arch/i686/io.c.i
@@ -263,7 +263,7 @@ arch/i686/io.i: arch/i686/io.c.i
 
 # target to preprocess a source file
 arch/i686/io.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/io.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/io.c.i
 .PHONY : arch/i686/io.c.i
 
 arch/i686/io.s: arch/i686/io.c.s
@@ -271,7 +271,7 @@ arch/i686/io.s: arch/i686/io.c.s
 
 # target to generate assembly for a file
 arch/i686/io.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/io.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/io.c.s
 .PHONY : arch/i686/io.c.s
 
 arch/i686/irq.obj: arch/i686/irq.c.obj
@@ -279,7 +279,7 @@ arch/i686/irq.obj: arch/i686/irq.c.obj
 
 # target to build an object file
 arch/i686/irq.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/irq.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/irq.c.obj
 .PHONY : arch/i686/irq.c.obj
 
 arch/i686/irq.i: arch/i686/irq.c.i
@@ -287,7 +287,7 @@ arch/i686/irq.i: arch/i686/irq.c.i
 
 # target to preprocess a source file
 arch/i686/irq.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/irq.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/irq.c.i
 .PHONY : arch/i686/irq.c.i
 
 arch/i686/irq.s: arch/i686/irq.c.s
@@ -295,7 +295,7 @@ arch/i686/irq.s: arch/i686/irq.c.s
 
 # target to generate assembly for a file
 arch/i686/irq.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/irq.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/irq.c.s
 .PHONY : arch/i686/irq.c.s
 
 arch/i686/isr.obj: arch/i686/isr.asm.obj
@@ -303,7 +303,7 @@ arch/i686/isr.obj: arch/i686/isr.asm.obj
 
 # target to build an object file
 arch/i686/isr.asm.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/isr.asm.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/isr.asm.obj
 .PHONY : arch/i686/isr.asm.obj
 
 arch/i686/isr.obj: arch/i686/isr.c.obj
@@ -311,7 +311,7 @@ arch/i686/isr.obj: arch/i686/isr.c.obj
 
 # target to build an object file
 arch/i686/isr.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/isr.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
 .PHONY : arch/i686/isr.c.obj
 
 arch/i686/isr.i: arch/i686/isr.c.i
@@ -319,7 +319,7 @@ arch/i686/isr.i: arch/i686/isr.c.i
 
 # target to preprocess a source file
 arch/i686/isr.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/isr.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/isr.c.i
 .PHONY : arch/i686/isr.c.i
 
 arch/i686/isr.s: arch/i686/isr.c.s
@@ -327,7 +327,7 @@ arch/i686/isr.s: arch/i686/isr.c.s
 
 # target to generate assembly for a file
 arch/i686/isr.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/isr.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/isr.c.s
 .PHONY : arch/i686/isr.c.s
 
 arch/i686/isrs_gen.obj: arch/i686/isrs_gen.c.obj
@@ -335,7 +335,7 @@ arch/i686/isrs_gen.obj: arch/i686/isrs_gen.c.obj
 
 # target to build an object file
 arch/i686/isrs_gen.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/isrs_gen.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/isrs_gen.c.obj
 .PHONY : arch/i686/isrs_gen.c.obj
 
 arch/i686/isrs_gen.i: arch/i686/isrs_gen.c.i
@@ -343,7 +343,7 @@ arch/i686/isrs_gen.i: arch/i686/isrs_gen.c.i
 
 # target to preprocess a source file
 arch/i686/isrs_gen.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/isrs_gen.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/isrs_gen.c.i
 .PHONY : arch/i686/isrs_gen.c.i
 
 arch/i686/isrs_gen.s: arch/i686/isrs_gen.c.s
@@ -351,7 +351,7 @@ arch/i686/isrs_gen.s: arch/i686/isrs_gen.c.s
 
 # target to generate assembly for a file
 arch/i686/isrs_gen.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/isrs_gen.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/isrs_gen.c.s
 .PHONY : arch/i686/isrs_gen.c.s
 
 arch/i686/keyboard.obj: arch/i686/keyboard.c.obj
@@ -359,7 +359,7 @@ arch/i686/keyboard.obj: arch/i686/keyboard.c.obj
 
 # target to build an object file
 arch/i686/keyboard.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/keyboard.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.obj
 .PHONY : arch/i686/keyboard.c.obj
 
 arch/i686/keyboard.i: arch/i686/keyboard.c.i
@@ -367,7 +367,7 @@ arch/i686/keyboard.i: arch/i686/keyboard.c.i
 
 # target to preprocess a source file
 arch/i686/keyboard.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/keyboard.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.i
 .PHONY : arch/i686/keyboard.c.i
 
 arch/i686/keyboard.s: arch/i686/keyboard.c.s
@@ -375,7 +375,7 @@ arch/i686/keyboard.s: arch/i686/keyboard.c.s
 
 # target to generate assembly for a file
 arch/i686/keyboard.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/keyboard.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.s
 .PHONY : arch/i686/keyboard.c.s
 
 arch/i686/pic.obj: arch/i686/pic.c.obj
@@ -383,7 +383,7 @@ arch/i686/pic.obj: arch/i686/pic.c.obj
 
 # target to build an object file
 arch/i686/pic.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/pic.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/pic.c.obj
 .PHONY : arch/i686/pic.c.obj
 
 arch/i686/pic.i: arch/i686/pic.c.i
@@ -391,7 +391,7 @@ arch/i686/pic.i: arch/i686/pic.c.i
 
 # target to preprocess a source file
 arch/i686/pic.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/pic.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/pic.c.i
 .PHONY : arch/i686/pic.c.i
 
 arch/i686/pic.s: arch/i686/pic.c.s
@@ -399,7 +399,7 @@ arch/i686/pic.s: arch/i686/pic.c.s
 
 # target to generate assembly for a file
 arch/i686/pic.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/pic.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/pic.c.s
 .PHONY : arch/i686/pic.c.s
 
 arch/i686/screen_defs.obj: arch/i686/screen_defs.c.obj
@@ -407,7 +407,7 @@ arch/i686/screen_defs.obj: arch/i686/screen_defs.c.obj
 
 # target to build an object file
 arch/i686/screen_defs.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/screen_defs.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/screen_defs.c.obj
 .PHONY : arch/i686/screen_defs.c.obj
 
 arch/i686/screen_defs.i: arch/i686/screen_defs.c.i
@@ -415,7 +415,7 @@ arch/i686/screen_defs.i: arch/i686/screen_defs.c.i
 
 # target to preprocess a source file
 arch/i686/screen_defs.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/screen_defs.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/screen_defs.c.i
 .PHONY : arch/i686/screen_defs.c.i
 
 arch/i686/screen_defs.s: arch/i686/screen_defs.c.s
@@ -423,7 +423,7 @@ arch/i686/screen_defs.s: arch/i686/screen_defs.c.s
 
 # target to generate assembly for a file
 arch/i686/screen_defs.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/arch/i686/screen_defs.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/arch/i686/screen_defs.c.s
 .PHONY : arch/i686/screen_defs.c.s
 
 commands/3dAniTest.obj: commands/3dAniTest.c.obj
@@ -431,7 +431,7 @@ commands/3dAniTest.obj: commands/3dAniTest.c.obj
 
 # target to build an object file
 commands/3dAniTest.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/3dAniTest.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/3dAniTest.c.obj
 .PHONY : commands/3dAniTest.c.obj
 
 commands/3dAniTest.i: commands/3dAniTest.c.i
@@ -439,7 +439,7 @@ commands/3dAniTest.i: commands/3dAniTest.c.i
 
 # target to preprocess a source file
 commands/3dAniTest.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/3dAniTest.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/3dAniTest.c.i
 .PHONY : commands/3dAniTest.c.i
 
 commands/3dAniTest.s: commands/3dAniTest.c.s
@@ -447,7 +447,7 @@ commands/3dAniTest.s: commands/3dAniTest.c.s
 
 # target to generate assembly for a file
 commands/3dAniTest.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/3dAniTest.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/3dAniTest.c.s
 .PHONY : commands/3dAniTest.c.s
 
 commands/afk.obj: commands/afk.c.obj
@@ -455,7 +455,7 @@ commands/afk.obj: commands/afk.c.obj
 
 # target to build an object file
 commands/afk.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/afk.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/afk.c.obj
 .PHONY : commands/afk.c.obj
 
 commands/afk.i: commands/afk.c.i
@@ -463,7 +463,7 @@ commands/afk.i: commands/afk.c.i
 
 # target to preprocess a source file
 commands/afk.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/afk.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/afk.c.i
 .PHONY : commands/afk.c.i
 
 commands/afk.s: commands/afk.c.s
@@ -471,7 +471,7 @@ commands/afk.s: commands/afk.c.s
 
 # target to generate assembly for a file
 commands/afk.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/afk.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/afk.c.s
 .PHONY : commands/afk.c.s
 
 commands/color.obj: commands/color.c.obj
@@ -479,7 +479,7 @@ commands/color.obj: commands/color.c.obj
 
 # target to build an object file
 commands/color.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/color.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/color.c.obj
 .PHONY : commands/color.c.obj
 
 commands/color.i: commands/color.c.i
@@ -487,7 +487,7 @@ commands/color.i: commands/color.c.i
 
 # target to preprocess a source file
 commands/color.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/color.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/color.c.i
 .PHONY : commands/color.c.i
 
 commands/color.s: commands/color.c.s
@@ -495,7 +495,7 @@ commands/color.s: commands/color.c.s
 
 # target to generate assembly for a file
 commands/color.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/color.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/color.c.s
 .PHONY : commands/color.c.s
 
 commands/command.obj: commands/command.c.obj
@@ -503,7 +503,7 @@ commands/command.obj: commands/command.c.obj
 
 # target to build an object file
 commands/command.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/command.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/command.c.obj
 .PHONY : commands/command.c.obj
 
 commands/command.i: commands/command.c.i
@@ -511,7 +511,7 @@ commands/command.i: commands/command.c.i
 
 # target to preprocess a source file
 commands/command.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/command.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/command.c.i
 .PHONY : commands/command.c.i
 
 commands/command.s: commands/command.c.s
@@ -519,7 +519,7 @@ commands/command.s: commands/command.c.s
 
 # target to generate assembly for a file
 commands/command.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/command.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/command.c.s
 .PHONY : commands/command.c.s
 
 commands/credits.obj: commands/credits.c.obj
@@ -527,7 +527,7 @@ commands/credits.obj: commands/credits.c.obj
 
 # target to build an object file
 commands/credits.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/credits.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/credits.c.obj
 .PHONY : commands/credits.c.obj
 
 commands/credits.i: commands/credits.c.i
@@ -535,7 +535,7 @@ commands/credits.i: commands/credits.c.i
 
 # target to preprocess a source file
 commands/credits.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/credits.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/credits.c.i
 .PHONY : commands/credits.c.i
 
 commands/credits.s: commands/credits.c.s
@@ -543,7 +543,7 @@ commands/credits.s: commands/credits.c.s
 
 # target to generate assembly for a file
 commands/credits.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/credits.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/credits.c.s
 .PHONY : commands/credits.c.s
 
 commands/json.obj: commands/json.c.obj
@@ -551,7 +551,7 @@ commands/json.obj: commands/json.c.obj
 
 # target to build an object file
 commands/json.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/json.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/json.c.obj
 .PHONY : commands/json.c.obj
 
 commands/json.i: commands/json.c.i
@@ -559,7 +559,7 @@ commands/json.i: commands/json.c.i
 
 # target to preprocess a source file
 commands/json.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/json.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/json.c.i
 .PHONY : commands/json.c.i
 
 commands/json.s: commands/json.c.s
@@ -567,7 +567,7 @@ commands/json.s: commands/json.c.s
 
 # target to generate assembly for a file
 commands/json.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/json.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/json.c.s
 .PHONY : commands/json.c.s
 
 commands/mm8Splash.obj: commands/mm8Splash.c.obj
@@ -575,7 +575,7 @@ commands/mm8Splash.obj: commands/mm8Splash.c.obj
 
 # target to build an object file
 commands/mm8Splash.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/mm8Splash.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.obj
 .PHONY : commands/mm8Splash.c.obj
 
 commands/mm8Splash.i: commands/mm8Splash.c.i
@@ -583,7 +583,7 @@ commands/mm8Splash.i: commands/mm8Splash.c.i
 
 # target to preprocess a source file
 commands/mm8Splash.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/mm8Splash.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.i
 .PHONY : commands/mm8Splash.c.i
 
 commands/mm8Splash.s: commands/mm8Splash.c.s
@@ -591,7 +591,7 @@ commands/mm8Splash.s: commands/mm8Splash.c.s
 
 # target to generate assembly for a file
 commands/mm8Splash.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/commands/mm8Splash.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.s
 .PHONY : commands/mm8Splash.c.s
 
 ctype.obj: ctype.c.obj
@@ -599,7 +599,7 @@ ctype.obj: ctype.c.obj
 
 # target to build an object file
 ctype.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/ctype.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/ctype.c.obj
 .PHONY : ctype.c.obj
 
 ctype.i: ctype.c.i
@@ -607,7 +607,7 @@ ctype.i: ctype.c.i
 
 # target to preprocess a source file
 ctype.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/ctype.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/ctype.c.i
 .PHONY : ctype.c.i
 
 ctype.s: ctype.c.s
@@ -615,7 +615,7 @@ ctype.s: ctype.c.s
 
 # target to generate assembly for a file
 ctype.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/ctype.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/ctype.c.s
 .PHONY : ctype.c.s
 
 disk.obj: disk.c.obj
@@ -623,7 +623,7 @@ disk.obj: disk.c.obj
 
 # target to build an object file
 disk.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/disk.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/disk.c.obj
 .PHONY : disk.c.obj
 
 disk.i: disk.c.i
@@ -631,7 +631,7 @@ disk.i: disk.c.i
 
 # target to preprocess a source file
 disk.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/disk.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/disk.c.i
 .PHONY : disk.c.i
 
 disk.s: disk.c.s
@@ -639,7 +639,7 @@ disk.s: disk.c.s
 
 # target to generate assembly for a file
 disk.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/disk.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/disk.c.s
 .PHONY : disk.c.s
 
 fat.obj: fat.c.obj
@@ -647,7 +647,7 @@ fat.obj: fat.c.obj
 
 # target to build an object file
 fat.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/fat.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/fat.c.obj
 .PHONY : fat.c.obj
 
 fat.i: fat.c.i
@@ -655,7 +655,7 @@ fat.i: fat.c.i
 
 # target to preprocess a source file
 fat.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/fat.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/fat.c.i
 .PHONY : fat.c.i
 
 fat.s: fat.c.s
@@ -663,7 +663,7 @@ fat.s: fat.c.s
 
 # target to generate assembly for a file
 fat.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/fat.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/fat.c.s
 .PHONY : fat.c.s
 
 font.obj: font.c.obj
@@ -671,7 +671,7 @@ font.obj: font.c.obj
 
 # target to build an object file
 font.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/font.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/font.c.obj
 .PHONY : font.c.obj
 
 font.i: font.c.i
@@ -679,7 +679,7 @@ font.i: font.c.i
 
 # target to preprocess a source file
 font.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/font.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/font.c.i
 .PHONY : font.c.i
 
 font.s: font.c.s
@@ -687,7 +687,7 @@ font.s: font.c.s
 
 # target to generate assembly for a file
 font.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/font.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/font.c.s
 .PHONY : font.c.s
 
 gprintf.obj: gprintf.c.obj
@@ -695,7 +695,7 @@ gprintf.obj: gprintf.c.obj
 
 # target to build an object file
 gprintf.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/gprintf.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/gprintf.c.obj
 .PHONY : gprintf.c.obj
 
 gprintf.i: gprintf.c.i
@@ -703,7 +703,7 @@ gprintf.i: gprintf.c.i
 
 # target to preprocess a source file
 gprintf.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/gprintf.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/gprintf.c.i
 .PHONY : gprintf.c.i
 
 gprintf.s: gprintf.c.s
@@ -711,7 +711,7 @@ gprintf.s: gprintf.c.s
 
 # target to generate assembly for a file
 gprintf.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/gprintf.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/gprintf.c.s
 .PHONY : gprintf.c.s
 
 graphics.obj: graphics.c.obj
@@ -719,7 +719,7 @@ graphics.obj: graphics.c.obj
 
 # target to build an object file
 graphics.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/graphics.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/graphics.c.obj
 .PHONY : graphics.c.obj
 
 graphics.i: graphics.c.i
@@ -727,7 +727,7 @@ graphics.i: graphics.c.i
 
 # target to preprocess a source file
 graphics.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/graphics.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/graphics.c.i
 .PHONY : graphics.c.i
 
 graphics.s: graphics.c.s
@@ -735,7 +735,7 @@ graphics.s: graphics.c.s
 
 # target to generate assembly for a file
 graphics.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/graphics.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/graphics.c.s
 .PHONY : graphics.c.s
 
 hal/hal.obj: hal/hal.c.obj
@@ -743,7 +743,7 @@ hal/hal.obj: hal/hal.c.obj
 
 # target to build an object file
 hal/hal.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/hal/hal.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/hal/hal.c.obj
 .PHONY : hal/hal.c.obj
 
 hal/hal.i: hal/hal.c.i
@@ -751,7 +751,7 @@ hal/hal.i: hal/hal.c.i
 
 # target to preprocess a source file
 hal/hal.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/hal/hal.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/hal/hal.c.i
 .PHONY : hal/hal.c.i
 
 hal/hal.s: hal/hal.c.s
@@ -759,7 +759,7 @@ hal/hal.s: hal/hal.c.s
 
 # target to generate assembly for a file
 hal/hal.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/hal/hal.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/hal/hal.c.s
 .PHONY : hal/hal.c.s
 
 heap.obj: heap.c.obj
@@ -767,7 +767,7 @@ heap.obj: heap.c.obj
 
 # target to build an object file
 heap.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/heap.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/heap.c.obj
 .PHONY : heap.c.obj
 
 heap.i: heap.c.i
@@ -775,7 +775,7 @@ heap.i: heap.c.i
 
 # target to preprocess a source file
 heap.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/heap.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/heap.c.i
 .PHONY : heap.c.i
 
 heap.s: heap.c.s
@@ -783,7 +783,7 @@ heap.s: heap.c.s
 
 # target to generate assembly for a file
 heap.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/heap.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/heap.c.s
 .PHONY : heap.c.s
 
 libs/cJSON/cJSON.obj: libs/cJSON/cJSON.c.obj
@@ -791,7 +791,7 @@ libs/cJSON/cJSON.obj: libs/cJSON/cJSON.c.obj
 
 # target to build an object file
 libs/cJSON/cJSON.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/libs/cJSON/cJSON.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
 .PHONY : libs/cJSON/cJSON.c.obj
 
 libs/cJSON/cJSON.i: libs/cJSON/cJSON.c.i
@@ -799,7 +799,7 @@ libs/cJSON/cJSON.i: libs/cJSON/cJSON.c.i
 
 # target to preprocess a source file
 libs/cJSON/cJSON.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/libs/cJSON/cJSON.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.i
 .PHONY : libs/cJSON/cJSON.c.i
 
 libs/cJSON/cJSON.s: libs/cJSON/cJSON.c.s
@@ -807,7 +807,7 @@ libs/cJSON/cJSON.s: libs/cJSON/cJSON.c.s
 
 # target to generate assembly for a file
 libs/cJSON/cJSON.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/libs/cJSON/cJSON.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.s
 .PHONY : libs/cJSON/cJSON.c.s
 
 main.obj: main.c.obj
@@ -815,7 +815,7 @@ main.obj: main.c.obj
 
 # target to build an object file
 main.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/main.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/main.c.obj
 .PHONY : main.c.obj
 
 main.i: main.c.i
@@ -823,7 +823,7 @@ main.i: main.c.i
 
 # target to preprocess a source file
 main.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/main.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/main.c.i
 .PHONY : main.c.i
 
 main.s: main.c.s
@@ -831,7 +831,7 @@ main.s: main.c.s
 
 # target to generate assembly for a file
 main.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/main.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/main.c.s
 .PHONY : main.c.s
 
 math.obj: math.c.obj
@@ -839,7 +839,7 @@ math.obj: math.c.obj
 
 # target to build an object file
 math.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/math.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/math.c.obj
 .PHONY : math.c.obj
 
 math.i: math.c.i
@@ -847,7 +847,7 @@ math.i: math.c.i
 
 # target to preprocess a source file
 math.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/math.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/math.c.i
 .PHONY : math.c.i
 
 math.s: math.c.s
@@ -855,7 +855,7 @@ math.s: math.c.s
 
 # target to generate assembly for a file
 math.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/math.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/math.c.s
 .PHONY : math.c.s
 
 memory.obj: memory.c.obj
@@ -863,7 +863,7 @@ memory.obj: memory.c.obj
 
 # target to build an object file
 memory.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/memory.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/memory.c.obj
 .PHONY : memory.c.obj
 
 memory.i: memory.c.i
@@ -871,7 +871,7 @@ memory.i: memory.c.i
 
 # target to preprocess a source file
 memory.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/memory.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/memory.c.i
 .PHONY : memory.c.i
 
 memory.s: memory.c.s
@@ -879,7 +879,7 @@ memory.s: memory.c.s
 
 # target to generate assembly for a file
 memory.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/memory.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/memory.c.s
 .PHONY : memory.c.s
 
 start.obj: start.asm.obj
@@ -887,7 +887,7 @@ start.obj: start.asm.obj
 
 # target to build an object file
 start.asm.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/start.asm.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/start.asm.obj
 .PHONY : start.asm.obj
 
 stdio.obj: stdio.c.obj
@@ -895,7 +895,7 @@ stdio.obj: stdio.c.obj
 
 # target to build an object file
 stdio.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/stdio.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/stdio.c.obj
 .PHONY : stdio.c.obj
 
 stdio.i: stdio.c.i
@@ -903,7 +903,7 @@ stdio.i: stdio.c.i
 
 # target to preprocess a source file
 stdio.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/stdio.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/stdio.c.i
 .PHONY : stdio.c.i
 
 stdio.s: stdio.c.s
@@ -911,7 +911,7 @@ stdio.s: stdio.c.s
 
 # target to generate assembly for a file
 stdio.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/stdio.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/stdio.c.s
 .PHONY : stdio.c.s
 
 string.obj: string.c.obj
@@ -919,7 +919,7 @@ string.obj: string.c.obj
 
 # target to build an object file
 string.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/string.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/string.c.obj
 .PHONY : string.c.obj
 
 string.i: string.c.i
@@ -927,7 +927,7 @@ string.i: string.c.i
 
 # target to preprocess a source file
 string.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/string.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/string.c.i
 .PHONY : string.c.i
 
 string.s: string.c.s
@@ -935,7 +935,7 @@ string.s: string.c.s
 
 # target to generate assembly for a file
 string.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.bin.dir/build.make src/kernel/CMakeFiles/kernel.bin.dir/string.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/kernel/CMakeFiles/kernel.elf.dir/build.make src/kernel/CMakeFiles/kernel.elf.dir/string.c.s
 .PHONY : string.c.s
 
 # Help Target
@@ -946,7 +946,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... kernel.bin"
+	@echo "... kernel.elf"
 	@echo "... apps/calc/calc.obj"
 	@echo "... apps/calc/calc.i"
 	@echo "... apps/calc/calc.s"

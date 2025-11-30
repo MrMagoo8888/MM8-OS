@@ -36,7 +36,7 @@ entry:
     mov bx, 768
     mov cl, 32
     call vbe_set_mode
-    jc .vbe_failed
+    
 
 
     ; switch to protected mode

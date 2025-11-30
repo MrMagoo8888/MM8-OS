@@ -1,5 +1,4 @@
 # Hashes of file build rules.
-ebdc9a04b8e76031c821869704ca903a CMakeFiles/floppy_image
+fb08045aa5c4d5c718b0d9f797e5e23c CMakeFiles/floppy_image
 136df4092952ab8d54e305e6bef9a1bd src/bootloader/stage1/CMakeFiles/build_stage1
-836bf97e1dc9edc44efdd563ba38d141 src/kernel/arch/i686/isrs_gen.c
-5ed804865b2bfde2306690ddcf439d2f stage1.bin
+9c1323fbf468395fe3e1bf0fdeb1916f stage1.bin

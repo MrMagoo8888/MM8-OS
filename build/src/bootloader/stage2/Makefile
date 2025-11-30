@@ -117,25 +117,25 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule
-.PHONY : src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule
+src/bootloader/stage2/CMakeFiles/stage2.elf.dir/rule:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/bootloader/stage2/CMakeFiles/stage2.elf.dir/rule
+.PHONY : src/bootloader/stage2/CMakeFiles/stage2.elf.dir/rule
 
 # Convenience name for target.
-stage2.bin: src/bootloader/stage2/CMakeFiles/stage2.bin.dir/rule
-.PHONY : stage2.bin
+stage2.elf: src/bootloader/stage2/CMakeFiles/stage2.elf.dir/rule
+.PHONY : stage2.elf
 
 # fast build rule for target.
-stage2.bin/fast:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build
-.PHONY : stage2.bin/fast
+stage2.elf/fast:
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build
+.PHONY : stage2.elf/fast
 
 ctype.obj: ctype.c.obj
 .PHONY : ctype.obj
 
 # target to build an object file
 ctype.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/ctype.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/ctype.c.obj
 .PHONY : ctype.c.obj
 
 ctype.i: ctype.c.i
@@ -143,7 +143,7 @@ ctype.i: ctype.c.i
 
 # target to preprocess a source file
 ctype.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/ctype.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/ctype.c.i
 .PHONY : ctype.c.i
 
 ctype.s: ctype.c.s
@@ -151,7 +151,7 @@ ctype.s: ctype.c.s
 
 # target to generate assembly for a file
 ctype.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/ctype.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/ctype.c.s
 .PHONY : ctype.c.s
 
 disk.obj: disk.c.obj
@@ -159,7 +159,7 @@ disk.obj: disk.c.obj
 
 # target to build an object file
 disk.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/disk.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/disk.c.obj
 .PHONY : disk.c.obj
 
 disk.i: disk.c.i
@@ -167,7 +167,7 @@ disk.i: disk.c.i
 
 # target to preprocess a source file
 disk.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/disk.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/disk.c.i
 .PHONY : disk.c.i
 
 disk.s: disk.c.s
@@ -175,7 +175,7 @@ disk.s: disk.c.s
 
 # target to generate assembly for a file
 disk.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/disk.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/disk.c.s
 .PHONY : disk.c.s
 
 entry.obj: entry.asm.obj
@@ -183,7 +183,7 @@ entry.obj: entry.asm.obj
 
 # target to build an object file
 entry.asm.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/entry.asm.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/entry.asm.obj
 .PHONY : entry.asm.obj
 
 fat.obj: fat.c.obj
@@ -191,7 +191,7 @@ fat.obj: fat.c.obj
 
 # target to build an object file
 fat.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/fat.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/fat.c.obj
 .PHONY : fat.c.obj
 
 fat.i: fat.c.i
@@ -199,7 +199,7 @@ fat.i: fat.c.i
 
 # target to preprocess a source file
 fat.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/fat.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/fat.c.i
 .PHONY : fat.c.i
 
 fat.s: fat.c.s
@@ -207,7 +207,7 @@ fat.s: fat.c.s
 
 # target to generate assembly for a file
 fat.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/fat.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/fat.c.s
 .PHONY : fat.c.s
 
 font.obj: font.c.obj
@@ -215,7 +215,7 @@ font.obj: font.c.obj
 
 # target to build an object file
 font.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/font.c.obj
 .PHONY : font.c.obj
 
 font.i: font.c.i
@@ -223,7 +223,7 @@ font.i: font.c.i
 
 # target to preprocess a source file
 font.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/font.c.i
 .PHONY : font.c.i
 
 font.s: font.c.s
@@ -231,7 +231,7 @@ font.s: font.c.s
 
 # target to generate assembly for a file
 font.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/font.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/font.c.s
 .PHONY : font.c.s
 
 main.obj: main.c.obj
@@ -239,7 +239,7 @@ main.obj: main.c.obj
 
 # target to build an object file
 main.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/main.c.obj
 .PHONY : main.c.obj
 
 main.i: main.c.i
@@ -247,7 +247,7 @@ main.i: main.c.i
 
 # target to preprocess a source file
 main.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/main.c.i
 .PHONY : main.c.i
 
 main.s: main.c.s
@@ -255,7 +255,7 @@ main.s: main.c.s
 
 # target to generate assembly for a file
 main.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/main.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/main.c.s
 .PHONY : main.c.s
 
 memory.obj: memory.c.obj
@@ -263,7 +263,7 @@ memory.obj: memory.c.obj
 
 # target to build an object file
 memory.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/memory.c.obj
 .PHONY : memory.c.obj
 
 memory.i: memory.c.i
@@ -271,7 +271,7 @@ memory.i: memory.c.i
 
 # target to preprocess a source file
 memory.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/memory.c.i
 .PHONY : memory.c.i
 
 memory.s: memory.c.s
@@ -279,7 +279,7 @@ memory.s: memory.c.s
 
 # target to generate assembly for a file
 memory.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/memory.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/memory.c.s
 .PHONY : memory.c.s
 
 stdio.obj: stdio.c.obj
@@ -287,7 +287,7 @@ stdio.obj: stdio.c.obj
 
 # target to build an object file
 stdio.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/stdio.c.obj
 .PHONY : stdio.c.obj
 
 stdio.i: stdio.c.i
@@ -295,7 +295,7 @@ stdio.i: stdio.c.i
 
 # target to preprocess a source file
 stdio.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/stdio.c.i
 .PHONY : stdio.c.i
 
 stdio.s: stdio.c.s
@@ -303,7 +303,7 @@ stdio.s: stdio.c.s
 
 # target to generate assembly for a file
 stdio.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/stdio.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/stdio.c.s
 .PHONY : stdio.c.s
 
 string.obj: string.c.obj
@@ -311,7 +311,7 @@ string.obj: string.c.obj
 
 # target to build an object file
 string.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/string.c.obj
 .PHONY : string.c.obj
 
 string.i: string.c.i
@@ -319,7 +319,7 @@ string.i: string.c.i
 
 # target to preprocess a source file
 string.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/string.c.i
 .PHONY : string.c.i
 
 string.s: string.c.s
@@ -327,7 +327,7 @@ string.s: string.c.s
 
 # target to generate assembly for a file
 string.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/string.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/string.c.s
 .PHONY : string.c.s
 
 utility.obj: utility.c.obj
@@ -335,7 +335,7 @@ utility.obj: utility.c.obj
 
 # target to build an object file
 utility.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/utility.c.obj
 .PHONY : utility.c.obj
 
 utility.i: utility.c.i
@@ -343,7 +343,7 @@ utility.i: utility.c.i
 
 # target to preprocess a source file
 utility.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/utility.c.i
 .PHONY : utility.c.i
 
 utility.s: utility.c.s
@@ -351,7 +351,7 @@ utility.s: utility.c.s
 
 # target to generate assembly for a file
 utility.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/utility.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/utility.c.s
 .PHONY : utility.c.s
 
 vga_text.obj: vga_text.c.obj
@@ -359,7 +359,7 @@ vga_text.obj: vga_text.c.obj
 
 # target to build an object file
 vga_text.c.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/vga_text.c.obj
 .PHONY : vga_text.c.obj
 
 vga_text.i: vga_text.c.i
@@ -367,7 +367,7 @@ vga_text.i: vga_text.c.i
 
 # target to preprocess a source file
 vga_text.c.i:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.i
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/vga_text.c.i
 .PHONY : vga_text.c.i
 
 vga_text.s: vga_text.c.s
@@ -375,7 +375,7 @@ vga_text.s: vga_text.c.s
 
 # target to generate assembly for a file
 vga_text.c.s:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/vga_text.c.s
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/vga_text.c.s
 .PHONY : vga_text.c.s
 
 x86.obj: x86.asm.obj
@@ -383,7 +383,7 @@ x86.obj: x86.asm.obj
 
 # target to build an object file
 x86.asm.obj:
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.bin.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.bin.dir/x86.asm.obj
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build && $(MAKE) $(MAKESILENT) -f src/bootloader/stage2/CMakeFiles/stage2.elf.dir/build.make src/bootloader/stage2/CMakeFiles/stage2.elf.dir/x86.asm.obj
 .PHONY : x86.asm.obj
 
 # Help Target
@@ -394,7 +394,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... stage2.bin"
+	@echo "... stage2.elf"
 	@echo "... ctype.obj"
 	@echo "... ctype.i"
 	@echo "... ctype.s"

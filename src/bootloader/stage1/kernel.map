@@ -1,0 +1,1097 @@
+Archive member included to satisfy reference by file (symbol)
+
+/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+                              CMakeFiles/kernel.elf.dir/gprintf.c.obj (__udivmoddi4)
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+LOAD CMakeFiles/kernel.elf.dir/apps/editor/editor.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/gdt.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/idt.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/io.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/irq.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/isrs_gen.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/pic.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/screen_defs.c.obj
+LOAD CMakeFiles/kernel.elf.dir/commands/3dAniTest.c.obj
+LOAD CMakeFiles/kernel.elf.dir/commands/afk.c.obj
+LOAD CMakeFiles/kernel.elf.dir/commands/color.c.obj
+LOAD CMakeFiles/kernel.elf.dir/commands/command.c.obj
+LOAD CMakeFiles/kernel.elf.dir/commands/credits.c.obj
+LOAD CMakeFiles/kernel.elf.dir/commands/json.c.obj
+LOAD CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.obj
+LOAD CMakeFiles/kernel.elf.dir/ctype.c.obj
+LOAD CMakeFiles/kernel.elf.dir/disk.c.obj
+LOAD CMakeFiles/kernel.elf.dir/fat.c.obj
+LOAD CMakeFiles/kernel.elf.dir/font.c.obj
+LOAD CMakeFiles/kernel.elf.dir/gprintf.c.obj
+LOAD CMakeFiles/kernel.elf.dir/graphics.c.obj
+LOAD CMakeFiles/kernel.elf.dir/hal/hal.c.obj
+LOAD CMakeFiles/kernel.elf.dir/heap.c.obj
+LOAD CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+LOAD CMakeFiles/kernel.elf.dir/main.c.obj
+LOAD CMakeFiles/kernel.elf.dir/math.c.obj
+LOAD CMakeFiles/kernel.elf.dir/memory.c.obj
+LOAD CMakeFiles/kernel.elf.dir/stdio.c.obj
+LOAD CMakeFiles/kernel.elf.dir/string.c.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/gdt.asm.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/idt.asm.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/io.asm.obj
+LOAD CMakeFiles/kernel.elf.dir/arch/i686/isr.asm.obj
+LOAD CMakeFiles/kernel.elf.dir/start.asm.obj
+LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a
+                [!provide]                        PROVIDE (__executable_start = SEGMENT_START ("text-segment", 0x8048000))
+                0x08048074                        . = (SEGMENT_START ("text-segment", 0x8048000) + SIZEOF_HEADERS)
+
+.interp
+ *(.interp)
+
+.note.gnu.build-id
+ *(.note.gnu.build-id)
+
+.hash
+ *(.hash)
+
+.gnu.hash
+ *(.gnu.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.dyn        0x08048074        0x0
+ *(.rel.init)
+ *(.rel.text .rel.text.* .rel.gnu.linkonce.t.*)
+ *(.rel.fini)
+ *(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*)
+ *(.rel.data.rel.ro .rel.data.rel.ro.* .rel.gnu.linkonce.d.rel.ro.*)
+ *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*)
+ *(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*)
+ *(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*)
+ *(.rel.ctors)
+ *(.rel.dtors)
+ *(.rel.got)
+ .rel.got       0x08048074        0x0 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+ *(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*)
+ *(.rel.ifunc)
+
+.rel.plt        0x08048074        0x0
+ *(.rel.plt)
+                [!provide]                        PROVIDE (__rel_iplt_start = .)
+ *(.rel.iplt)
+ .rel.iplt      0x08048074        0x0 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+                [!provide]                        PROVIDE (__rel_iplt_end = .)
+
+.relr.dyn
+ *(.relr.dyn)
+
+.init
+ *(SORT_NONE(.init))
+
+.plt            0x08048074        0x0
+ *(.plt)
+ *(.iplt)
+ .iplt          0x08048074        0x0 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+
+.plt.got
+ *(.plt.got)
+
+.plt.sec
+ *(.plt.sec)
+
+.text           0x08048080     0xaa45
+ *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+ *(.text.exit .text.exit.*)
+ *(.text.startup .text.startup.*)
+ *(.text.hot .text.hot.*)
+ *(SORT_BY_NAME(.text.sorted.*))
+ *(.text .stub .text.* .gnu.linkonce.t.*)
+ .text          0x08048080      0x361 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+                0x08048080                handle_calc
+ *fill*         0x080483e1        0xf 
+ .text          0x080483f0      0x44f CMakeFiles/kernel.elf.dir/apps/editor/editor.c.obj
+                0x08048480                editor_handle_command
+ *fill*         0x0804883f        0x1 
+ .text          0x08048840       0x19 CMakeFiles/kernel.elf.dir/arch/i686/gdt.c.obj
+                0x08048840                i686_GDT_Initialize
+ *fill*         0x08048859        0x7 
+ .text          0x08048860       0x75 CMakeFiles/kernel.elf.dir/arch/i686/idt.c.obj
+                0x08048860                i686_IDT_SetGate
+                0x080488a0                i686_IDT_EnableGate
+                0x080488b0                i686_IDT_DisableGate
+                0x080488c0                i686_IDT_Initialize
+ *fill*         0x080488d5        0xb 
+ .text          0x080488e0       0x17 CMakeFiles/kernel.elf.dir/arch/i686/io.c.obj
+                0x080488e0                i686_iowait
+ *fill*         0x080488f7        0x9 
+ .text          0x08048900       0xc9 CMakeFiles/kernel.elf.dir/arch/i686/irq.c.obj
+                0x08048900                i686_IRQ_Handler
+                0x08048970                i686_IRQ_Initialize
+                0x080489b0                i686_IRQ_RegisterHandler
+ *fill*         0x080489c9        0x7 
+ .text          0x080489d0      0x129 CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
+                0x080489d0                i686_ISR_Initialize
+                0x08048a10                i686_ISR_Handler
+                0x08048ae0                i686_ISR_RegisterHandler
+ *fill*         0x08048af9        0x7 
+ .text          0x08048b00     0x1308 CMakeFiles/kernel.elf.dir/arch/i686/isrs_gen.c.obj
+                0x08048b00                i686_ISR_InitializeGates
+ *fill*         0x08049e08        0x8 
+ .text          0x08049e10      0x5b6 CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.obj
+                0x08049e90                keyboard_irq_handler
+                0x0804a280                i686_Keyboard_Initialize
+                0x0804a2b0                gets
+                0x0804a350                getch
+                0x0804a3a0                i686_Keyboard_Getchar
+ *fill*         0x0804a3c6        0xa 
+ .text          0x0804a3d0      0x275 CMakeFiles/kernel.elf.dir/arch/i686/pic.c.obj
+                0x0804a3d0                i686_PIC_Configure
+                0x0804a4a0                i686_PIC_SendEndOfInterrupt
+                0x0804a4e0                i686_PIC_Disable
+                0x0804a520                i686_PIC_Mask
+                0x0804a570                i686_PIC_Unmask
+                0x0804a5b0                i686_PIC_ReadIrqRequestRegister
+                0x0804a600                i686_PIC_ReadInServiceRegister
+ .text          0x0804a645        0x0 CMakeFiles/kernel.elf.dir/arch/i686/screen_defs.c.obj
+ .text          0x0804a645        0x0 CMakeFiles/kernel.elf.dir/commands/3dAniTest.c.obj
+ *fill*         0x0804a645        0xb 
+ .text          0x0804a650       0x3a CMakeFiles/kernel.elf.dir/commands/afk.c.obj
+                0x0804a650                afk
+ *fill*         0x0804a68a        0x6 
+ .text          0x0804a690      0x338 CMakeFiles/kernel.elf.dir/commands/color.c.obj
+                0x0804a690                handle_color
+ *fill*         0x0804a9c8        0x8 
+ .text          0x0804a9d0      0x355 CMakeFiles/kernel.elf.dir/commands/command.c.obj
+                0x0804aab0                command_dispatch
+ *fill*         0x0804ad25        0xb 
+ .text          0x0804ad30      0x166 CMakeFiles/kernel.elf.dir/commands/credits.c.obj
+                0x0804ad30                credits_followers
+                0x0804ada0                credits_streamers
+                0x0804add0                credits_me
+                0x0804ae20                credits
+ *fill*         0x0804ae96        0xa 
+ .text          0x0804aea0      0x2c0 CMakeFiles/kernel.elf.dir/commands/json.c.obj
+                0x0804aea0                handle_json_test
+ .text          0x0804b160       0x41 CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.obj
+                0x0804b160                mm8Splash
+ *fill*         0x0804b1a1        0xf 
+ .text          0x0804b1b0       0x54 CMakeFiles/kernel.elf.dir/ctype.c.obj
+                0x0804b1b0                toupper
+                0x0804b1d0                tolower
+                0x0804b1f0                isdigit
+ *fill*         0x0804b204        0xc 
+ .text          0x0804b210      0x471 CMakeFiles/kernel.elf.dir/disk.c.obj
+                0x0804b210                DISK_Initialize
+                0x0804b3d0                DISK_ReadSectors
+                0x0804b510                DISK_WriteSectors
+ *fill*         0x0804b681        0xf 
+ .text          0x0804b690     0x14a8 CMakeFiles/kernel.elf.dir/fat.c.obj
+                0x0804b720                FAT_ReadBootSector
+                0x0804b740                FAT_ReadFat
+                0x0804b780                FAT_ClusterToLba
+                0x0804b7b0                FAT_Initialize
+                0x0804bae0                FAT_OpenEntry
+                0x0804bc40                FAT_NextCluster
+                0x0804bca0                FAT_Flush
+                0x0804bd50                FAT_Write
+                0x0804c0f0                FAT_Read
+                0x0804c320                FAT_ReadEntry
+                0x0804c350                FAT_Seek
+                0x0804c430                FAT_Close
+                0x0804c680                FAT_FindFile
+                0x0804c820                FAT_Open
+ .text          0x0804cb38        0x0 CMakeFiles/kernel.elf.dir/font.c.obj
+ *fill*         0x0804cb38        0x8 
+ .text          0x0804cb40      0x3b2 CMakeFiles/kernel.elf.dir/gprintf.c.obj
+                0x0804cc10                gprintf
+ *fill*         0x0804cef2        0xe 
+ .text          0x0804cf00      0x43c CMakeFiles/kernel.elf.dir/graphics.c.obj
+                0x0804cf00                put_pixel
+                0x0804cf50                graphics_clear_screen
+                0x0804d000                graphics_draw_rect
+                0x0804d110                graphics_draw_line
+                0x0804d210                graphics_draw_char
+                0x0804d280                graphics_draw_string
+ *fill*         0x0804d33c        0x4 
+ .text          0x0804d340       0x1b CMakeFiles/kernel.elf.dir/hal/hal.c.obj
+                0x0804d340                HAL_Initialize
+ *fill*         0x0804d35b        0x5 
+ .text          0x0804d360      0x13f CMakeFiles/kernel.elf.dir/heap.c.obj
+                0x0804d360                heap_initialize
+                0x0804d390                malloc
+                0x0804d410                free
+                0x0804d420                realloc
+ *fill*         0x0804d49f        0x1 
+ .text          0x0804d4a0     0x3c06 CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+                0x0804e410                cJSON_GetErrorPtr
+                0x0804e420                cJSON_GetStringValue
+                0x0804e440                cJSON_GetNumberValue
+                0x0804e470                cJSON_Version
+                0x0804e4a0                cJSON_InitHooks
+                0x0804e560                cJSON_Delete
+                0x0804eb60                cJSON_SetNumberHelper
+                0x0804ebc0                cJSON_SetValuestring
+                0x0804eca0                cJSON_ParseWithLengthOpts
+                0x0804ee60                cJSON_ParseWithOpts
+                0x0804eea0                cJSON_Parse
+                0x0804eee0                cJSON_ParseWithLength
+                0x0804ef00                cJSON_Print
+                0x0804ef20                cJSON_PrintUnformatted
+                0x0804ef30                cJSON_PrintBuffered
+                0x0804efd0                cJSON_PrintPreallocated
+                0x0804f040                cJSON_GetArraySize
+                0x0804f070                cJSON_GetArrayItem
+                0x0804f0b0                cJSON_GetObjectItem
+                0x0804f0d0                cJSON_GetObjectItemCaseSensitive
+                0x0804f0f0                cJSON_HasObjectItem
+                0x0804f110                cJSON_AddItemToArray
+                0x0804f170                cJSON_AddItemToObject
+                0x0804f190                cJSON_AddItemToObjectCS
+                0x0804f1b0                cJSON_AddItemReferenceToArray
+                0x0804f2a0                cJSON_AddItemReferenceToObject
+                0x0804f380                cJSON_AddNullToObject
+                0x0804f400                cJSON_AddTrueToObject
+                0x0804f480                cJSON_AddFalseToObject
+                0x0804f500                cJSON_AddBoolToObject
+                0x0804f590                cJSON_AddNumberToObject
+                0x0804f670                cJSON_AddStringToObject
+                0x0804f750                cJSON_AddRawToObject
+                0x0804f830                cJSON_AddObjectToObject
+                0x0804f8b0                cJSON_AddArrayToObject
+                0x0804f930                cJSON_DetachItemViaPointer
+                0x0804f9b0                cJSON_DetachItemFromArray
+                0x0804fa00                cJSON_DeleteItemFromArray
+                0x0804fa60                cJSON_DetachItemFromObject
+                0x0804fae0                cJSON_DetachItemFromObjectCaseSensitive
+                0x0804fb60                cJSON_DeleteItemFromObject
+                0x0804fb90                cJSON_DeleteItemFromObjectCaseSensitive
+                0x0804fbd0                cJSON_InsertItemInArray
+                0x0804fc80                cJSON_ReplaceItemViaPointer
+                0x0804fd30                cJSON_ReplaceItemInArray
+                0x0804fd80                cJSON_ReplaceItemInObject
+                0x0804fe40                cJSON_ReplaceItemInObjectCaseSensitive
+                0x0804ff00                cJSON_CreateNull
+                0x0804ff50                cJSON_CreateTrue
+                0x0804ffa0                cJSON_CreateFalse
+                0x0804fff0                cJSON_CreateBool
+                0x08050040                cJSON_CreateNumber
+                0x080500f0                cJSON_CreateString
+                0x080501a0                cJSON_CreateStringReference
+                0x080501f0                cJSON_CreateObjectReference
+                0x08050240                cJSON_CreateArrayReference
+                0x08050290                cJSON_CreateRaw
+                0x08050340                cJSON_CreateArray
+                0x08050390                cJSON_CreateObject
+                0x080503e0                cJSON_CreateIntArray
+                0x08050510                cJSON_CreateFloatArray
+                0x08050690                cJSON_CreateDoubleArray
+                0x08050800                cJSON_CreateStringArray
+                0x080509a0                cJSON_Duplicate_rec
+                0x08050b60                cJSON_Duplicate
+                0x08050b80                cJSON_Minify
+                0x08050ce0                cJSON_IsInvalid
+                0x08050d10                cJSON_IsFalse
+                0x08050d40                cJSON_IsTrue
+                0x08050d70                cJSON_IsBool
+                0x08050da0                cJSON_IsNull
+                0x08050dd0                cJSON_IsNumber
+                0x08050e00                cJSON_IsString
+                0x08050e30                cJSON_IsArray
+                0x08050e60                cJSON_IsObject
+                0x08050e90                cJSON_IsRaw
+                0x08050ec0                cJSON_Compare
+                0x08051090                cJSON_malloc
+                0x080510a0                cJSON_free
+ *fill*         0x080510a6        0xa 
+ .text          0x080510b0      0x133 CMakeFiles/kernel.elf.dir/main.c.obj
+                0x080510b0                timer
+                0x080510c0                add_to_history
+                0x080511c0                kernel_main
+ *fill*         0x080511e3        0xd 
+ .text          0x080511f0       0x33 CMakeFiles/kernel.elf.dir/math.c.obj
+                0x080511f0                fabs
+                0x08051210                strtod
+ *fill*         0x08051223        0xd 
+ .text          0x08051230      0x116 CMakeFiles/kernel.elf.dir/memory.c.obj
+                0x08051230                memcpy
+                0x08051270                memset
+                0x080512a0                memcmp
+                0x080512f0                memmove
+ *fill*         0x08051346        0xa 
+ .text          0x08051350      0x953 CMakeFiles/kernel.elf.dir/stdio.c.obj
+                0x08051490                putchr
+                0x080514b0                putcolor
+                0x080514d0                getchr
+                0x080514f0                getcolor
+                0x08051510                setcursor
+                0x08051570                clrscr
+                0x08051620                scrollback
+                0x080517f0                refresh_screen_color
+                0x08051840                view_scrollback_up
+                0x080518a0                view_scrollback_down
+                0x08051970                putc
+                0x08051b50                puts
+                0x08051b90                printf
+                0x08051bb0                print_buffer
+                0x08051c60                sprintf
+                0x08051ca0                sscanf
+ *fill*         0x08051ca3        0xd 
+ .text          0x08051cb0      0x166 CMakeFiles/kernel.elf.dir/string.c.obj
+                0x08051cb0                strcmp
+                0x08051d00                strlen
+                0x08051d30                strcpy
+                0x08051d70                strncmp
+                0x08051dc0                strchr
+                0x08051df0                strrchr
+ *fill*         0x08051e16        0xa 
+ .text          0x08051e20       0x25 CMakeFiles/kernel.elf.dir/arch/i686/gdt.asm.obj
+                0x08051e20                i686_GDT_Load
+ *fill*         0x08051e45        0xb 
+ .text          0x08051e50        0xd CMakeFiles/kernel.elf.dir/arch/i686/idt.asm.obj
+                0x08051e50                i686_IDT_Load
+ *fill*         0x08051e5d        0x3 
+ .text          0x08051e60       0x1d CMakeFiles/kernel.elf.dir/arch/i686/io.asm.obj
+                0x08051e60                i686_outb
+                0x08051e6b                i686_inb
+                0x08051e74                i686_Panic
+                0x08051e76                i686_EnableInterrupts
+                0x08051e78                i686_DisableInterrupts
+                0x08051e7a                crash_me
+ *fill*         0x08051e7d        0x3 
+ .text          0x08051e80      0xa6d CMakeFiles/kernel.elf.dir/arch/i686/isr.asm.obj
+                0x08051e80                i686_ISR0
+                0x08051e89                i686_ISR1
+                0x08051e92                i686_ISR2
+                0x08051e9b                i686_ISR3
+                0x08051ea4                i686_ISR4
+                0x08051ead                i686_ISR5
+                0x08051eb6                i686_ISR6
+                0x08051ebf                i686_ISR7
+                0x08051ec8                i686_ISR8
+                0x08051ecf                i686_ISR9
+                0x08051ed8                i686_ISR10
+                0x08051edf                i686_ISR11
+                0x08051ee6                i686_ISR12
+                0x08051eed                i686_ISR13
+                0x08051ef4                i686_ISR14
+                0x08051efb                i686_ISR15
+                0x08051f04                i686_ISR16
+                0x08051f0d                i686_ISR17
+                0x08051f14                i686_ISR18
+                0x08051f1d                i686_ISR19
+                0x08051f26                i686_ISR20
+                0x08051f2f                i686_ISR21
+                0x08051f36                i686_ISR22
+                0x08051f3f                i686_ISR23
+                0x08051f48                i686_ISR24
+                0x08051f51                i686_ISR25
+                0x08051f5a                i686_ISR26
+                0x08051f63                i686_ISR27
+                0x08051f6c                i686_ISR28
+                0x08051f75                i686_ISR29
+                0x08051f7e                i686_ISR30
+                0x08051f87                i686_ISR31
+                0x08051f90                i686_ISR32
+                0x08051f99                i686_ISR33
+                0x08051fa2                i686_ISR34
+                0x08051fab                i686_ISR35
+                0x08051fb4                i686_ISR36
+                0x08051fbd                i686_ISR37
+                0x08051fc6                i686_ISR38
+                0x08051fcf                i686_ISR39
+                0x08051fd8                i686_ISR40
+                0x08051fe1                i686_ISR41
+                0x08051fea                i686_ISR42
+                0x08051ff3                i686_ISR43
+                0x08051ffc                i686_ISR44
+                0x08052005                i686_ISR45
+                0x0805200e                i686_ISR46
+                0x08052017                i686_ISR47
+                0x08052020                i686_ISR48
+                0x08052029                i686_ISR49
+                0x08052032                i686_ISR50
+                0x0805203b                i686_ISR51
+                0x08052044                i686_ISR52
+                0x0805204d                i686_ISR53
+                0x08052056                i686_ISR54
+                0x0805205f                i686_ISR55
+                0x08052068                i686_ISR56
+                0x08052071                i686_ISR57
+                0x0805207a                i686_ISR58
+                0x08052083                i686_ISR59
+                0x0805208c                i686_ISR60
+                0x08052095                i686_ISR61
+                0x0805209e                i686_ISR62
+                0x080520a7                i686_ISR63
+                0x080520b0                i686_ISR64
+                0x080520b9                i686_ISR65
+                0x080520c2                i686_ISR66
+                0x080520cb                i686_ISR67
+                0x080520d4                i686_ISR68
+                0x080520dd                i686_ISR69
+                0x080520e6                i686_ISR70
+                0x080520ef                i686_ISR71
+                0x080520f8                i686_ISR72
+                0x08052101                i686_ISR73
+                0x0805210a                i686_ISR74
+                0x08052113                i686_ISR75
+                0x0805211c                i686_ISR76
+                0x08052125                i686_ISR77
+                0x0805212e                i686_ISR78
+                0x08052137                i686_ISR79
+                0x08052140                i686_ISR80
+                0x08052149                i686_ISR81
+                0x08052152                i686_ISR82
+                0x0805215b                i686_ISR83
+                0x08052164                i686_ISR84
+                0x0805216d                i686_ISR85
+                0x08052176                i686_ISR86
+                0x0805217f                i686_ISR87
+                0x08052188                i686_ISR88
+                0x08052191                i686_ISR89
+                0x0805219a                i686_ISR90
+                0x080521a3                i686_ISR91
+                0x080521ac                i686_ISR92
+                0x080521b5                i686_ISR93
+                0x080521be                i686_ISR94
+                0x080521c7                i686_ISR95
+                0x080521d0                i686_ISR96
+                0x080521d9                i686_ISR97
+                0x080521e2                i686_ISR98
+                0x080521eb                i686_ISR99
+                0x080521f4                i686_ISR100
+                0x080521fd                i686_ISR101
+                0x08052206                i686_ISR102
+                0x0805220f                i686_ISR103
+                0x08052218                i686_ISR104
+                0x08052221                i686_ISR105
+                0x0805222a                i686_ISR106
+                0x08052233                i686_ISR107
+                0x0805223c                i686_ISR108
+                0x08052245                i686_ISR109
+                0x0805224e                i686_ISR110
+                0x08052257                i686_ISR111
+                0x08052260                i686_ISR112
+                0x08052269                i686_ISR113
+                0x08052272                i686_ISR114
+                0x0805227b                i686_ISR115
+                0x08052284                i686_ISR116
+                0x0805228d                i686_ISR117
+                0x08052296                i686_ISR118
+                0x0805229f                i686_ISR119
+                0x080522a8                i686_ISR120
+                0x080522b1                i686_ISR121
+                0x080522ba                i686_ISR122
+                0x080522c3                i686_ISR123
+                0x080522cc                i686_ISR124
+                0x080522d5                i686_ISR125
+                0x080522de                i686_ISR126
+                0x080522e7                i686_ISR127
+                0x080522f0                i686_ISR128
+                0x080522fc                i686_ISR129
+                0x08052308                i686_ISR130
+                0x08052314                i686_ISR131
+                0x08052320                i686_ISR132
+                0x0805232c                i686_ISR133
+                0x08052338                i686_ISR134
+                0x08052344                i686_ISR135
+                0x08052350                i686_ISR136
+                0x0805235c                i686_ISR137
+                0x08052368                i686_ISR138
+                0x08052374                i686_ISR139
+                0x08052380                i686_ISR140
+                0x0805238c                i686_ISR141
+                0x08052398                i686_ISR142
+                0x080523a4                i686_ISR143
+                0x080523b0                i686_ISR144
+                0x080523bc                i686_ISR145
+                0x080523c8                i686_ISR146
+                0x080523d4                i686_ISR147
+                0x080523e0                i686_ISR148
+                0x080523ec                i686_ISR149
+                0x080523f8                i686_ISR150
+                0x08052404                i686_ISR151
+                0x08052410                i686_ISR152
+                0x0805241c                i686_ISR153
+                0x08052428                i686_ISR154
+                0x08052434                i686_ISR155
+                0x08052440                i686_ISR156
+                0x0805244c                i686_ISR157
+                0x08052458                i686_ISR158
+                0x08052464                i686_ISR159
+                0x08052470                i686_ISR160
+                0x0805247c                i686_ISR161
+                0x08052488                i686_ISR162
+                0x08052494                i686_ISR163
+                0x080524a0                i686_ISR164
+                0x080524ac                i686_ISR165
+                0x080524b8                i686_ISR166
+                0x080524c4                i686_ISR167
+                0x080524d0                i686_ISR168
+                0x080524dc                i686_ISR169
+                0x080524e8                i686_ISR170
+                0x080524f4                i686_ISR171
+                0x08052500                i686_ISR172
+                0x0805250c                i686_ISR173
+                0x08052518                i686_ISR174
+                0x08052524                i686_ISR175
+                0x08052530                i686_ISR176
+                0x0805253c                i686_ISR177
+                0x08052548                i686_ISR178
+                0x08052554                i686_ISR179
+                0x08052560                i686_ISR180
+                0x0805256c                i686_ISR181
+                0x08052578                i686_ISR182
+                0x08052584                i686_ISR183
+                0x08052590                i686_ISR184
+                0x0805259c                i686_ISR185
+                0x080525a8                i686_ISR186
+                0x080525b4                i686_ISR187
+                0x080525c0                i686_ISR188
+                0x080525cc                i686_ISR189
+                0x080525d8                i686_ISR190
+                0x080525e4                i686_ISR191
+                0x080525f0                i686_ISR192
+                0x080525fc                i686_ISR193
+                0x08052608                i686_ISR194
+                0x08052614                i686_ISR195
+                0x08052620                i686_ISR196
+                0x0805262c                i686_ISR197
+                0x08052638                i686_ISR198
+                0x08052644                i686_ISR199
+                0x08052650                i686_ISR200
+                0x0805265c                i686_ISR201
+                0x08052668                i686_ISR202
+                0x08052674                i686_ISR203
+                0x08052680                i686_ISR204
+                0x0805268c                i686_ISR205
+                0x08052698                i686_ISR206
+                0x080526a4                i686_ISR207
+                0x080526b0                i686_ISR208
+                0x080526bc                i686_ISR209
+                0x080526c8                i686_ISR210
+                0x080526d4                i686_ISR211
+                0x080526e0                i686_ISR212
+                0x080526ec                i686_ISR213
+                0x080526f8                i686_ISR214
+                0x08052704                i686_ISR215
+                0x08052710                i686_ISR216
+                0x0805271c                i686_ISR217
+                0x08052728                i686_ISR218
+                0x08052734                i686_ISR219
+                0x08052740                i686_ISR220
+                0x0805274c                i686_ISR221
+                0x08052758                i686_ISR222
+                0x08052764                i686_ISR223
+                0x08052770                i686_ISR224
+                0x0805277c                i686_ISR225
+                0x08052788                i686_ISR226
+                0x08052794                i686_ISR227
+                0x080527a0                i686_ISR228
+                0x080527ac                i686_ISR229
+                0x080527b8                i686_ISR230
+                0x080527c4                i686_ISR231
+                0x080527d0                i686_ISR232
+                0x080527dc                i686_ISR233
+                0x080527e8                i686_ISR234
+                0x080527f4                i686_ISR235
+                0x08052800                i686_ISR236
+                0x0805280c                i686_ISR237
+                0x08052818                i686_ISR238
+                0x08052824                i686_ISR239
+                0x08052830                i686_ISR240
+                0x0805283c                i686_ISR241
+                0x08052845                i686_ISR242
+                0x0805284e                i686_ISR243
+                0x08052857                i686_ISR244
+                0x08052860                i686_ISR245
+                0x08052869                i686_ISR246
+                0x08052872                i686_ISR247
+                0x0805287b                i686_ISR248
+                0x08052884                i686_ISR249
+                0x0805288d                i686_ISR250
+                0x08052896                i686_ISR251
+                0x0805289f                i686_ISR252
+                0x080528a8                i686_ISR253
+                0x080528b1                i686_ISR254
+                0x080528ba                i686_ISR255
+ *fill*         0x080528ed        0x3 
+ .text          0x080528f0       0x1e CMakeFiles/kernel.elf.dir/start.asm.obj
+                0x080528f0                _start
+ *fill*         0x0805290e        0x2 
+ .text          0x08052910      0x1b5 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+                0x08052910                __udivmoddi4
+ *(.gnu.warning)
+
+.fini
+ *(SORT_NONE(.fini))
+                [!provide]                        PROVIDE (__etext = .)
+                [!provide]                        PROVIDE (_etext = .)
+                [!provide]                        PROVIDE (etext = .)
+
+.rodata         0x08052ae0     0x1db0
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+ .rodata.str1.1
+                0x08052ae0      0x796 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+                                 0x8c (size before relaxing)
+ *fill*         0x08053276        0x2 
+ .rodata.str1.4
+                0x08053278      0x86b CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+                                 0x8e (size before relaxing)
+ .rodata.str1.1
+                0x08053ae3       0x56 CMakeFiles/kernel.elf.dir/apps/editor/editor.c.obj
+ .rodata.str1.4
+                0x08053ae3       0x23 CMakeFiles/kernel.elf.dir/apps/editor/editor.c.obj
+ .rodata.str1.4
+                0x08053ae3       0x25 CMakeFiles/kernel.elf.dir/arch/i686/irq.c.obj
+ .rodata.str1.1
+                0x08053ae3      0x221 CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
+ .rodata.str1.4
+                0x08053ae3       0x8f CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
+ *fill*         0x08053ae3       0x1d 
+ .rodata        0x08053b00       0x80 CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
+ .rodata.str1.1
+                0x08053b80        0x3 CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.obj
+ .rodata        0x08053b80      0x200 CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.obj
+ .rodata.str1.4
+                0x08053d80       0x26 CMakeFiles/kernel.elf.dir/commands/afk.c.obj
+ .rodata.str1.1
+                0x08053d80       0x2d CMakeFiles/kernel.elf.dir/commands/afk.c.obj
+ .rodata.str1.1
+                0x08053d80       0xba CMakeFiles/kernel.elf.dir/commands/color.c.obj
+ .rodata.str1.4
+                0x08053d80       0x20 CMakeFiles/kernel.elf.dir/commands/color.c.obj
+ .rodata.str1.1
+                0x08053d80      0x121 CMakeFiles/kernel.elf.dir/commands/command.c.obj
+ .rodata.str1.4
+                0x08053d80       0xa1 CMakeFiles/kernel.elf.dir/commands/command.c.obj
+ .rodata.str1.4
+                0x08053d80       0xdf CMakeFiles/kernel.elf.dir/commands/credits.c.obj
+ .rodata.str1.1
+                0x08053d80       0xa6 CMakeFiles/kernel.elf.dir/commands/credits.c.obj
+ .rodata.str1.1
+                0x08053d80       0xdd CMakeFiles/kernel.elf.dir/commands/json.c.obj
+ .rodata.str1.4
+                0x08053d80       0x88 CMakeFiles/kernel.elf.dir/commands/json.c.obj
+ .rodata.str1.4
+                0x08053d80      0x250 CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.obj
+ .rodata.str1.1
+                0x08053d80        0x2 CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.obj
+ .rodata.str1.4
+                0x08053d80       0xb1 CMakeFiles/kernel.elf.dir/disk.c.obj
+ .rodata.str1.1
+                0x08053d80       0x38 CMakeFiles/kernel.elf.dir/disk.c.obj
+ .rodata.str1.1
+                0x08053d80       0xc3 CMakeFiles/kernel.elf.dir/fat.c.obj
+ .rodata.str1.4
+                0x08053d80      0x1a3 CMakeFiles/kernel.elf.dir/fat.c.obj
+ .rodata        0x08053d80      0x800 CMakeFiles/kernel.elf.dir/font.c.obj
+                0x08053d80                font8x8_basic
+ .rodata        0x08054580       0x95 CMakeFiles/kernel.elf.dir/gprintf.c.obj
+                0x08054604                g_HexChars
+ .rodata.str1.1
+                0x08054615       0x19 CMakeFiles/kernel.elf.dir/heap.c.obj
+ *fill*         0x08054615        0x3 
+ .rodata        0x08054618      0x268 CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+ .rodata.str1.1
+                0x08054880       0x34 CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+ .rodata.cst4   0x08054880        0x8 CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+ .rodata.cst8   0x08054888        0x8 CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+
+.rodata1
+ *(.rodata1)
+
+.eh_frame_hdr
+ *(.eh_frame_hdr)
+ *(.eh_frame_entry .eh_frame_entry.*)
+
+.eh_frame       0x08054890       0x48
+ *(.eh_frame)
+ .eh_frame      0x08054890       0x48 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+ *(.eh_frame.*)
+
+.sframe
+ *(.sframe)
+ *(.sframe.*)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.gnu_extab
+ *(.gnu_extab*)
+
+.exception_ranges
+ *(.exception_ranges*)
+                0x08055000                        . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
+
+.eh_frame
+ *(.eh_frame)
+ *(.eh_frame.*)
+
+.sframe
+ *(.sframe)
+ *(.sframe.*)
+
+.gnu_extab
+ *(.gnu_extab)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.exception_ranges
+ *(.exception_ranges*)
+
+.tdata          0x08055000        0x0
+                [!provide]                        PROVIDE (__tdata_start = .)
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.preinit_array  0x08055000        0x0
+                [!provide]                        PROVIDE (__preinit_array_start = .)
+ *(.preinit_array)
+                [!provide]                        PROVIDE (__preinit_array_end = .)
+
+.init_array     0x08055000        0x0
+                [!provide]                        PROVIDE (__init_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
+ *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
+                [!provide]                        PROVIDE (__init_array_end = .)
+
+.fini_array     0x08055000        0x0
+                [!provide]                        PROVIDE (__fini_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
+ *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
+                [!provide]                        PROVIDE (__fini_array_end = .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+
+.jcr
+ *(.jcr)
+
+.data.rel.ro
+ *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
+ *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
+
+.dynamic
+ *(.dynamic)
+
+.got            0x08055000        0x0
+ *(.got)
+ .got           0x08055000        0x0 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+ *(.igot)
+                0x08055000                        . = DATA_SEGMENT_RELRO_END (., (SIZEOF (.got.plt) >= 0xc)?0xc:0x0)
+
+.got.plt        0x08055000        0x0
+ *(.got.plt)
+ .got.plt       0x08055000        0x0 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+ *(.igot.plt)
+ .igot.plt      0x08055000        0x0 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+
+.data           0x08055000       0x44
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x08055000        0x0 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+ .data          0x08055000        0x0 CMakeFiles/kernel.elf.dir/apps/editor/editor.c.obj
+ .data          0x08055000       0x20 CMakeFiles/kernel.elf.dir/arch/i686/gdt.c.obj
+                0x08055000                g_GDTDescriptor
+                0x08055008                g_GDT
+ .data          0x08055020        0x6 CMakeFiles/kernel.elf.dir/arch/i686/idt.c.obj
+                0x08055020                g_IDTDescriptor
+ .data          0x08055026        0x0 CMakeFiles/kernel.elf.dir/arch/i686/io.c.obj
+ .data          0x08055026        0x0 CMakeFiles/kernel.elf.dir/arch/i686/irq.c.obj
+ .data          0x08055026        0x0 CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
+ .data          0x08055026        0x0 CMakeFiles/kernel.elf.dir/arch/i686/isrs_gen.c.obj
+ *fill*         0x08055026        0x2 
+ .data          0x08055028        0x8 CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.obj
+ .data          0x08055030        0x0 CMakeFiles/kernel.elf.dir/arch/i686/pic.c.obj
+ .data          0x08055030        0x1 CMakeFiles/kernel.elf.dir/arch/i686/screen_defs.c.obj
+                0x08055030                DEFAULT_COLOR
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/commands/3dAniTest.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/commands/afk.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/commands/color.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/commands/command.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/commands/credits.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/commands/json.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/ctype.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/disk.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/fat.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/font.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/gprintf.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/graphics.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/hal/hal.c.obj
+ .data          0x08055031        0x0 CMakeFiles/kernel.elf.dir/heap.c.obj
+ *fill*         0x08055031        0x3 
+ .data          0x08055034        0xc CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+ .data          0x08055040        0x0 CMakeFiles/kernel.elf.dir/main.c.obj
+ .data          0x08055040        0x0 CMakeFiles/kernel.elf.dir/math.c.obj
+ .data          0x08055040        0x0 CMakeFiles/kernel.elf.dir/memory.c.obj
+ .data          0x08055040        0x4 CMakeFiles/kernel.elf.dir/stdio.c.obj
+                0x08055040                g_ScreenBuffer
+ .data          0x08055044        0x0 CMakeFiles/kernel.elf.dir/string.c.obj
+ .data          0x08055044        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+
+.data1
+ *(.data1)
+                0x08055044                        _edata = .
+                [!provide]                        PROVIDE (edata = .)
+                0x08055044                        . = ALIGN (ALIGNOF (NEXT_SECTION))
+                0x08055060                        __bss_start = .
+
+.bss            0x08055060     0x5880
+ *(.dynbss)
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x08055060        0x0 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+ .bss           0x08055060     0x1000 CMakeFiles/kernel.elf.dir/apps/editor/editor.c.obj
+ .bss           0x08056060        0x0 CMakeFiles/kernel.elf.dir/arch/i686/gdt.c.obj
+ .bss           0x08056060      0x800 CMakeFiles/kernel.elf.dir/arch/i686/idt.c.obj
+                0x08056060                g_IDT
+ .bss           0x08056860        0x0 CMakeFiles/kernel.elf.dir/arch/i686/io.c.obj
+ .bss           0x08056860       0x40 CMakeFiles/kernel.elf.dir/arch/i686/irq.c.obj
+                0x08056860                g_IRQHandlers
+ .bss           0x080568a0      0x400 CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
+                0x080568a0                g_ISRHandlers
+ .bss           0x08056ca0        0x0 CMakeFiles/kernel.elf.dir/arch/i686/isrs_gen.c.obj
+ .bss           0x08056ca0      0x124 CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.obj
+ .bss           0x08056dc4        0xc CMakeFiles/kernel.elf.dir/arch/i686/pic.c.obj
+                0x08056dc4                PIC_CMD
+                0x08056dc8                PIC_ICW4
+                0x08056dcc                PIC_ICW1
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/arch/i686/screen_defs.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/commands/3dAniTest.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/commands/afk.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/commands/color.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/commands/command.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/commands/credits.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/commands/json.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/ctype.c.obj
+ .bss           0x08056dd0        0x0 CMakeFiles/kernel.elf.dir/disk.c.obj
+ *fill*         0x08056dd0       0x10 
+ .bss           0x08056de0     0x2028 CMakeFiles/kernel.elf.dir/fat.c.obj
+ .bss           0x08058e08        0x0 CMakeFiles/kernel.elf.dir/font.c.obj
+ .bss           0x08058e08        0x0 CMakeFiles/kernel.elf.dir/gprintf.c.obj
+ .bss           0x08058e08        0x0 CMakeFiles/kernel.elf.dir/graphics.c.obj
+ .bss           0x08058e08        0x0 CMakeFiles/kernel.elf.dir/hal/hal.c.obj
+ .bss           0x08058e08        0x4 CMakeFiles/kernel.elf.dir/heap.c.obj
+ .bss           0x08058e0c       0x18 CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+ *fill*         0x08058e24       0x1c 
+ .bss           0x08058e40      0xa20 CMakeFiles/kernel.elf.dir/main.c.obj
+                0x08058e40                g_vbe_screen_info
+                0x08058e44                g_Disk
+ .bss           0x08059860        0x0 CMakeFiles/kernel.elf.dir/math.c.obj
+ .bss           0x08059860        0x0 CMakeFiles/kernel.elf.dir/memory.c.obj
+ .bss           0x08059860     0x1080 CMakeFiles/kernel.elf.dir/stdio.c.obj
+                0x08059860                scrollback_view
+                0x08059864                scrollback_count
+                0x08059868                scrollback_start
+                0x08059880                scrollback_buffer
+                0x08059920                g_ScreenY
+                0x08059924                g_ScreenX
+ .bss           0x0805a8e0        0x0 CMakeFiles/kernel.elf.dir/string.c.obj
+ .bss           0x0805a8e0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+ *(COMMON)
+                0x0805a8e0                        . = ALIGN ((. != 0x0)?0x4:0x1)
+                0x0805a8e0                        . = ALIGN (0x4)
+                0x0805a8e0                        . = SEGMENT_START ("ldata-segment", .)
+                0x0805a8e0                        . = ALIGN (0x4)
+                0x0805a8e0                        _end = .
+                [!provide]                        PROVIDE (end = .)
+                0x0805a8e0                        . = DATA_SEGMENT_END (.)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x00000000       0x12
+ *(.comment)
+ .comment       0x00000000       0x12 CMakeFiles/kernel.elf.dir/apps/calc/calc.c.obj
+                                 0x13 (size before relaxing)
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/apps/editor/editor.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/gdt.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/idt.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/io.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/irq.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/isr.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/isrs_gen.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/keyboard.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/pic.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/arch/i686/screen_defs.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/commands/3dAniTest.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/commands/afk.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/commands/color.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/commands/command.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/commands/credits.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/commands/json.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/commands/mm8Splash.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/ctype.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/disk.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/fat.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/font.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/gprintf.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/graphics.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/hal/hal.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/heap.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/libs/cJSON/cJSON.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/main.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/math.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/memory.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/stdio.c.obj
+ .comment       0x00000012       0x13 CMakeFiles/kernel.elf.dir/string.c.obj
+ .comment       0x00000012       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+
+.gnu.build.attributes
+ *(.gnu.build.attributes .gnu.build.attributes.*)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000       0x20
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info     0x00000000      0x27f
+ *(.debug_info .gnu.linkonce.wi.*)
+ .debug_info    0x00000000      0x27f /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+
+.debug_abbrev   0x00000000      0x10a
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000      0x10a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+
+.debug_line     0x00000000      0x1fc
+ *(.debug_line .debug_line.* .debug_line_end)
+ .debug_line    0x00000000      0x1fc /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str      0x00000000      0x16f
+ *(.debug_str)
+ .debug_str     0x00000000      0x16f /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+                                0x1d9 (size before relaxing)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges
+ *(.debug_ranges)
+
+.debug_addr
+ *(.debug_addr)
+
+.debug_line_str
+                0x00000000       0x97
+ *(.debug_line_str)
+ .debug_line_str
+                0x00000000       0x97 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+                                 0xf8 (size before relaxing)
+
+.debug_loclists
+                0x00000000      0x350
+ *(.debug_loclists)
+ .debug_loclists
+                0x00000000      0x350 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivmoddi4.o)
+
+.debug_macro
+ *(.debug_macro)
+
+.debug_names
+ *(.debug_names)
+
+.debug_rnglists
+ *(.debug_rnglists)
+
+.debug_str_offsets
+ *(.debug_str_offsets)
+
+.debug_sup
+ *(.debug_sup)
+
+.gnu.attributes
+ *(.gnu.attributes)
+
+/DISCARD/
+ *(.note.GNU-stack)
+ *(.gnu_debuglink)
+ *(.gnu.lto_*)
+OUTPUT(kernel.elf elf32-i386)

@@ -70,7 +70,7 @@ src/bootloader/stage1/CMakeFiles/build_stage1: stage1.bin
 
 stage1.bin: /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage1/boot.asm
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir=/home/mm8/Documents/OS/MM8/MM8-OS/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Assembling stage1.bin"
-	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1 && /usr/bin/nasm -f bin -o /home/mm8/Documents/OS/MM8/MM8-OS/build/stage1.bin /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage1/boot.asm
+	cd /home/mm8/Documents/OS/MM8/MM8-OS/build/src/bootloader/stage1 && nasm -f bin -o /home/mm8/Documents/OS/MM8/MM8-OS/build/stage1.bin /home/mm8/Documents/OS/MM8/MM8-OS/src/bootloader/stage1/boot.asm
 
 src/bootloader/stage1/CMakeFiles/build_stage1.dir/codegen:
 .PHONY : src/bootloader/stage1/CMakeFiles/build_stage1.dir/codegen

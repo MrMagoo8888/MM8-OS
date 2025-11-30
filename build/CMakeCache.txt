@@ -20,37 +20,8 @@ CMAKE_ADDR2LINE:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bi
 //Path to a program.
 CMAKE_AR:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-ar
 
-//ASM compiler
-CMAKE_ASM_COMPILER:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc
-
-//A wrapper around 'ar' adding the appropriate '--plugin' option
-// for the GCC compiler
-CMAKE_ASM_COMPILER_AR:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc-ar
-
-//A wrapper around 'ranlib' adding the appropriate '--plugin' option
-// for the GCC compiler
-CMAKE_ASM_COMPILER_RANLIB:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc-ranlib
-
-//Flags used by the ASM compiler during all build types.
-CMAKE_ASM_FLAGS:STRING=
-
-//Flags used by the ASM compiler during DEBUG builds.
-CMAKE_ASM_FLAGS_DEBUG:STRING=-g
-
-//Flags used by the ASM compiler during MINSIZEREL builds.
-CMAKE_ASM_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG
-
-//Flags used by the ASM compiler during RELEASE builds.
-CMAKE_ASM_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
-
-//Flags used by the ASM compiler during RELWITHDEBINFO builds.
-CMAKE_ASM_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
-
-//NASM compiler
-CMAKE_ASM_NASM_COMPILER:FILEPATH=/usr/bin/nasm
-
-//Flags used by the ASM_NASM compiler during all build types.
-CMAKE_ASM_NASM_FLAGS:STRING=
+//NASM assembler flags
+CMAKE_ASM_NASM_FLAGS:STRING=-f elf32
 
 //Flags used by the ASM_NASM compiler during DEBUG builds.
 CMAKE_ASM_NASM_FLAGS_DEBUG:STRING=
@@ -79,8 +50,8 @@ CMAKE_CXX_COMPILER_AR:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-
 // for the GCC compiler
 CMAKE_CXX_COMPILER_RANLIB:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc-ranlib
 
-//Flags used by the CXX compiler during all build types.
-CMAKE_CXX_FLAGS:STRING=
+//C++ compiler flags
+CMAKE_CXX_FLAGS:STRING=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32
 
 //Flags used by the CXX compiler during DEBUG builds.
 CMAKE_CXX_FLAGS_DEBUG:STRING=-g
@@ -102,8 +73,8 @@ CMAKE_C_COMPILER_AR:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-el
 // for the GCC compiler
 CMAKE_C_COMPILER_RANLIB:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i686-elf-gcc-ranlib
 
-//Flags used by the C compiler during all build types.
-CMAKE_C_FLAGS:STRING=
+//C compiler flags
+CMAKE_C_FLAGS:STRING=-ffreestanding -O2 -Wall -Wextra -m32
 
 //Flags used by the C compiler during DEBUG builds.
 CMAKE_C_FLAGS_DEBUG:STRING=-g
@@ -116,6 +87,9 @@ CMAKE_C_FLAGS_RELEASE:STRING=-O3 -DNDEBUG
 
 //Flags used by the C compiler during RELWITHDEBINFO builds.
 CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
+
+//C Linker Flags
+CMAKE_C_LINK_FLAGS:STRING=-ffreestanding
 
 //Path to a program.
 CMAKE_DLLTOOL:FILEPATH=CMAKE_DLLTOOL-NOTFOUND
@@ -247,8 +221,8 @@ CMAKE_STRIP:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/bin/i6
 //Path to a program.
 CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 
-//No help, variable specified on the command line.
-CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=build_scripts/toolchain.cmake
+//The CMake toolchain file
+CMAKE_TOOLCHAIN_FILE:FILEPATH=/home/mm8/Documents/OS/MM8/MM8-OS/toolchain.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
@@ -265,9 +239,6 @@ MM8-OS_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 MM8-OS_SOURCE_DIR:STATIC=/home/mm8/Documents/OS/MM8/MM8-OS
 
-//Path to a program.
-NASM_COMPILER:FILEPATH=/usr/bin/nasm
-
 
 ########################
 # INTERNAL cache entries
@@ -277,25 +248,6 @@ NASM_COMPILER:FILEPATH=/usr/bin/nasm
 CMAKE_ADDR2LINE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_COMPILER
-CMAKE_ASM_COMPILER-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_COMPILER_AR
-CMAKE_ASM_COMPILER_AR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_COMPILER_RANLIB
-CMAKE_ASM_COMPILER_RANLIB-ADVANCED:INTERNAL=1
-CMAKE_ASM_COMPILER_WORKS:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS
-CMAKE_ASM_FLAGS-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS_DEBUG
-CMAKE_ASM_FLAGS_DEBUG-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS_MINSIZEREL
-CMAKE_ASM_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS_RELEASE
-CMAKE_ASM_FLAGS_RELEASE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS_RELWITHDEBINFO
-CMAKE_ASM_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_NASM_COMPILER
-CMAKE_ASM_NASM_COMPILER-ADVANCED:INTERNAL=1
 CMAKE_ASM_NASM_COMPILER_WORKS:INTERNAL=1
 //ADVANCED property for variable: CMAKE_ASM_NASM_FLAGS
 CMAKE_ASM_NASM_FLAGS-ADVANCED:INTERNAL=1
