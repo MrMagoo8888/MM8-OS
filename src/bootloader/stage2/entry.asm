@@ -20,6 +20,14 @@ entry:
     mov sp, 0xFFF0
     mov bp, sp
 
+    ; VBE find and set mode
+    mov ax, 1024             ; width
+    mov bx, 768              ; height
+    mov cl, 32               ; bpp
+    call vbe_set_mode
+    ; ignore errors for now
+
+
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
     call LoadGDT            ; 3 - Load GDT
@@ -52,12 +60,136 @@ entry:
     ; expect boot drive in dl, send it as argument to cstart function
     xor edx, edx
     mov dl, [g_BootDrive]
+    push vbe_screen
     push edx
+
     call start
 
     cli
     hlt
 
+; vbe_set_mode:
+; Sets a VESA mode
+; In\	AX = Width
+; In\	BX = Height
+; In\	CL = Bits per pixel
+; Out\	FLAGS = Carry clear on success
+; Out\	Width, height, bpp, physical buffer, all set in vbe_screen structure
+
+vbe_set_mode:
+	mov [.width], ax
+	mov [.height], bx
+	mov [.bpp], cl
+
+	sti
+
+	push es					; some VESA BIOSes destroy ES, or so I read
+	mov ax, 0x4F00				; get VBE BIOS info
+	mov di, vbe_info_block
+	int 0x10
+	pop es
+
+	cmp ax, 0x4F				; BIOS doesn't support VBE?
+	jne .error
+
+	mov ax, word[vbe_info_block.video_modes]
+	mov [.offset], ax
+	mov ax, word[vbe_info_block.video_modes+2]
+	mov [.segment], ax
+
+	mov ax, [.segment]
+	mov fs, ax
+	mov si, [.offset]
+
+.find_mode:
+	mov dx, [fs:si]
+	add si, 2
+	mov [.offset], si
+	mov [.mode], dx
+	mov ax, 0
+	mov fs, ax
+
+	cmp word [.mode], 0xFFFF			; end of list?
+	je .error
+
+	push es
+	mov ax, 0x4F01				; get VBE mode info
+	mov cx, [.mode]
+	mov di, mode_info_block
+	int 0x10
+	pop es
+
+	cmp ax, 0x4F
+	jne .error
+
+	mov ax, [.width]
+	cmp ax, [mode_info_block.width]
+	jne .next_mode
+
+	mov ax, [.height]
+	cmp ax, [mode_info_block.height]
+	jne .next_mode
+
+	mov al, [.bpp]
+	cmp al, [mode_info_block.bpp]
+	jne .next_mode
+
+	; If we make it here, we've found the correct mode!
+	mov ax, [.width]
+	mov word[vbe_screen.width], ax
+	mov ax, [.height]
+	mov word[vbe_screen.height], ax
+	mov eax, [mode_info_block.framebuffer]
+	mov dword[vbe_screen.physical_buffer], eax
+	mov ax, [mode_info_block.pitch]
+	mov word[vbe_screen.bytes_per_line], ax
+	mov eax, 0
+	mov al, [.bpp]
+	mov byte[vbe_screen.bpp], al
+	shr eax, 3
+	mov dword[vbe_screen.bytes_per_pixel], eax
+
+	mov ax, [.width]
+	shr ax, 3
+	dec ax
+	mov word[vbe_screen.x_cur_max], ax
+
+	mov ax, [.height]
+	shr ax, 4
+	dec ax
+	mov word[vbe_screen.y_cur_max], ax
+
+	; Set the mode
+	push es
+	mov ax, 0x4F02
+	mov bx, [.mode]
+	or bx, 0x4000			; enable LFB
+	mov di, 0			; not sure if some BIOSes need this... anyway it doesn't hurt
+	int 0x10
+	pop es
+
+	cmp ax, 0x4F
+	jne .error
+
+	clc
+	ret
+
+.next_mode:
+	mov ax, [.segment]
+	mov fs, ax
+	mov si, [.offset]
+	jmp .find_mode
+
+.error:
+	stc
+	ret
+
+.width				dw 0
+.height				dw 0
+.bpp				db 0
+.segment			dw 0
+.offset				dw 0
+.mode				dw 0
 
 EnableA20:
     [bits 16]
@@ -167,3 +299,67 @@ g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
 
 g_BootDrive: db 0
+
+vbe_error_msg: db "VBE Error: Failed to set graphics mode.", 0
+
+section .bss
+
+vbe_info_block:
+    .signature       resb 4
+    .version         resw 1
+    .oem_string_ptr  resd 1
+    .capabilities    resd 1
+    .video_modes_ptr resd 1
+    .video_modes     resd 1
+    .total_memory    resw 1
+    .oem_sw_rev      resw 1
+    .oem_vendor_ptr  resd 1
+    .oem_product_ptr resd 1
+    .oem_rev_ptr     resd 1
+                     resb 222
+                     resb 256
+
+mode_info_block:
+    .attributes      resw 1
+    .window_a        resb 1
+    .window_b        resb 1
+    .granularity     resw 1
+    .window_size     resw 1
+    .segment_a       resw 1
+    .segment_b       resw 1
+    .win_func_ptr    resd 1
+    .pitch           resw 1
+    .width           resw 1
+    .height          resw 1
+    .char_width      resb 1
+    .char_height     resb 1
+    .planes          resb 1
+    .bpp             resb 1
+    .banks           resb 1
+    .memory_model    resb 1
+    .bank_size       resb 1
+    .image_pages     resb 1
+    .reserved1       resb 1
+    .red_mask        resb 1
+    .red_position    resb 1
+    .green_mask      resb 1
+    .green_position  resb 1
+    .blue_mask       resb 1
+    .blue_position   resb 1
+    .reserved_mask   resb 1
+    .reserved_pos    resb 1
+    .dcf             resb 1
+    .framebuffer     resd 1
+                     resb 206
+
+vbe_screen:
+    .width           resw 1
+    .height          resw 1
+    .bpp             resb 1
+                     resb 3  ; Padding to align bytes_per_pixel to a 4-byte boundary
+    .bytes_per_pixel resd 1
+    .bytes_per_line  resw 1
+                     resb 6  ; Padding to align physical_buffer to offset 20
+    .physical_buffer resd 1
+    .x_cur_max        resw 1
+    .y_cur_max        resw 1

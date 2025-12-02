@@ -9,9 +9,9 @@
 uint8_t* KernelLoadBuffer = (uint8_t*)MEMORY_LOAD_KERNEL;
 uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;
 
-typedef void (*KernelStart)();
+typedef void (*KernelStart)(uint16_t, void*);
 
-void __attribute__((cdecl)) start(uint16_t bootDrive)
+void __attribute__((cdecl)) start(uint16_t bootDrive, void* vbe_info)
 {
     clrscr();
 
@@ -41,7 +41,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
 
     // execute kernel
     KernelStart kernelStart = (KernelStart)Kernel;
-    kernelStart();
+    kernelStart(bootDrive, vbe_info);
 
 end:
     for (;;);
