@@ -1,12 +1,14 @@
 bits 16
 
 section .entry
+KERNEL_LOAD_ADDR equ 0x100000
+
+%include "../../kernel/bootinfo.inc"
 
 extern __bss_start
 extern __end
 
 extern start
-global vbe_screen
 global entry
 
 entry:
@@ -57,23 +59,24 @@ entry:
     cld
     rep stosb
 
-    ; Draw some pixels to test the framebuffer
+    ; Draw some pixels to test the framebuffer in stage2
     ; draw_pixel(x, y, color)
-    mov ecx, 100            ; x
-    mov edx, 100            ; y
-    mov eax, 0x00FF0000     ; Red
+    mov ecx, 50             ; x
+    mov edx, 50             ; y
+    mov eax, 0x00FFFFFF     ; White
     call draw_pixel
 
-    mov ecx, 101            ; x
-    mov edx, 100            ; y
-    mov eax, 0x0000FF00     ; Green
+    mov ecx, 51             ; x
+    mov edx, 50             ; y
+    mov eax, 0x00FF00FF     ; Magenta
     call draw_pixel
 
-    mov ecx, 100            ; x
-    mov edx, 101            ; y
-    mov eax, 0x000000FF     ; Blue
+    mov ecx, 50             ; x
+    mov edx, 51             ; y
+    mov eax, 0x00FFFF00     ; Yellow
     call draw_pixel
 
+    
     ; expect boot drive in dl, send it as argument to cstart function
     xor edx, edx
     mov dl, [g_BootDrive]
@@ -83,16 +86,14 @@ entry:
     cli
     hlt
 
-
-; draw_pixel: Draws a 32-bit color pixel to the screen.
-; Works in 32-bit protected mode.
-; In: ECX = x coordinate, EDX = y coordinate, EAX = color (0x00RRGGBB)
 draw_pixel:
     [bits 32]
     pushad
 
-    mov edi, [vbe_screen.physical_buffer]   ; Framebuffer address
-    mov ebx, [vbe_screen.pitch]             ; Bytes per scanline (pitch)
+    mov esi, BOOTINFO_ADDR
+
+    mov edi, [esi + bootinfo.vbe_physical_buffer]   ; Framebuffer address
+    mov ebx, [esi + bootinfo.vbe_pitch]             ; Bytes per scanline (pitch)
     imul edx, ebx                           ; y * pitch
     add edi, edx                            ; edi = framebuffer + y * pitch
     
@@ -238,12 +239,12 @@ vbe_set_mode:
     jne .error
 
     ; Success, fill vbe_screen structure
+    mov di, BOOTINFO_ADDR
     mov eax, [mode_info_block.framebuffer]
-    mov [vbe_screen.physical_buffer], eax
+    mov [di + bootinfo.vbe_physical_buffer], eax
 
     movzx eax, word [mode_info_block.pitch]
-    mov [vbe_screen.pitch], eax
-
+    mov [di + bootinfo.vbe_pitch], eax
 
     clc
     ret
@@ -312,13 +313,6 @@ g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
 
 g_BootDrive: db 0
-
-section .data
-
-; This structure will hold the graphics mode info for the kernel
-vbe_screen:
-    .physical_buffer    dd 0
-    .pitch              dd 0
 
 section .bss
 
