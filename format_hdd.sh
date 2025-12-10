@@ -15,6 +15,14 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
+echo "Ensuring build directory and HDD image exist..."
+mkdir -p "$(dirname "$HDD_IMAGE")"
+if [ ! -f "$HDD_IMAGE" ]; then
+    echo "Creating 100MB disk image at $HDD_IMAGE..."
+    # Create a 100MB file for the hard disk image
+    dd if=/dev/zero of="$HDD_IMAGE" bs=1M count=100
+fi
+
 # --- Start: Robust Cleanup ---
 # Ensure the mount point is not busy from a previous failed run
 umount "$MOUNT_POINT" || true
@@ -57,6 +65,12 @@ EOL
 echo "Unmounting and detaching loopback device..."
 umount "$MOUNT_POINT"
 losetup -d "$LOOP_DEV"
+
+echo "Changing ownership of disk image to the original user..."
+# Change ownership back to the user who ran sudo, so qemu can access it.
+if [ -n "$SUDO_USER" ] && [ -n "$SUDO_GID" ]; then
+    chown "$SUDO_USER:$SUDO_GID" "$HDD_IMAGE"
+fi
 
 echo ""
 echo "Hard disk image formatted successfully."
