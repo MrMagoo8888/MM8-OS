@@ -57,6 +57,23 @@ entry:
     cld
     rep stosb
 
+    ; Draw some pixels to test the framebuffer
+    ; draw_pixel(x, y, color)
+    mov ecx, 100            ; x
+    mov edx, 100            ; y
+    mov eax, 0x00FF0000     ; Red
+    call draw_pixel
+
+    mov ecx, 101            ; x
+    mov edx, 100            ; y
+    mov eax, 0x0000FF00     ; Green
+    call draw_pixel
+
+    mov ecx, 100            ; x
+    mov edx, 101            ; y
+    mov eax, 0x000000FF     ; Blue
+    call draw_pixel
+
     ; expect boot drive in dl, send it as argument to cstart function
     xor edx, edx
     mov dl, [g_BootDrive]
@@ -65,6 +82,26 @@ entry:
 
     cli
     hlt
+
+
+; draw_pixel: Draws a 32-bit color pixel to the screen.
+; Works in 32-bit protected mode.
+; In: ECX = x coordinate, EDX = y coordinate, EAX = color (0x00RRGGBB)
+draw_pixel:
+    [bits 32]
+    pushad
+
+    mov edi, [vbe_screen.physical_buffer]   ; Framebuffer address
+    mov ebx, [vbe_screen.pitch]             ; Bytes per scanline (pitch)
+    imul edx, ebx                           ; y * pitch
+    add edi, edx                            ; edi = framebuffer + y * pitch
+    
+    imul ecx, 4                             ; x * 4 (bytes per pixel)
+    add edi, ecx                            ; edi = framebuffer + y * pitch + x * 4
+
+    mov [edi], eax                          ; Write color to pixel address
+    popad
+    ret
 
 
 EnableA20:
@@ -204,6 +241,10 @@ vbe_set_mode:
     mov eax, [mode_info_block.framebuffer]
     mov [vbe_screen.physical_buffer], eax
 
+    movzx eax, word [mode_info_block.pitch]
+    mov [vbe_screen.pitch], eax
+
+
     clc
     ret
 
@@ -272,6 +313,13 @@ g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
 
 g_BootDrive: db 0
 
+section .data
+
+; This structure will hold the graphics mode info for the kernel
+vbe_screen:
+    .physical_buffer    dd 0
+    .pitch              dd 0
+
 section .bss
 
 ; VBE Info Block
@@ -324,7 +372,3 @@ mode_info_block:
     .off_screen_mem_offset resd 1
     .off_screen_mem_size resw 1
     .reserved1          resb 206
-
-; This structure will hold the graphics mode info for the kernel
-vbe_screen:
-    .physical_buffer    resd 1
