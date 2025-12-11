@@ -3,7 +3,7 @@ section .text
 %include "bootinfo.inc"
 
 KERNEL_LOAD_ADDR equ 0x100000
-KERNEL_STACK_TOP equ KERNEL_LOAD_ADDR - 0x1 ; Stack grows down from just below the kernel
+KERNEL_STACK_TOP equ KERNEL_LOAD_ADDR - 0xFFFF ; Stack grows down from just below the kernel
 
 ; Linker needs this to resolve the C function call
 extern start
@@ -17,7 +17,9 @@ _start:
     mov ebp, edx
 
     ; Set up the stack first. We'll place it right before the kernel's code.
+    
     mov esp, KERNEL_STACK_TOP
+    ;move esp, 0x9FFFC  ; Example stack top address
 
     ; Clear the BSS section (uninitialized global variables)
     mov edi, __bss_start
@@ -29,18 +31,20 @@ _start:
     
     ; Draw some pixels to test the framebuffer
     ; draw_pixel(x, y, color)
-    mov ecx, 1920          ; x
-    mov edx, 1080            ; y
+
+    ; Stage2 is White magenta yellow
+    mov ecx, 350           ; x
+    mov edx, 200          ; y
     mov eax, 0x00FF0000     ; Red
     call draw_pixel
 
-    mov ecx, 151            ; x
-    mov edx, 150            ; y
+    mov ecx, 450          ; x
+    mov edx, 200           ; y
     mov eax, 0x0000FF00     ; Green
     call draw_pixel
 
-    mov ecx, 150            ; x
-    mov edx, 151            ; y
+    mov ecx, 550            ; x
+    mov edx, 200            ; y
     mov eax, 0x000000FF     ; Blue
     call draw_pixel
 

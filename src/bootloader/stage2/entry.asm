@@ -61,18 +61,18 @@ entry:
 
     ; Draw some pixels to test the framebuffer in stage2
     ; draw_pixel(x, y, color)
-    mov ecx, 50             ; x
+    mov ecx, 300            ; x
     mov edx, 50             ; y
     mov eax, 0x00FFFFFF     ; White
     call draw_pixel
 
-    mov ecx, 51             ; x
+    mov ecx, 400            ; x
     mov edx, 50             ; y
     mov eax, 0x00FF00FF     ; Magenta
     call draw_pixel
 
-    mov ecx, 50             ; x
-    mov edx, 51             ; y
+    mov ecx, 500            ; x
+    mov edx, 50             ; y
     mov eax, 0x00FFFF00     ; Yellow
     call draw_pixel
 
