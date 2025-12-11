@@ -2,8 +2,8 @@ bits 32
 section .text
 %include "bootinfo.inc"
 
-KERNEL_LOAD_ADDR equ 0x100000
-KERNEL_STACK_TOP equ KERNEL_LOAD_ADDR - 0xFFFF ; Stack grows down from just below the kernel
+KERNEL_LOAD_ADDR equ 0x100000 ; Address where the kernel is loaded in memory
+KERNEL_STACK_TOP equ KERNEL_LOAD_ADDR - 0xF ; Stack grows down from just below the kernel
 
 ; Linker needs this to resolve the C function call
 extern start
@@ -21,7 +21,7 @@ _start:
     mov esp, KERNEL_STACK_TOP
     ;move esp, 0x9FFFC  ; Example stack top address
 
-    ; Clear the BSS section (uninitialized global variables)
+    ; Clear the BSS section (uninitialized global variables) (Does not mess up vbe i dont think)
     mov edi, __bss_start
     mov ecx, __end
     sub ecx, edi

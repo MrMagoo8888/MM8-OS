@@ -1,6 +1,6 @@
 ; This file contains structures and constants shared between the bootloader and the kernel.
 
-BOOTINFO_ADDR equ 0x500 ; A safe, well-known memory address below 1MB.
+BOOTINFO_ADDR equ 0x3FF ; A safe, well-known memory address below 1MB. (0x400 previously, debuggin)
 
 struc bootinfo
     .vbe_physical_buffer: resd 1
