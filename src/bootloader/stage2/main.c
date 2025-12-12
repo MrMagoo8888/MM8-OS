@@ -6,6 +6,7 @@
 #include "memdefs.h"
 #include "memory.h"
 #include "stdint.h"
+#include "vbe.h"
 
 uint8_t* KernelLoadBuffer = (uint8_t*)MEMORY_LOAD_KERNEL;
 uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;
@@ -14,7 +15,10 @@ typedef void (*KernelStart)();
 
 void __attribute__((cdecl)) start(uint16_t bootDrive)
 {
-    clrscr();
+    // Draw a pixel to show we've entered C code
+    draw_pixel(310, 50, 0x00FF00FF); // Magenta
+
+    // clrscr(); // clrscr won't work in VBE graphics mode
 
     DISK disk;
     if (!DISK_Initialize(&disk, bootDrive))
@@ -23,11 +27,17 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
         goto end;
     }
 
+    // Draw a pixel to show disk was initialized
+    draw_pixel(320, 50, 0x00FFFF00); // Yellow
+
     if (!FAT_Initialize(&disk))
     {
         printf("FAT init error\r\n");
         goto end;
     }
+
+    // Draw a pixel to show FAT was initialized
+    draw_pixel(330, 50, 0x0000FFFF); // Cyan
 
     printf("FAT initialized\r\n");
 
@@ -49,8 +59,14 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     FAT_Close(fd);
     printf("Kernel loaded successfully.\r\n");
 
+    // Draw a pixel to show kernel was loaded
+    draw_pixel(340, 50, 0x0000FF00); // Green
+
     // execute kernel
     printf("Jumping to kernel...\r\n");
+    // Draw a pixel to show we are about to jump
+    draw_pixel(350, 50, 0x00FF0000); // Red
+
     KernelStart kernelStart = (KernelStart)Kernel;
     kernelStart();
 

@@ -9,6 +9,7 @@ extern __bss_start
 extern __end
 
 extern start
+global draw_pixel
 global entry
 
 entry:
@@ -59,23 +60,11 @@ entry:
     cld
     rep stosb
 
-    ; Draw some pixels to test the framebuffer in stage2
-    ; draw_pixel(x, y, color)
-    mov ecx, 300            ; x
-    mov edx, 50             ; y
-    mov eax, 0x00FFFFFF     ; White
+    ; Draw a canary pixel to show we are in protected mode before calling C code
+    push 0x00FFFFFF     ; color (White)
+    push 50             ; y
+    push 300            ; x
     call draw_pixel
-
-    mov ecx, 400            ; x
-    mov edx, 50             ; y
-    mov eax, 0x00FF00FF     ; Magenta
-    call draw_pixel
-
-    mov ecx, 500            ; x
-    mov edx, 50             ; y
-    mov eax, 0x00FFFF00     ; Yellow
-    call draw_pixel
-
     
     ; expect boot drive in dl, send it as argument to cstart function
     xor edx, edx
@@ -86,23 +75,33 @@ entry:
     cli
     hlt
 
+; void draw_pixel(int x, int y, uint32_t color);
 draw_pixel:
     [bits 32]
-    pushad
+    push ebp
+    mov ebp, esp
+    pushad ; Save all general-purpose registers
 
+    ; Get arguments from stack
+    mov ecx, [ebp + 8]      ; x
+    mov edx, [ebp + 12]     ; y
+    mov eax, [ebp + 16]     ; color
+    
     mov esi, BOOTINFO_ADDR
 
     mov edi, [esi + bootinfo.vbe_physical_buffer]   ; Framebuffer address
     mov ebx, [esi + bootinfo.vbe_pitch]             ; Bytes per scanline (pitch)
     imul edx, ebx                           ; y * pitch
     add edi, edx                            ; edi = framebuffer + y * pitch
-    
+
     imul ecx, 4                             ; x * 4 (bytes per pixel)
     add edi, ecx                            ; edi = framebuffer + y * pitch + x * 4
-
     mov [edi], eax                          ; Write color to pixel address
+
     popad
-    ret
+    mov esp, ebp
+    pop ebp
+    ret 12 ; Clean up 3 arguments * 4 bytes/arg from stack
 
 
 EnableA20:
