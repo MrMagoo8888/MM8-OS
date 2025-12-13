@@ -33,6 +33,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     if (!FAT_Initialize(&disk))
     {
         printf("FAT init error\r\n");
+        draw_pixel(300, 100, 0x00F0F12F5); // Light Blue
         goto end;
     }
 
@@ -46,6 +47,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     FAT_File* fd = FAT_Open(&disk, "/kernel.bin");
     if (fd == NULL) {
         printf("Failed to open kernel.bin\r\n");
+        draw_pixel(300, 100, 0x00FFFFFF); // White
         goto end;
     }
 
