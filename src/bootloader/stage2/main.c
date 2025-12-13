@@ -18,7 +18,10 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     // Draw a pixel to show we've entered C code
     draw_pixel(310, 50, 0x00FF00FF); // Magenta
 
-    // clrscr(); // clrscr won't work in VBE graphics mode
+    /*draw_pixel(500, 600, 0x00FFFFFF); // White corner
+    draw_pixel(501, 600, 0x00FFFFFF); // White along one
+    draw_pixel(502, 600, 0x00FFFFFF); // White along one
+    draw_pixel(503, 600, 0x00FFFFFF); // White along other */
 
     DISK disk;
     if (!DISK_Initialize(&disk, bootDrive))
@@ -59,6 +62,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
         kernelBuffer += read;
     }
     FAT_Close(fd);
+
     printf("Kernel loaded successfully.\r\n");
 
     // Draw a pixel to show kernel was loaded
