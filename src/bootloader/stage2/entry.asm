@@ -251,6 +251,15 @@ vbe_set_mode:
     movzx eax, word [mode_info_block.pitch]
     mov [di + bootinfo.vbe_pitch], eax
 
+    movzx eax, word [mode_info_block.width]
+    mov [di + bootinfo.vbe_width], ax
+
+    movzx eax, word [mode_info_block.height]
+    mov [di + bootinfo.vbe_height], ax
+
+    movzx eax, byte [mode_info_block.bpp]
+    mov [di + bootinfo.vbe_bpp], al
+
     clc
     ret
 

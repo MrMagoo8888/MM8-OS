@@ -13,6 +13,7 @@
 #include <apps/editor/editor.h>
 #include "globals.h"
 #include <apps/calc/calc.h> // Include for handle_calc
+#include "vbe.h"
 
 
 DISK g_Disk;
@@ -47,7 +48,9 @@ void add_to_history(const char* command) {
 void __attribute__((section(".entry"))) start(uint16_t bootDrive)
 {
    
-    memset(&__bss_start, 0, (&__end) - (&__bss_start));
+    VBE_draw_pixel(10, 10, 0x00FF0000); // Draw a red pixel to indicate entry into C code
+
+    /*memset(&__bss_start, 0, (&__end) - (&__bss_start));
     
     HAL_Initialize();
 
@@ -103,5 +106,5 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive)
     }
 
     // This part is now unreachable
-    for (;;);
+    for (;;); */
 }

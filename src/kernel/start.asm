@@ -1,9 +1,9 @@
 bits 32
 section .text
-%include "bootinfo.inc"
-
 KERNEL_LOAD_ADDR equ 0x100000 ; Address where the kernel is loaded in memory
 KERNEL_STACK_TOP equ KERNEL_LOAD_ADDR - 0xF ; Stack grows down from just below the kernel
+
+%include "bootinfo.inc"
 
 ; Linker needs this to resolve the C function call
 extern start
@@ -14,8 +14,8 @@ global _start
 
 _start:
     ; The bootloader passed the boot drive in edx. Save it immediately.
-    mov ebp, edx
-
+    ; Use a non-volatile register like ebx to avoid conflicts with ebp (base pointer).
+    mov ebx, edx
     ; Set up the stack first. We'll place it right before the kernel's code.
     
     mov esp, KERNEL_STACK_TOP
@@ -28,29 +28,16 @@ _start:
     mov al, 0
     rep stosb
 
-    
-    ; Draw some pixels to test the framebuffer
-    ; draw_pixel(x, y, color)
-
-    ; Stage2 is White magenta yellow
-    mov ecx, 350           ; x
-    mov edx, 200          ; y
-    mov eax, 0x00FF0000     ; Red
+    ; Draw a pixel to confirm we are in the kernel's assembly entry point
+    push 0x0000FFFF     ; color (Cyan)
+    push 20             ; y
+    push 20             ; x
     call draw_pixel
-
-    mov ecx, 450          ; x
-    mov edx, 200           ; y
-    mov eax, 0x0000FF00     ; Green
-    call draw_pixel
-
-    mov ecx, 550            ; x
-    mov edx, 200            ; y
-    mov eax, 0x000000FF     ; Blue
-    call draw_pixel
+    add esp, 12         ; Clean up the 3 arguments (3 * 4 bytes) from the stack
 
     ; The bootloader passed the boot drive number in dl.
     ; Push it as an argument for the C start() function.
-    push ebp
+    push ebx
     call start
 
     cli
@@ -58,20 +45,27 @@ _start:
     hlt
     jmp .hang
 
+; void draw_pixel(int x, int y, uint32_t color);
 draw_pixel:
     [bits 32]
-    pushad
+    push ebp
+    mov ebp, esp        ; Set up stack frame
+    pushad              ; Save all general-purpose registers
+
+    ; Get arguments from stack (cdecl calling convention)
+    mov ecx, [ebp + 8]      ; x
+    mov edx, [ebp + 12]     ; y
+    mov eax, [ebp + 16]     ; color
 
     mov esi, BOOTINFO_ADDR
-
     mov edi, [esi + bootinfo.vbe_physical_buffer]   ; Framebuffer address
     mov ebx, [esi + bootinfo.vbe_pitch]             ; Bytes per scanline (pitch)
-    imul edx, ebx                           ; y * pitch
-    add edi, edx                            ; edi = framebuffer + y * pitch
-    
-    imul ecx, 4                             ; x * 4 (bytes per pixel)
-    add edi, ecx                            ; edi = framebuffer + y * pitch + x * 4
+    imul edx, ebx                                   ; y * pitch
+    add edi, edx                                    ; edi = framebuffer + y * pitch
+    imul ecx, 4                                     ; x * 4 (bytes per pixel for 32bpp)
+    add edi, ecx                                    ; edi = framebuffer + y * pitch + x * 4
+    mov [edi], eax                                  ; Write color to pixel address
 
-    mov [edi], eax                          ; Write color to pixel address
-    popad
+    popad               ; Restore registers
+    pop ebp             ; Restore base pointer
     ret
