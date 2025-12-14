@@ -9,7 +9,6 @@ extern __bss_start
 extern __end
 
 extern start
-extern x86_Disk_Reset
 global draw_pixel
 global entry
 
@@ -31,11 +30,6 @@ entry:
     mov cl, 32
     call vbe_set_mode
     ; carry flag will be set on error
-
-    ; Reset disk controller to clear any data that VBE might have overwritten in the BIOS data area
-    mov dl, [g_BootDrive]
-    push edx
-    call x86_Disk_Reset
 
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
@@ -250,15 +244,6 @@ vbe_set_mode:
 
     movzx eax, word [mode_info_block.pitch]
     mov [di + bootinfo.vbe_pitch], eax
-
-    movzx eax, word [mode_info_block.width]
-    mov [di + bootinfo.vbe_width], ax
-
-    movzx eax, word [mode_info_block.height]
-    mov [di + bootinfo.vbe_height], ax
-
-    movzx eax, byte [mode_info_block.bpp]
-    mov [di + bootinfo.vbe_bpp], al
 
     clc
     ret

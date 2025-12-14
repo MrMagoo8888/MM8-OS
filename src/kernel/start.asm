@@ -9,6 +9,7 @@ KERNEL_STACK_TOP equ KERNEL_LOAD_ADDR - 0xF ; Stack grows down from just below t
 extern start
 extern __bss_start
 extern __end
+extern draw_pixel
 
 global _start
 
@@ -29,9 +30,9 @@ _start:
     rep stosb
 
     ; Draw a pixel to confirm we are in the kernel's assembly entry point
-    push 0x0000FFFF     ; color (Cyan)
-    push 20             ; y
-    push 20             ; x
+    mov eax, 100          ; x coordinate
+    mov edx, 150          ; y coordinate
+    mov ecx, 0x00FF00FF   ; color (magenta)
     call draw_pixel
     add esp, 12         ; Clean up the 3 arguments (3 * 4 bytes) from the stack
 
@@ -49,23 +50,27 @@ _start:
 draw_pixel:
     [bits 32]
     push ebp
-    mov ebp, esp        ; Set up stack frame
-    pushad              ; Save all general-purpose registers
+    mov ebp, esp
+    pushad ; Save all general-purpose registers
 
-    ; Get arguments from stack (cdecl calling convention)
+    ; Get arguments from stack
     mov ecx, [ebp + 8]      ; x
     mov edx, [ebp + 12]     ; y
     mov eax, [ebp + 16]     ; color
-
+    
     mov esi, BOOTINFO_ADDR
+
     mov edi, [esi + bootinfo.vbe_physical_buffer]   ; Framebuffer address
     mov ebx, [esi + bootinfo.vbe_pitch]             ; Bytes per scanline (pitch)
-    imul edx, ebx                                   ; y * pitch
-    add edi, edx                                    ; edi = framebuffer + y * pitch
-    imul ecx, 4                                     ; x * 4 (bytes per pixel for 32bpp)
-    add edi, ecx                                    ; edi = framebuffer + y * pitch + x * 4
-    mov [edi], eax                                  ; Write color to pixel address
+    imul edx, ebx                           ; y * pitch
+    add edi, edx                            ; edi = framebuffer + y * pitch
 
-    popad               ; Restore registers
-    pop ebp             ; Restore base pointer
-    ret
+    imul ecx, 4                             ; x * 4 (bytes per pixel)
+    add edi, ecx                            ; edi = framebuffer + y * pitch + x * 4
+    mov [edi], eax                          ; Write color to pixel address
+
+    popad
+    mov esp, ebp
+    pop ebp
+    ret 12 ; Clean up 3 arguments * 4 bytes/arg from stack
+
