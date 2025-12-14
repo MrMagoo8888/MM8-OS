@@ -50,7 +50,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     FAT_File* fd = FAT_Open(&disk, "/kernel.bin");
     if (fd == NULL) {
         printf("Failed to open kernel.bin\r\n");
-        draw_pixel(300, 100, 0x00FFFFFF); // White
+        draw_pixel(310, 100, 0x00FFFFFF); // White
         goto end;
     }
 

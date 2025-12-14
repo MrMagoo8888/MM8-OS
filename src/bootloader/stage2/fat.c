@@ -191,9 +191,6 @@ uint32_t FAT_NextCluster(uint32_t currentCluster)
         return (*(uint16_t*)(g_Fat + fatIndex)) & 0x0FFF;
     else
         return (*(uint16_t*)(g_Fat + fatIndex)) >> 4;
-    // FAT16 uses 16-bit (2-byte) entries.
-    uint16_t* fat16 = (uint16_t*)g_Fat;
-    return fat16[currentCluster];
 }
 
 uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
@@ -205,47 +202,49 @@ uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
 
     uint8_t* u8DataOut = (uint8_t*)dataOut;
 
-    // nothing to read
-    if (byteCount == 0)
-        return 0;
-
     // don't read past the end of the file
-    if (fd->Public.Size > 0)
+    if (!fd->Public.IsDirectory || (fd->Public.IsDirectory && fd->Public.Size != 0))
         byteCount = min(byteCount, fd->Public.Size - fd->Public.Position);
 
     while (byteCount > 0)
     {
         uint32_t leftInBuffer = SECTOR_SIZE - (fd->Public.Position % SECTOR_SIZE);
+        uint32_t take = min(byteCount, leftInBuffer);
 
-        // if our buffer is empty, read the next sector
-        if (leftInBuffer == SECTOR_SIZE)
+        memcpy(u8DataOut, fd->Buffer + fd->Public.Position % SECTOR_SIZE, take);
+        u8DataOut += take;
+        fd->Public.Position += take;
+        byteCount -= take;
+
+        // printf("leftInBuffer=%lu take=%lu\r\n", leftInBuffer, take);
+        // See if we need to read more data
+        if (leftInBuffer == take)
         {
-             // Special handling for root directory
+            // Special handling for root directory
             if (fd->Public.Handle == ROOT_DIRECTORY_HANDLE)
             {
-                // For the root directory, the "cluster" is the LBA
+                ++fd->CurrentCluster;
+
+                // read next sector
                 if (!DISK_ReadSectors(disk, fd->CurrentCluster, 1, fd->Buffer))
                 {
                     printf("FAT: read error!\r\n");
                     break;
                 }
-                // Advance to the next sector of the root directory
-                ++fd->CurrentCluster;
             }
             else
             {
                 // calculate next cluster & sector to read
-                if (fd->CurrentSectorInCluster >= g_Data->BS.BootSector.SectorsPerCluster)
+                if (++fd->CurrentSectorInCluster >= g_Data->BS.BootSector.SectorsPerCluster)
                 {
                     fd->CurrentSectorInCluster = 0;
                     fd->CurrentCluster = FAT_NextCluster(fd->CurrentCluster);
                 }
 
-                // Check for end of file (FAT16 EOC is >= 0xFFF8)
-                if (fd->CurrentCluster >= 0xFFF8)
+                if (fd->CurrentCluster >= 0xFF8)
                 {
-                    // Hit end of file, so we can't read any more
-                    fd->Public.Size = fd->Public.Position; // Mark exact file size
+                    // Mark end of file
+                    fd->Public.Size = fd->Public.Position;
                     break;
                 }
 
@@ -255,22 +254,7 @@ uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
                     printf("FAT: read error!\r\n");
                     break;
                 }
-                
-                fd->CurrentSectorInCluster++;
             }
-        }
-
-        uint32_t take = min(byteCount, leftInBuffer);
-
-        memcpy(u8DataOut, fd->Buffer + (fd->Public.Position % SECTOR_SIZE), take);
-        u8DataOut += take;
-        fd->Public.Position += take;
-        byteCount -= take;
-
-        // if we did not fill the buffer, we are at the end of the file
-        if (take < leftInBuffer)
-        {
-            break;
         }
     }
 
@@ -305,18 +289,16 @@ bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEnt
     fatName[11] = '\0';
 
     const char* ext = strchr(name, '.');
+    if (ext == NULL)
+        ext = name + 11;
 
-    if (ext)
+    for (int i = 0; i < 8 && name[i] && name + i < ext; i++)
+        fatName[i] = toupper(name[i]);
+
+    if (ext != name + 11)
     {
-        for (int i = 0; i < 8 && name + i < ext; i++)
-            fatName[i] = toupper(name[i]);
         for (int i = 0; i < 3 && ext[i + 1]; i++)
             fatName[i + 8] = toupper(ext[i + 1]);
-    }
-    else
-    {
-        for (int i = 0; i < 8 && name[i]; i++)
-            fatName[i] = toupper(name[i]);
     }
 
     while (FAT_ReadEntry(disk, file, &entry))
@@ -367,7 +349,7 @@ FAT_File* FAT_Open(DISK* disk, const char* path)
             FAT_Close(current);
 
             // check if directory
-            if (!isLast && (entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) == 0)
+            if (!isLast && entry.Attributes & FAT_ATTRIBUTE_DIRECTORY == 0)
             {
                 printf("FAT: %s not a directory\r\n", name);
                 return NULL;
