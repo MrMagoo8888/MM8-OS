@@ -1,13 +1,13 @@
-#include "stdint.h"
+#include "../../common/stdint.h"
 #include "stdio.h"
 #include "x86.h"
 #include "disk.h"
 #include "fat.h"
 #include "memdefs.h"
 #include "memory.h"
-#include "stdint.h"
+#include "../../common/bootinfo.h"
+#include "../../common/stddef.h"
 #include "vbe.h"
-
 uint8_t* KernelLoadBuffer = (uint8_t*)MEMORY_LOAD_KERNEL;
 uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;
 
@@ -72,6 +72,10 @@ void __attribute__((cdecl)) c_start_bootloader(uint16_t bootDrive)
     printf("Jumping to kernel...\r\n");
     // Draw a pixel to show we are about to jump
     draw_pixel(350, 50, 0x00FF0000); // Red
+
+    // Pass boot information to the kernel
+    VBE_INFO* vbe_info = (VBE_INFO*)BOOTINFO_ADDR;
+    vbe_info->width = 1920; // Let's pass some info
 
     KernelStart kernelStart = (KernelStart)Kernel;
     kernelStart();

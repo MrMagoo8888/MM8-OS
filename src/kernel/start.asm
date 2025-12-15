@@ -14,8 +14,8 @@ global _start
 
 _start:
     ; The bootloader passed the boot drive in edx. Save it immediately.
-    ; We will also pass the bootinfo struct address, which the bootloader
-    ; should place in a known register (e.g., esi) before jumping here.
+    ; The bootloader should place the bootinfo struct address in esi
+    ; before jumping to this code.
 
     ; Set up the stack first. We'll place it right before the kernel's code.
     mov esp, KERNEL_STACK_TOP
@@ -27,8 +27,8 @@ _start:
     mov al, 0
     rep stosb
 
-    ; The bootloader should pass boot information (like the bootinfo address)
-    ; in registers. For now, we call main without arguments.
+    ; Push the bootinfo address (from esi) as the first argument to main.
+    push esi
     call main
 
     cli

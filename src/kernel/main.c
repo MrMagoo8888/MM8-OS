@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "../common/stdint.h"
 #include "stdio.h"
 #include "memory.h"
 #include <hal/hal.h>
@@ -14,7 +14,7 @@
 #include "globals.h"
 #include <apps/calc/calc.h> // Include for handle_calc
 #include "vbe.h"
-
+#include "stddef.h"
 
 DISK g_Disk;
 
@@ -45,8 +45,10 @@ void add_to_history(const char* command) {
     }
 }
 
-void main()
+void main(VBE_INFO* vbe_info)
 {
+    // First, initialize our graphics context with the info from the bootloader
+    VBE_Initialize(vbe_info);
    
     VBE_draw_pixel(10, 10, 0x00FF0000); // Draw a red pixel to indicate entry into C code
 

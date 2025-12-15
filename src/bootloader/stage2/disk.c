@@ -2,8 +2,7 @@
 #include "x86.h"
 #include "stdio.h"
 #include "stdbool.h"
-#include "stdint.h"
-
+#include "../../common/stdint.h"
 
 bool DISK_Initialize(DISK* disk, uint8_t driveNumber)
 {

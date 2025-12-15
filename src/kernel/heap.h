@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include "../common/stdint.h"
 #include <stddef.h>
 
 void heap_initialize();

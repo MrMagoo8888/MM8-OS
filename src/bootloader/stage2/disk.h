@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdint.h"
+#include "../../common/stdint.h"
 #include "stdbool.h"
 
 typedef struct {

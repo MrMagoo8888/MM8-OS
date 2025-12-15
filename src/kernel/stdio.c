@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <arch/i686/io.h>
-#include <stdint.h>
+#include "../common/stdint.h"
 #include "stdio.h"
 #include "stdbool.h"
 #include <stdarg.h>

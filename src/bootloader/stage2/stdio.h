@@ -1,5 +1,5 @@
 #pragma once
-#include "stdint.h"
+#include "../../common/stdint.h"
 
 void clrscr();
 void putc(char c);
