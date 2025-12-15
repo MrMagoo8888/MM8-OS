@@ -8,7 +8,7 @@ KERNEL_LOAD_ADDR equ 0x100000
 extern __bss_start
 extern __end
 
-extern start
+extern c_start_bootloader
 global draw_pixel
 global entry
 
@@ -70,7 +70,7 @@ entry:
     xor edx, edx
     mov dl, [g_BootDrive]
     push edx
-    call start
+    call c_start_bootloader
 
     cli
     hlt
@@ -82,17 +82,20 @@ draw_pixel:
     mov ebp, esp
     pushad ; Save all general-purpose registers
 
-    ; Get arguments from stack
-    mov ecx, [ebp + 8]      ; x
-    mov edx, [ebp + 12]     ; y
-    mov eax, [ebp + 16]     ; color
+    ; Get arguments from stack.
+    ; The stack layout is: [return address], [ebp], [pushed registers from pushad], [arguments].
+    ; Arguments start at ebp + 8. PUSHAD pushes 8 registers (32 bytes).
+    ; So we must offset by an additional 32 bytes to find the original arguments.
+    mov ecx, [ebp + 8 + 32]      ; x
+    mov edx, [ebp + 12 + 32]     ; y
+    mov eax, [ebp + 16 + 32]     ; color
     
     mov esi, BOOTINFO_ADDR
 
     mov edi, [esi + bootinfo.vbe_physical_buffer]   ; Framebuffer address
     mov ebx, [esi + bootinfo.vbe_pitch]             ; Bytes per scanline (pitch)
-    imul edx, ebx                           ; y * pitch
-    add edi, edx                            ; edi = framebuffer + y * pitch
+    imul ebx, edx                           ; pitch * y (result in ebx, preserves edx)
+    add edi, ebx                            ; edi = framebuffer + y * pitch
 
     imul ecx, 4                             ; x * 4 (bytes per pixel)
     add edi, ecx                            ; edi = framebuffer + y * pitch + x * 4

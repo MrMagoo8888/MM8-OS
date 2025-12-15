@@ -45,7 +45,7 @@ void add_to_history(const char* command) {
     }
 }
 
-void __attribute__((section(".entry"))) start(uint16_t bootDrive)
+void main()
 {
    
     VBE_draw_pixel(10, 10, 0x00FF0000); // Draw a red pixel to indicate entry into C code

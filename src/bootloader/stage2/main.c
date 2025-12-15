@@ -13,7 +13,7 @@ uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;
 
 typedef void (*KernelStart)();
 
-void __attribute__((cdecl)) start(uint16_t bootDrive)
+void __attribute__((cdecl)) c_start_bootloader(uint16_t bootDrive)
 {
     // Draw a pixel to show we've entered C code
     draw_pixel(310, 50, 0x00FF00FF); // Magenta
