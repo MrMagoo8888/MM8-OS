@@ -4,7 +4,6 @@
 #include "memory.h"
 #include "ctype.h"
 #include "../bootloader/stage2/memdefs.h"
-#include "stddef.h"
 
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 

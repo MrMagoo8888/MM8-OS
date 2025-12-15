@@ -2,8 +2,8 @@
 #include "idt.h"
 #include "gdt.h"
 #include "io.h"
-#include <stdio.h>
-#include <stddef.h>
+#include "stdio.h"
+#include "../../../common/stddef.h"
 
 ISRHandler g_ISRHandlers[256];
 

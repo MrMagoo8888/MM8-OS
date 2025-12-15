@@ -1,20 +1,18 @@
 #include "../common/stdint.h"
 #include "stdio.h"
 #include "memory.h"
-#include <hal/hal.h>
-#include <arch/i686/irq.h>
-#include <arch/i686/io.h>
-#include <arch/i686/keyboard.h> // This include is already present, but good to confirm
+#include "hal/hal.h"
+#include "arch/i686/irq.h"
+#include "arch/i686/io.h"
+#include "arch/i686/keyboard.h"
 #include "fat.h"
-#include <arch/i686/keyboard.h>
 #include "string.h"
 #include "heap.h"
-#include <commands/command.h>
-#include <apps/editor/editor.h>
+#include "commands/command.h"
+#include "apps/editor/editor.h"
 #include "globals.h"
-#include <apps/calc/calc.h> // Include for handle_calc
+#include "apps/calc/calc.h" // Include for handle_calc
 #include "vbe.h"
-#include "stddef.h"
 
 DISK g_Disk;
 

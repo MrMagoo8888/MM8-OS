@@ -1,5 +1,5 @@
 #include "gdt.h"
-#include <stdint.h>
+#include "../../../common/stdint.h"
 
 // NOTES:
 

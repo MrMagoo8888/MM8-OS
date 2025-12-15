@@ -1,11 +1,9 @@
-#include <stdio.h>
-#include <arch/i686/io.h>
+#include "arch/i686/io.h"
 #include "../common/stdint.h"
 #include "stdio.h"
 #include "stdbool.h"
-#include <stdarg.h>
+#include "stdarg.h"
 #include "memory.h"
-
 
 uint8_t* g_ScreenBuffer = (uint8_t*)0xB8000;
 int g_ScreenX = 0, g_ScreenY = 0;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../common/stdint.h"
-#include <stdbool.h>
+#include "stdbool.h"
 #include "disk.h"
 
 typedef struct

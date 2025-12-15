@@ -1,13 +1,11 @@
 #include "stdio.h"
 #include "irq.h"
 #include "io.h"
-#include <stdint.h>
+#include "../../../common/stdint.h"
 #include "keyboard.h"
 #include "stdbool.h"
 #include "memory.h"
 #include "string.h"
-#include "pic.h"
-#include "stddef.h"
 
 #include "screen_defs.h"
 
