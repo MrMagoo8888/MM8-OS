@@ -7,11 +7,15 @@
 #include "memory.h"
 #include "stdint.h"
 #include "vbe.h"
+#include "../../common/bootinfo.h"
 
 uint8_t* KernelLoadBuffer = (uint8_t*)MEMORY_LOAD_KERNEL;
 uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;
 
-typedef void (*KernelStart)();
+// Define the kernel's entry point function signature
+// It takes one argument: a pointer to the VBE_INFO structure.
+typedef void (*KernelStart)(VBE_INFO*);
+
 
 void __attribute__((cdecl)) c_start_bootloader(uint16_t bootDrive)
 {
@@ -73,8 +77,11 @@ void __attribute__((cdecl)) c_start_bootloader(uint16_t bootDrive)
     // Draw a pixel to show we are about to jump
     draw_pixel(350, 50, 0x00FF0000); // Red
 
-    KernelStart kernelStart = (KernelStart)Kernel;
-    kernelStart();
+    // The VBE info is at a fixed address (see bootinfo.h)
+    VBE_INFO* vbe_info = (VBE_INFO*)BOOTINFO_ADDR;
+
+    KernelStart kernelStart = (KernelStart)((uint32_t)Kernel);
+    kernelStart(vbe_info);
 
 end:
     for (;;);

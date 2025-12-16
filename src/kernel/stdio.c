@@ -1,9 +1,9 @@
-#include <stdio.h>
+#include "stdio.h"
 #include <arch/i686/io.h>
 #include <stdint.h>
 #include "stdio.h"
-#include "stdbool.h"
-#include <stdarg.h>
+#include "stdbool.h" // Keep this for boolean types
+#include "stdarg.h"  // Use quotes to include the local stdarg.h
 #include "memory.h"
 
 

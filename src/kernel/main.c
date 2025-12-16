@@ -1,19 +1,20 @@
-#include <stdint.h>
+#include "stdint.h"
 #include "stdio.h"
 #include "memory.h"
-#include <hal/hal.h>
-#include <arch/i686/irq.h>
-#include <arch/i686/io.h>
-#include <arch/i686/keyboard.h> // This include is already present, but good to confirm
+#include "hal/hal.h"
+#include "arch/i686/irq.h"
+#include "arch/i686/io.h"
+#include "arch/i686/keyboard.h" // This include is already present, but good to confirm
 #include "fat.h"
-#include <arch/i686/keyboard.h>
+#include "arch/i686/keyboard.h"
 #include "string.h"
 #include "heap.h"
-#include <commands/command.h>
-#include <apps/editor/editor.h>
+#include "commands/command.h"
+#include "apps/editor/editor.h"
 #include "globals.h"
-#include <apps/calc/calc.h> // Include for handle_calc
+#include "apps/calc/calc.h" // Include for handle_calc
 #include "vbe.h"
+#include "../common/bootinfo.h" // Add this include for VBE_INFO
 
 
 DISK g_Disk;
@@ -45,12 +46,15 @@ void add_to_history(const char* command) {
     }
 }
 
-void main()
+void main(VBE_INFO* vbe_info)
 {
    
-    VBE_draw_pixel(10, 10, 0x00FF0000); // Draw a red pixel to indicate entry into C code
+    // First, initialize our graphics context with the info from the bootloader
+    VBE_Initialize(vbe_info);
+   
+    // VBE_draw_pixel(100, 10, 0x00FFFFFF); // We can remove this test pixel now
 
-    /*memset(&__bss_start, 0, (&__end) - (&__bss_start));
+    memset(&__bss_start, 0, (&__end) - (&__bss_start));
     
     HAL_Initialize();
 
@@ -106,5 +110,5 @@ void main()
     }
 
     // This part is now unreachable
-    for (;;); */
+    for (;;);
 }
