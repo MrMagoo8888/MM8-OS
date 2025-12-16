@@ -215,6 +215,12 @@ void printf_unsigned(unsigned long long number, int radix)
     char buffer[32];
     int pos = 0;
 
+    // Prevent division by zero
+    if (radix == 0) {
+        // Handle error, maybe print an error message or just return.
+        return;
+    }
+
     // convert number to ASCII
     do 
     {

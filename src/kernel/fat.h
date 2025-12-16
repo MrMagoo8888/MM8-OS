@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../common/stdint.h"
+#include "stdint.h"
 #include "stdbool.h"
 #include "disk.h"
 

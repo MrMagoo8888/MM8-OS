@@ -2,7 +2,6 @@
   Copyright (c) 2009-2017 Dave Gamble and cJSON contributors
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
@@ -36,19 +35,6 @@
 /* disable warning about single line comments in system headers */
 #pragma warning (disable : 4001)
 #endif
-
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <ctype.h>
-#include <float.h>
-
-#ifdef ENABLE_LOCALES
-#include <locale.h>
-#endif
-
 #if defined(_MSC_VER)
 #pragma warning (pop)
 #endif
@@ -56,9 +42,15 @@
 #pragma GCC visibility pop
 #endif
 
-// MM8-OS: Add kernel's own standard library headers
+// MM8-OS: Use our own kernel's standard library headers
 #include "memory.h"
 #include "string.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "math.h"
+#include "ctype.h"
+#include "limits.h" // Use our kernel's version
+#include "float.h"  // Use our kernel's version
 
 #include "cJSON.h"
 

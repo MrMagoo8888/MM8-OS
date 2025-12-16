@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../common/stdint.h"
-#include "../common/stddef.h"
+#include "stdint.h"
+#include "stddef.h"
 
 void heap_initialize();
 void* malloc(size_t size);

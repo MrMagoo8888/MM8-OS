@@ -1,4 +1,4 @@
-#include "../common/stdint.h"
+#include "stdint.h"
 #include "stdio.h"
 #include "memory.h"
 #include "hal/hal.h"
@@ -48,9 +48,9 @@ void main(VBE_INFO* vbe_info)
     // First, initialize our graphics context with the info from the bootloader
     VBE_Initialize(vbe_info);
    
-    VBE_draw_pixel(10, 10, 0x00FF0000); // Draw a red pixel to indicate entry into C code
+    // VBE_draw_pixel(10, 10, 0x00FF0000); // We can remove this test pixel now
 
-    /*memset(&__bss_start, 0, (&__end) - (&__bss_start));
+    memset(&__bss_start, 0, (&__end) - (&__bss_start));
     
     HAL_Initialize();
 
@@ -106,5 +106,5 @@ void main(VBE_INFO* vbe_info)
     }
 
     // This part is now unreachable
-    for (;;); */
+    for (;;);
 }
