@@ -5,6 +5,7 @@ section .text
 extern start
 extern __bss_start
 extern __end
+extern vbe_screen
 
 global _start
 
@@ -19,8 +20,11 @@ _start:
     ; Set up the stack. We'll place it right before the kernel's code at 0x100000
     mov esp, 0x9FFFF
 
-    ; The boot drive number is in dl, push it as an argument for start.
-    push edx
+    ; The bootloader passes arguments to us in registers:
+    ; EAX = pointer to VBE screen info
+    ; EBX = boot drive number
+    push ebx      ; Push boot drive as the second argument
+    push eax      ; Push vbe_screen pointer as the first argument
     call start
 
     cli

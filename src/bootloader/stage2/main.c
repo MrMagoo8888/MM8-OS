@@ -44,9 +44,15 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     }
     FAT_Close(fd);
 
-    // execute kernel
-    KernelStart kernelStart = (KernelStart)Kernel;
-    kernelStart();
+    // Prepare to execute the kernel
+    // We will pass a pointer to the vbe_screen info structure in the EAX register
+    // and the boot drive in the EBX register.
+    KernelStart kernelStart = (KernelStart)Kernel; // Kernel's entry point
+    __asm__ volatile (
+        "mov %0, %%eax; mov %1, %%ebx; jmp *%2"
+        : /* no outputs */
+        : "r"(&vbe_screen), "r"((uint32_t)bootDrive), "r"(kernelStart)
+    );
 
 end:
     for (;;);

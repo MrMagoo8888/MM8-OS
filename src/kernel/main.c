@@ -13,9 +13,14 @@
 #include <apps/editor/editor.h>
 #include "globals.h"
 #include <apps/calc/calc.h> // Include for handle_calc
+#include "vbe.h"
+#include "graphics.h"
 
 
 DISK g_Disk;
+
+// Define the global pointer to the VBE info structure.
+VbeScreenInfo* g_vbe_screen;
 
 extern uint8_t __bss_start;
 extern uint8_t __end;
@@ -44,9 +49,13 @@ void add_to_history(const char* command) {
     }
 }
 
-void __attribute__((section(".entry"))) start(uint16_t bootDrive)
+void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
 {
-   
+    // Initialize our global pointer with the address passed by the bootloader.
+    g_vbe_screen = vbe_info;
+
+    draw_pixel(400, 400, 0x00FFFFFF); // Draw a WHITE pixel to test
+
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
     
     HAL_Initialize();
