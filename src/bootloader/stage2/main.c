@@ -5,6 +5,8 @@
 #include "fat.h"
 #include "memdefs.h"
 #include "memory.h"
+#include "vbe.h"
+#include "graphics.h"
 
 uint8_t* KernelLoadBuffer = (uint8_t*)MEMORY_LOAD_KERNEL;
 uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;
@@ -13,7 +15,10 @@ typedef void (*KernelStart)();
 
 void __attribute__((cdecl)) start(uint16_t bootDrive)
 {
-    clrscr();
+    // clrscr() is for text mode, so we remove it.
+    draw_pixel(100, 100, 0x0000FF00); // Draw a GREEN pixel
+    draw_pixel(150, 150, 0x000000FF); // Draw a BLUE pixel
+
 
     DISK disk;
     if (!DISK_Initialize(&disk, bootDrive))
