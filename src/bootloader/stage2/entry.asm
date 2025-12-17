@@ -6,6 +6,7 @@ extern __bss_start
 extern __end
 
 extern start
+global vbe_screen
 global entry
 
 entry:
@@ -19,6 +20,13 @@ entry:
     mov ss, ax
     mov sp, 0xFFF0
     mov bp, sp
+
+    ; set a VBE graphics mode (e.g., 1024x768x32bpp)
+    mov ax, 1920    ; width
+    mov bx, 1080    ; height
+    mov cl, 32      ; `bpp
+    call vbe_set_mode
+    ; jc .vbe_error ; uncomment to handle VBE errors
 
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
@@ -167,3 +175,168 @@ g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
             dd g_GDT                    ; address of GDT
 
 g_BootDrive: db 0
+
+; --- VBE ---
+
+; vbe_set_mode:
+; Sets a VESA mode
+; In:   AX = Width
+; In:   BX = Height
+; In:   CL = Bits per pixel
+; Out:  FLAGS = Carry clear on success, set on failure
+; Out:  vbe_screen structure is filled on success
+vbe_set_mode:
+    [bits 16]
+    mov [.width], ax
+    mov [.height], bx
+    mov [.bpp], cl
+
+    sti ; some BIOSes need interrupts for VBE calls
+
+    push es ; some VESA BIOSes destroy ES
+    mov ax, ds
+    mov es, ax ; ES must point to our data segment for the BIOS call
+    mov ax, 0x4F00 ; get VBE BIOS info
+    mov di, vbe_info_block ; DI is the offset in the ES segment
+    int 0x10
+    pop es
+    cli
+
+    cmp ax, 0x4F ; BIOS doesn't support VBE?
+    jne .error
+
+    ; Get pointer to video modes list
+    mov ax, [vbe_info_block.video_modes + 2] ; segment
+    mov es, ax
+    mov si, [vbe_info_block.video_modes]     ; offset
+
+.find_mode:
+    mov dx, [es:si]
+    add si, 2
+
+    cmp dx, 0xFFFF ; end of list?
+    je .error
+
+    push es
+    mov ax, ds
+    mov es, ax ; ES must point to our data segment for the BIOS call
+    mov ax, 0x4F01 ; get VBE mode info
+    mov cx, dx     ; mode number to query
+    mov di, mode_info_block
+    int 0x10
+    pop es
+
+    cmp ax, 0x4F
+    jne .next_mode ; if call fails, try next mode
+
+    ; Check if mode attributes match what we want
+    mov ax, [.width]
+    cmp ax, [mode_info_block.width]
+    jne .next_mode
+
+    mov ax, [.height]
+    cmp ax, [mode_info_block.height]
+    jne .next_mode
+
+    mov al, [.bpp]
+    cmp al, [mode_info_block.bpp]
+    jne .next_mode
+
+    ; Found a suitable mode!
+    ; Populate our vbe_screen structure
+    mov ax, [mode_info_block.width]
+    mov [vbe_screen.width], ax
+    mov ax, [mode_info_block.height]
+    mov [vbe_screen.height], ax
+    mov eax, [mode_info_block.framebuffer]
+    mov [vbe_screen.physical_buffer], eax
+    mov ax, [mode_info_block.pitch]
+    mov [vbe_screen.pitch], ax
+    mov al, [mode_info_block.bpp]
+    mov [vbe_screen.bpp], al
+
+    ; Set the mode
+    mov ax, 0x4F02
+    mov bx, dx
+    or bx, 0x4000 ; enable Linear Frame Buffer (LFB)
+    int 0x10
+
+    cmp ax, 0x4F
+    jne .error
+
+    clc ; success
+    ret
+
+.next_mode:
+    jmp .find_mode
+
+.error:
+    stc ; failure
+    ret
+
+; Local variables for vbe_set_mode
+.width  dw 0
+.height dw 0
+.bpp    db 0
+
+section .bss
+
+; VBE Info Block (VBE 2.0+)
+vbe_info_block:
+    .signature       resb 4
+    .version         resw 1
+    .oem_string_ptr  resd 1
+    .capabilities    resd 1
+    .video_modes     resd 1
+    .total_memory    resw 1
+    .oem_sw_rev      resw 1
+    .oem_vendor_name resd 1
+    .oem_prod_name   resd 1
+    .oem_prod_rev    resd 1
+    .reserved        resb 222
+    .oem_data        resb 256
+
+; VBE Mode Info Block
+mode_info_block:
+    .attributes      resw 1
+    .window_a        resb 2
+    .granularity     resw 1
+    .window_size     resw 1
+    .segment_a       resw 1
+    .segment_b       resw 1
+    .win_func_ptr    resd 1
+    .pitch           resw 1
+    .width           resw 1
+    .height          resw 1
+    .w_char          resb 1
+    .y_char          resb 1
+    .planes          resb 1
+    .bpp             resb 1
+    .banks           resb 1
+    .memory_model    resb 1
+    .bank_size       resb 1
+    .image_pages     resb 1
+    .reserved1       resb 1
+    .red_mask        resb 1
+    .red_position    resb 1
+    .green_mask      resb 1
+    .green_position  resb 1
+    .blue_mask       resb 1
+    .blue_position   resb 1
+    .rsv_mask        resb 1
+    .rsv_position    resb 1
+    .direct_color    resb 1
+    .framebuffer     resd 1
+    .off_screen_mem  resd 1
+    .off_screen_size resw 1
+    .reserved2       resb 206
+
+section .data
+
+; This structure will hold the graphics mode info for the kernel
+vbe_screen:
+    .width            dw 0
+    .height           dw 0
+    .pitch            dw 0
+    .bpp              db 0
+    .physical_buffer  dd 0
