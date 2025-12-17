@@ -35,7 +35,7 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
  .entry         0x00000500      0x190 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
                 0x00000500                entry
 
-.text           0x00000690     0x1c06
+.text           0x00000690     0x1c16
                 0x00000690                        __text_start = .
  *(.text)
  .text          0x00000690      0x1a5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/x86.obj
@@ -65,121 +65,121 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
                 0x000012f6                FAT_Open
  .text          0x00001443       0x7b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
                 0x00001443                draw_pixel
- .text          0x000014be      0x115 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+ .text          0x000014be      0x122 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
                 0x000014be                start
- .text          0x000015d3       0xf5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
-                0x000015d3                memcpy
-                0x00001625                memset
-                0x00001668                memcmp
- .text          0x000016c8      0x87f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
-                0x000016c8                putchr
-                0x000016f7                putcolor
-                0x00001729                getchr
-                0x0000174b                getcolor
-                0x00001770                setcursor
-                0x000017e1                clrscr
-                0x0000186f                scrollback
-                0x0000195d                putc
-                0x00001a6d                puts
-                0x00001a9c                printf_unsigned
-                0x00001b40                printf_signed
-                0x00001b9d                printf
-                0x00001eae                print_buffer
- .text          0x00001f47       0xb6 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
-                0x00001f47                strchr
-                0x00001f85                strcpy
-                0x00001fd7                strlen
- .text          0x00001ffd       0x37 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
-                0x00001ffd                align
- *fill*         0x00002034        0xc 
- .text          0x00002040      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
-                0x00002040                __udivdi3
- *fill*         0x0000215a        0x6 
- .text          0x00002160      0x136 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
-                0x00002160                __umoddi3
+ .text          0x000015e0       0xf5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+                0x000015e0                memcpy
+                0x00001632                memset
+                0x00001675                memcmp
+ .text          0x000016d5      0x87f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+                0x000016d5                putchr
+                0x00001704                putcolor
+                0x00001736                getchr
+                0x00001758                getcolor
+                0x0000177d                setcursor
+                0x000017ee                clrscr
+                0x0000187c                scrollback
+                0x0000196a                putc
+                0x00001a7a                puts
+                0x00001aa9                printf_unsigned
+                0x00001b4d                printf_signed
+                0x00001baa                printf
+                0x00001ebb                print_buffer
+ .text          0x00001f54       0xb6 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+                0x00001f54                strchr
+                0x00001f92                strcpy
+                0x00001fe4                strlen
+ .text          0x0000200a       0x37 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+                0x0000200a                align
+ *fill*         0x00002041        0xf 
+ .text          0x00002050      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+                0x00002050                __udivdi3
+ *fill*         0x0000216a        0x6 
+ .text          0x00002170      0x136 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x00002170                __umoddi3
 
-.data           0x00002298       0x18
-                0x00002298                        __data_start = .
+.data           0x000022a8       0x18
+                0x000022a8                        __data_start = .
  *(.data)
- .data          0x00002298        0xb /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
-                0x00002298                vbe_screen
- .data          0x000022a3        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
- .data          0x000022a3        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
- .data          0x000022a3        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
- .data          0x000022a3        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
- *fill*         0x000022a3        0x1 
- .data          0x000022a4        0x8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
-                0x000022a4                KernelLoadBuffer
-                0x000022a8                Kernel
- .data          0x000022ac        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
- .data          0x000022ac        0x4 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
-                0x000022ac                g_ScreenBuffer
- .data          0x000022b0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
- .data          0x000022b0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
- .data          0x000022b0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .data          0x000022b0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .data          0x000022a8        0xb /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
+                0x000022a8                vbe_screen
+ .data          0x000022b3        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
+ .data          0x000022b3        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
+ .data          0x000022b3        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
+ .data          0x000022b3        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
+ *fill*         0x000022b3        0x1 
+ .data          0x000022b4        0x8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+                0x000022b4                KernelLoadBuffer
+                0x000022b8                Kernel
+ .data          0x000022bc        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+ .data          0x000022bc        0x4 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+                0x000022bc                g_ScreenBuffer
+ .data          0x000022c0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+ .data          0x000022c0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+ .data          0x000022c0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .data          0x000022c0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.rodata         0x000022b0      0x206
-                0x000022b0                        __rodata_start = .
+.rodata         0x000022c0      0x206
+                0x000022c0                        __rodata_start = .
  *(.rodata)
- .rodata        0x000022b0      0x11b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
- .rodata        0x000023cb       0x2f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
- *fill*         0x000023fa        0x2 
- .rodata        0x000023fc       0xba /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
-                0x000023fc                SCREEN_WIDTH
-                0x00002400                SCREEN_HEIGHT
-                0x00002404                DEFAULT_COLOR
-                0x00002408                g_HexChars
+ .rodata        0x000022c0      0x11b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
+ .rodata        0x000023db       0x2f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+ *fill*         0x0000240a        0x2 
+ .rodata        0x0000240c       0xba /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+                0x0000240c                SCREEN_WIDTH
+                0x00002410                SCREEN_HEIGHT
+                0x00002414                DEFAULT_COLOR
+                0x00002418                g_HexChars
 
-.eh_frame       0x000024b8       0xd8
- .eh_frame      0x000024b8       0x64 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .eh_frame      0x0000251c       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+.eh_frame       0x000024c8       0xd8
+ .eh_frame      0x000024c8       0x64 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .eh_frame      0x0000252c       0x74 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.bss            0x00002590      0x314
-                0x00002590                        __bss_start = .
+.bss            0x000025a0      0x314
+                0x000025a0                        __bss_start = .
  *(.bss)
- .bss           0x00002590      0x300 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
- .bss           0x00002890        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
- .bss           0x00002890        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
- .bss           0x00002890        0xc /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
- .bss           0x0000289c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
- .bss           0x0000289c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
- .bss           0x0000289c        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
- .bss           0x0000289c        0x8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
-                0x0000289c                g_ScreenX
-                0x000028a0                g_ScreenY
- .bss           0x000028a4        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
- .bss           0x000028a4        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
- .bss           0x000028a4        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .bss           0x000028a4        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
-                0x000028a4                        __end = .
+ .bss           0x000025a0      0x300 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
+ .bss           0x000028a0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
+ .bss           0x000028a0        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
+ .bss           0x000028a0        0xc /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
+ .bss           0x000028ac        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
+ .bss           0x000028ac        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+ .bss           0x000028ac        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+ .bss           0x000028ac        0x8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+                0x000028ac                g_ScreenX
+                0x000028b0                g_ScreenY
+ .bss           0x000028b4        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+ .bss           0x000028b4        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+ .bss           0x000028b4        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .bss           0x000028b4        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x000028b4                        __end = .
 OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/stage2.bin binary)
 
-.debug_info     0x00000000     0x208a
+.debug_info     0x00000000     0x20ec
  .debug_info    0x00000000       0xbe /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
  .debug_info    0x000000be      0x2af /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
  .debug_info    0x0000036d      0x9ae /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
  .debug_info    0x00000d1b      0x13c /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
- .debug_info    0x00000e57      0x2ca /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
- .debug_info    0x00001121      0x1da /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
- .debug_info    0x000012fb      0x54a /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
- .debug_info    0x00001845      0x12b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
- .debug_info    0x00001970       0xab /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
- .debug_info    0x00001a1b      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_info    0x00001d47      0x343 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .debug_info    0x00000e57      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+ .debug_info    0x00001183      0x1da /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+ .debug_info    0x0000135d      0x54a /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+ .debug_info    0x000018a7      0x12b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+ .debug_info    0x000019d2       0xab /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+ .debug_info    0x00001a7d      0x32c /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_info    0x00001da9      0x343 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_abbrev   0x00000000      0xce7
+.debug_abbrev   0x00000000      0xcfa
  .debug_abbrev  0x00000000       0x84 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
  .debug_abbrev  0x00000084      0x140 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
  .debug_abbrev  0x000001c4      0x24d /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
  .debug_abbrev  0x00000411       0xd9 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
- .debug_abbrev  0x000004ea      0x139 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
- .debug_abbrev  0x00000623       0xe2 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
- .debug_abbrev  0x00000705      0x1f6 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
- .debug_abbrev  0x000008fb       0xa8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
- .debug_abbrev  0x000009a3       0x78 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
- .debug_abbrev  0x00000a1b      0x15b /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_abbrev  0x00000b76      0x171 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .debug_abbrev  0x000004ea      0x14c /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+ .debug_abbrev  0x00000636       0xe2 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+ .debug_abbrev  0x00000718      0x1f6 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+ .debug_abbrev  0x0000090e       0xa8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+ .debug_abbrev  0x000009b6       0x78 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+ .debug_abbrev  0x00000a2e      0x15b /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x00000b89      0x171 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_aranges  0x00000000      0x160
  .debug_aranges
@@ -205,34 +205,34 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/stage2.bin binary)
  .debug_aranges
                 0x00000140       0x20 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_line     0x00000000     0x1060
+.debug_line     0x00000000     0x1068
  .debug_line    0x00000000       0x81 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
  .debug_line    0x00000081       0xe4 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
  .debug_line    0x00000165      0x4e7 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
  .debug_line    0x0000064c       0x9f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
- .debug_line    0x000006eb       0xb6 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
- .debug_line    0x000007a1       0xc8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
- .debug_line    0x00000869      0x3a0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
- .debug_line    0x00000c09       0x97 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
- .debug_line    0x00000ca0       0x6f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
- .debug_line    0x00000d0f      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_line    0x00000e8f      0x1d1 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .debug_line    0x000006eb       0xbe /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+ .debug_line    0x000007a9       0xc8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+ .debug_line    0x00000871      0x3a0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+ .debug_line    0x00000c11       0x97 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+ .debug_line    0x00000ca8       0x6f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+ .debug_line    0x00000d17      0x180 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_line    0x00000e97      0x1d1 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
-.debug_str      0x00000000     0x142c
+.debug_str      0x00000000     0x1468
  .debug_str     0x00000000       0xce /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
  .debug_str     0x000000ce      0x1ae /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
  .debug_str     0x0000027c      0x5e7 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
  .debug_str     0x00000863      0x130 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
- .debug_str     0x00000993      0x1dc /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
- .debug_str     0x00000b6f      0x103 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
- .debug_str     0x00000c72      0x244 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
- .debug_str     0x00000eb6       0xe5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
- .debug_str     0x00000f9b       0xcb /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
- .debug_str     0x00001066      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
- .debug_str     0x00001249      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+ .debug_str     0x00000993      0x218 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+ .debug_str     0x00000bab      0x103 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+ .debug_str     0x00000cae      0x244 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+ .debug_str     0x00000ef2       0xe5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+ .debug_str     0x00000fd7       0xcb /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+ .debug_str     0x000010a2      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+ .debug_str     0x00001285      0x1e3 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .debug_line_str
-                0x00000000      0x801
+                0x00000000      0x807
  .debug_line_str
                 0x00000000       0x92 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
  .debug_line_str
@@ -242,19 +242,19 @@ OUTPUT(/home/mm8/Documents/OS/MM8/MM8-OS/build/stage2.bin binary)
  .debug_line_str
                 0x000001fb       0xa0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
  .debug_line_str
-                0x0000029b       0xc1 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+                0x0000029b       0xc7 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
  .debug_line_str
-                0x0000035c       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+                0x00000362       0x94 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
  .debug_line_str
-                0x000003f0       0xff /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+                0x000003f6       0xff /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
  .debug_line_str
-                0x000004ef       0x8b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+                0x000004f5       0x8b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
  .debug_line_str
-                0x0000057a       0x97 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+                0x00000580       0x97 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
  .debug_line_str
-                0x00000611       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+                0x00000617       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
  .debug_line_str
-                0x00000709       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x0000070f       0xf8 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
 
 .comment        0x00000000       0xd1
  .comment       0x00000000       0x13 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
