@@ -48,6 +48,19 @@ entry:
     mov ax, 0x10
     mov ds, ax
     mov ss, ax
+
+    ; --- Draw a test pixel from assembly ---
+    ; Draw a RED pixel at (x=50, y=50) to verify VBE mode
+    mov edi, [vbe_screen.physical_buffer]   ; Get framebuffer base address
+    movzx eax, word [vbe_screen.pitch]      ; eax = bytes per scanline (pitch)
+    mov ebx, 50                             ; y = 50
+    mul ebx                                 ; eax = y * pitch
+    mov ebx, 50                             ; x = 50
+    shl ebx, 2                              ; ebx = x * 4 (for 32 bpp)
+    add eax, ebx                            ; eax = y * pitch + x * 4
+    add edi, eax                            ; edi = framebuffer + offset
+    mov dword [edi], 0x00FF0000             ; Draw a red pixel (0x00RRGGBB)
+    ; --- End of test pixel code ---
    
     ; clear bss (uninitialized data)
     mov edi, __bss_start
