@@ -24,6 +24,13 @@ void credits_streamers() {
 
 }
 
+void credits_gf() {
+
+    printf("\n\nAnd, one of the biggest supports, my amazing Girlfriend who with remain anonomous!\n\n");
+    printf(" - E <3\n\n");
+
+}
+
 void credits_me() {
 
     printf("\n\n\nSpecial Thanks to Myself for making this OS possible!\n\n");
@@ -45,6 +52,7 @@ void credits() {
 
     credits_followers();
     credits_streamers();
+    credits_gf();
     credits_me();
     
 }
