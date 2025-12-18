@@ -1,7 +1,5 @@
 #include "heap.h"
 #include "memory.h"
-#include "../bootloader/stage2/memdefs.h"
-#include "stdio.h"
 #include "stdbool.h"
 
 // A simple linked-list based memory allocator
@@ -12,22 +10,23 @@ typedef struct block_header {
     struct block_header* next;
 } block_header_t;
 
+// The linker provides this symbol, which marks the end of the kernel's code/data.
+extern uint8_t __end;
+
 // The start of our heap, which is a linked list of memory blocks
 static block_header_t* heap_start = NULL;
 
-void heap_initialize() {
-    // The heap starts at the beginning of our defined free memory region
-    heap_start = (block_header_t*)MEMORY_LOAD_KERNEL; // Using MEMORY_LOAD_KERNEL as heap start (0x30000)
+// Define a fixed size for the heap (e.g., 4MB)
+#define HEAP_SIZE (1024 * 1024 * 4)
 
-    // The total size of the heap region
-    size_t heap_size = MEMORY_LOAD_SIZE * 5; // 0x30000 to 0x80000 is 5 * 0x10000
+void heap_initialize() {
+    // The heap starts right after the kernel's end address.
+    heap_start = (block_header_t*)&__end;
 
     // Initially, we have one large free block
-    heap_start->size = heap_size - sizeof(block_header_t);
+    heap_start->size = HEAP_SIZE - sizeof(block_header_t);
     heap_start->is_free = true;
     heap_start->next = NULL;
-
-    printf("Heap initialized. Start: 0x%x, Size: %u bytes\n", heap_start, heap_size);
 }
 
 void* malloc(size_t size) {
@@ -60,7 +59,6 @@ void* malloc(size_t size) {
     }
 
     // No suitable block found
-    printf("malloc: No memory left!\n");
     return NULL;
 }
 

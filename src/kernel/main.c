@@ -22,6 +22,9 @@ DISK g_Disk;
 // Define the global pointer to the VBE info structure.
 VbeScreenInfo* g_vbe_screen;
 
+// Create a static instance to hold the VBE info passed from the bootloader.
+static VbeScreenInfo s_vbe_screen;
+
 extern uint8_t __bss_start;
 extern uint8_t __end;
 
@@ -53,20 +56,28 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 {
     // Crash the system to verify we've reached the kernel.
     //__asm__ volatile ("int $0x3"); It does reach kernel!!
-
-    // Initialize our global pointer with the address passed by the bootloader.
-    g_vbe_screen = vbe_info;
-
-    draw_pixel(400, 400, 0x00FFFFFF); // Draw a WHITE pixel to test
-
-    memset(&__bss_start, 0, (&__end) - (&__bss_start));
     
+    // Clear BSS first. This must happen before we copy data into static variables.
+    memset(&__bss_start, 0, (&__end) - (&__bss_start));
+
+    // Copy the VBE info from the bootloader to a safe location in the kernel's memory.
+    memcpy(&s_vbe_screen, vbe_info, sizeof(VbeScreenInfo));
+
+    // Now that BSS is clear, we can safely initialize our global variables.
+    g_vbe_screen = &s_vbe_screen;
+
     HAL_Initialize();
 
     heap_initialize();
     
-    clrscr();
+    //clrscr();
     
+    //printf("    ==================================================================\n");
+    
+
+    // Draw a WHITE pixel to test
+    draw_pixel(400, 400, 0x00FFFFFF);
+    /*
     printf("    ==================================================================\n");
     printf("\n"
            "    '##::::'##:'##::::'##::'#######::::::::::::'#######:::'######::\n"
@@ -114,6 +125,6 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     
     }
 
-    // This part is now unreachable
+    // This part is now unreachable */
     for (;;);
 }
