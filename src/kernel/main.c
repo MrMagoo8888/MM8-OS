@@ -69,6 +69,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     HAL_Initialize();
 
     heap_initialize();
+    console_initialize();
     
     clrscr();
     

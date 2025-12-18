@@ -2,6 +2,7 @@
 #include "stdint.h"
 #include "arch/i686/screen_defs.h"
 
+void console_initialize();
 void clrscr();
 void putc(char c);
 void puts(const char* str);
