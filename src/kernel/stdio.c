@@ -8,6 +8,7 @@
 #include "vbe.h"
 #include "graphics.h"
 #include "font.h"
+#include "heap.h"
 
 // VGA Color Palette (0-15) mapped to 32-bit RGB
 static const uint32_t vga_colors[16] = {
@@ -31,20 +32,44 @@ static const uint32_t vga_colors[16] = {
 
 // Shadow buffer for text (since we can't read back from VBE easily)
 // Assuming 80x25 standard text resolution for logic
-static uint8_t g_ShadowBuffer[SCREEN_WIDTH * SCREEN_HEIGHT * 2];
-uint8_t* g_ScreenBuffer = g_ShadowBuffer;
+// static uint8_t g_ShadowBuffer[SCREEN_WIDTH * SCREEN_HEIGHT * 2];
+static uint8_t* g_ShadowBuffer = NULL;
+uint8_t* g_ScreenBuffer = NULL;
 
 int g_ScreenX = 0, g_ScreenY = 0;
+int g_ConsoleWidth = 80;
+int g_ConsoleHeight = 25;
+int g_FontScale = 1; // Scale 1x by default
 
 // --- Scrollback Buffer ---
-char scrollback_buffer[SCROLLBACK_LINES][SCREEN_WIDTH];
+// char scrollback_buffer[SCROLLBACK_LINES][SCREEN_WIDTH];
+char* scrollback_buffer = NULL; // Flat buffer: SCROLLBACK_LINES * g_ConsoleWidth
 int scrollback_start = 0;
 int scrollback_count = 0;
 int scrollback_view = 0;
 
 // --- Live Screen Backup ---
-static uint8_t live_screen_backup[SCREEN_HEIGHT * SCREEN_WIDTH * 2];
+// static uint8_t live_screen_backup[SCREEN_HEIGHT * SCREEN_WIDTH * 2];
+static uint8_t* live_screen_backup = NULL;
 static bool in_scrollback_mode = false;
+
+void console_initialize() {
+    if (g_vbe_screen) {
+        g_ConsoleWidth = g_vbe_screen->width / (8 * g_FontScale);
+        g_ConsoleHeight = g_vbe_screen->height / (8 * g_FontScale);
+    }
+
+    // Allocate buffers based on dynamic size
+    g_ShadowBuffer = (uint8_t*)malloc(g_ConsoleWidth * g_ConsoleHeight * 2);
+    g_ScreenBuffer = g_ShadowBuffer;
+    
+    live_screen_backup = (uint8_t*)malloc(g_ConsoleWidth * g_ConsoleHeight * 2);
+    scrollback_buffer = (char*)malloc(SCROLLBACK_LINES * g_ConsoleWidth);
+
+    // Clear buffers
+    if (g_ShadowBuffer) memset(g_ShadowBuffer, 0, g_ConsoleWidth * g_ConsoleHeight * 2);
+    if (scrollback_buffer) memset(scrollback_buffer, 0, SCROLLBACK_LINES * g_ConsoleWidth);
+}
 
 // Helper to draw a character to the VBE screen
 static void draw_char_at(int x, int y, char c, uint8_t color) {
@@ -54,7 +79,10 @@ static void draw_char_at(int x, int y, char c, uint8_t color) {
     uint32_t bg = vga_colors[(color >> 4) & 0x0F];
 
     // Get font data (offset by 32 because our font starts at space)
-    const uint8_t* glyph = (c >= 32 && c <= 126) ? font8x8_basic[c - 32] : font8x8_basic[0];
+    const uint8_t* glyph = (c >= 32 && c <= 127) ? font8x8_basic[c - 32] : font8x8_basic[0];
+
+    int screen_x = x * 8 * g_FontScale;
+    int screen_y = y * 8 * g_FontScale;
 
     // Draw 8x8 pixels
     for (int row = 0; row < 8; row++) {
@@ -62,17 +90,25 @@ static void draw_char_at(int x, int y, char c, uint8_t color) {
             // Check if the bit is set in the font bitmap
             // Bit 0 is the rightmost pixel, Bit 7 is leftmost
             bool pixel_on = (glyph[row] >> (7 - col)) & 1;
+            uint32_t draw_color = pixel_on ? fg : bg;
             
-            // Draw pixel at (x*8 + col, y*8 + row)
-            draw_pixel(x * 8 + col, y * 8 + row, pixel_on ? fg : bg);
+            // Draw scaled pixel
+            for (int sy = 0; sy < g_FontScale; sy++) {
+                for (int sx = 0; sx < g_FontScale; sx++) {
+                    draw_pixel(screen_x + col * g_FontScale + sx, 
+                               screen_y + row * g_FontScale + sy, 
+                               draw_color);
+                }
+            }
         }
     }
 }
 
 void putchr(int x, int y, char c)
 {
+    if (!g_ScreenBuffer) return;
     // Update shadow buffer
-    g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)] = c;
+    g_ScreenBuffer[2 * (y * g_ConsoleWidth + x)] = c;
     
     // Draw to VBE
     draw_char_at(x, y, c, getcolor(x, y));
@@ -80,8 +116,9 @@ void putchr(int x, int y, char c)
 
 void putcolor(int x, int y, uint8_t color)
 {
+    if (!g_ScreenBuffer) return;
     // Update shadow buffer
-    g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1] = color;
+    g_ScreenBuffer[2 * (y * g_ConsoleWidth + x) + 1] = color;
     
     // Draw to VBE
     draw_char_at(x, y, getchr(x, y), color);
@@ -89,12 +126,14 @@ void putcolor(int x, int y, uint8_t color)
 
 char getchr(int x, int y)
 {
-    return g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)];
+    if (!g_ScreenBuffer) return 0;
+    return g_ScreenBuffer[2 * (y * g_ConsoleWidth + x)];
 }
 
 uint8_t getcolor(int x, int y)
 {
-    return g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1];
+    if (!g_ScreenBuffer) return 0;
+    return g_ScreenBuffer[2 * (y * g_ConsoleWidth + x) + 1];
 }
 
 void setcursor(int x, int y)
@@ -112,12 +151,13 @@ void setcursor(int x, int y)
 
 void clrscr()
 {
+    if (!g_ScreenBuffer) return;
     // Clear the shadow buffer
-    for (int y = 0; y < SCREEN_HEIGHT; y++)
-        for (int x = 0; x < SCREEN_WIDTH; x++)
+    for (int y = 0; y < g_ConsoleHeight; y++)
+        for (int x = 0; x < g_ConsoleWidth; x++)
         {
-            g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)] = '\0';
-            g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1] = DEFAULT_COLOR;
+            g_ScreenBuffer[2 * (y * g_ConsoleWidth + x)] = '\0';
+            g_ScreenBuffer[2 * (y * g_ConsoleWidth + x) + 1] = DEFAULT_COLOR;
         }
 
     g_ScreenX = 0;
@@ -134,11 +174,13 @@ void clrscr()
 
 void scrollback(int lines)
 {
+    if (!scrollback_buffer) return;
     // Save scrolled-off lines to the scrollback buffer
     for (int i = 0; i < lines; i++) {
         // Save the characters of the top line (y=0)
-        for (int x = 0; x < SCREEN_WIDTH; x++) {
-            scrollback_buffer[(scrollback_start + scrollback_count) % SCROLLBACK_LINES][x] = getchr(x, 0);
+        int row_idx = (scrollback_start + scrollback_count) % SCROLLBACK_LINES;
+        for (int x = 0; x < g_ConsoleWidth; x++) {
+            scrollback_buffer[row_idx * g_ConsoleWidth + x] = getchr(x, 0);
         }
 
         if (scrollback_count < SCROLLBACK_LINES) {
@@ -149,16 +191,16 @@ void scrollback(int lines)
     }
 
     // Move all lines up
-    for (int y = lines; y < SCREEN_HEIGHT; y++) {
-        for (int x = 0; x < SCREEN_WIDTH; x++) {
+    for (int y = lines; y < g_ConsoleHeight; y++) {
+        for (int x = 0; x < g_ConsoleWidth; x++) {
             putchr(x, y - lines, getchr(x, y));
             putcolor(x, y - lines, getcolor(x, y));
         }
     }
 
     // Clear the bottom lines
-    for (int y = SCREEN_HEIGHT - lines; y < SCREEN_HEIGHT; y++) {
-        for (int x = 0; x < SCREEN_WIDTH; x++) {
+    for (int y = g_ConsoleHeight - lines; y < g_ConsoleHeight; y++) {
+        for (int x = 0; x < g_ConsoleWidth; x++) {
             putchr(x, y, '\0');
             putcolor(x, y, DEFAULT_COLOR);
         }
@@ -169,8 +211,8 @@ void scrollback(int lines)
 
 void refresh_screen_color()
 {
-    for (int y = 0; y < SCREEN_HEIGHT; y++) {
-        for (int x = 0; x < SCREEN_WIDTH; x++) {
+    for (int y = 0; y < g_ConsoleHeight; y++) {
+        for (int x = 0; x < g_ConsoleWidth; x++) {
             putcolor(x, y, DEFAULT_COLOR);
         }
     }
@@ -178,29 +220,29 @@ void refresh_screen_color()
 
 static void redraw_from_scrollback() {
     int top_history_line = scrollback_count - scrollback_view;
-    for (int y = 0; y < SCREEN_HEIGHT; y++) {
-        int history_line_index = top_history_line - (SCREEN_HEIGHT - 1 - y);
+    for (int y = 0; y < g_ConsoleHeight; y++) {
+        int history_line_index = top_history_line - (g_ConsoleHeight - 1 - y);
         if (history_line_index >= 0 && history_line_index < scrollback_count) {
             int buffer_idx = (scrollback_start + history_line_index) % SCROLLBACK_LINES;
-            for (int x = 0; x < SCREEN_WIDTH; x++) {
-                putchr(x, y, scrollback_buffer[buffer_idx][x]);
+            for (int x = 0; x < g_ConsoleWidth; x++) {
+                putchr(x, y, scrollback_buffer[buffer_idx * g_ConsoleWidth + x]);
                 putcolor(x, y, DEFAULT_COLOR);
             }
         } else {
             // Clear lines that are beyond the history
-            for (int x = 0; x < SCREEN_WIDTH; x++) {
+            for (int x = 0; x < g_ConsoleWidth; x++) {
                 putchr(x, y, ' ');
                 putcolor(x, y, DEFAULT_COLOR);
             }
         }
     }
-    setcursor(0, SCREEN_HEIGHT - 1);
+    setcursor(0, g_ConsoleHeight - 1);
 }
 
 void view_scrollback_up() {
     if (scrollback_count == 0) return;
     if (!in_scrollback_mode) {
-        memcpy(live_screen_backup, g_ScreenBuffer, sizeof(live_screen_backup));
+        memcpy(live_screen_backup, g_ScreenBuffer, g_ConsoleWidth * g_ConsoleHeight * 2);
         in_scrollback_mode = true;
     }
     scrollback_view++;
@@ -216,7 +258,7 @@ void view_scrollback_down() {
     if (scrollback_view <= 0) {
         scrollback_view = 0;
         in_scrollback_mode = false;
-        memcpy(g_ScreenBuffer, live_screen_backup, sizeof(live_screen_backup));
+        memcpy(g_ScreenBuffer, live_screen_backup, g_ConsoleWidth * g_ConsoleHeight * 2);
         setcursor(g_ScreenX, g_ScreenY);
         return;
     }
@@ -238,7 +280,7 @@ void putc(char c)
                 putchr(g_ScreenX, g_ScreenY, ' ');
             } else if (g_ScreenY > 0) {
                 g_ScreenY--;
-                g_ScreenX = SCREEN_WIDTH - 1;
+                g_ScreenX = g_ConsoleWidth - 1;
                 putchr(g_ScreenX, g_ScreenY, ' ');
             }
             break;
@@ -258,12 +300,12 @@ void putc(char c)
             break;
     }
 
-    if (g_ScreenX >= SCREEN_WIDTH)
+    if (g_ScreenX >= g_ConsoleWidth)
     {
         g_ScreenY++;
         g_ScreenX = 0;
     }
-    if (g_ScreenY >= SCREEN_HEIGHT)
+    if (g_ScreenY >= g_ConsoleHeight)
         scrollback(1);
 
     setcursor(g_ScreenX, g_ScreenY);
