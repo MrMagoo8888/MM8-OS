@@ -51,6 +51,9 @@ void add_to_history(const char* command) {
 
 void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
 {
+    // Crash the system to verify we've reached the kernel.
+    //__asm__ volatile ("int $0x3"); It does reach kernel!!
+
     // Initialize our global pointer with the address passed by the bootloader.
     g_vbe_screen = vbe_info;
 
