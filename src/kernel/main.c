@@ -70,14 +70,8 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     heap_initialize();
     
-    //clrscr();
+    clrscr();
     
-    //printf("    ==================================================================\n");
-    
-
-    // Draw a WHITE pixel to test
-    draw_pixel(400, 400, 0x00FFFFFF);
-    /*
     printf("    ==================================================================\n");
     printf("\n"
            "    '##::::'##:'##::::'##::'#######::::::::::::'#######:::'######::\n"
@@ -125,6 +119,5 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     
     }
 
-    // This part is now unreachable */
     for (;;);
 }

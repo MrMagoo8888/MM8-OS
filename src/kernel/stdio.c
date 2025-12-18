@@ -5,9 +5,35 @@
 #include "stdbool.h"
 #include <stdarg.h>
 #include "memory.h"
+#include "vbe.h"
+#include "graphics.h"
+#include "font.h"
 
+// VGA Color Palette (0-15) mapped to 32-bit RGB
+static const uint32_t vga_colors[16] = {
+    0x00000000, // 0: Black
+    0x000000AA, // 1: Blue
+    0x0000AA00, // 2: Green
+    0x0000AAAA, // 3: Cyan
+    0x00AA0000, // 4: Red
+    0x00AA00AA, // 5: Magenta
+    0x00AA5500, // 6: Brown
+    0x00AAAAAA, // 7: Light Gray
+    0x00555555, // 8: Dark Gray
+    0x005555FF, // 9: Light Blue
+    0x0055FF55, // 10: Light Green
+    0x0055FFFF, // 11: Light Cyan
+    0x00FF5555, // 12: Light Red
+    0x00FF55FF, // 13: Light Magenta
+    0x00FFFF55, // 14: Yellow
+    0x00FFFFFF  // 15: White
+};
 
-uint8_t* g_ScreenBuffer = (uint8_t*)0xB8000;
+// Shadow buffer for text (since we can't read back from VBE easily)
+// Assuming 80x25 standard text resolution for logic
+static uint8_t g_ShadowBuffer[SCREEN_WIDTH * SCREEN_HEIGHT * 2];
+uint8_t* g_ScreenBuffer = g_ShadowBuffer;
+
 int g_ScreenX = 0, g_ScreenY = 0;
 
 // --- Scrollback Buffer ---
@@ -20,14 +46,45 @@ int scrollback_view = 0;
 static uint8_t live_screen_backup[SCREEN_HEIGHT * SCREEN_WIDTH * 2];
 static bool in_scrollback_mode = false;
 
+// Helper to draw a character to the VBE screen
+static void draw_char_at(int x, int y, char c, uint8_t color) {
+    if (!g_vbe_screen) return;
+
+    uint32_t fg = vga_colors[color & 0x0F];
+    uint32_t bg = vga_colors[(color >> 4) & 0x0F];
+
+    // Get font data (offset by 32 because our font starts at space)
+    const uint8_t* glyph = (c >= 32 && c <= 126) ? font8x8_basic[c - 32] : font8x8_basic[0];
+
+    // Draw 8x8 pixels
+    for (int row = 0; row < 8; row++) {
+        for (int col = 0; col < 8; col++) {
+            // Check if the bit is set in the font bitmap
+            // Bit 0 is the rightmost pixel, Bit 7 is leftmost
+            bool pixel_on = (glyph[row] >> (7 - col)) & 1;
+            
+            // Draw pixel at (x*8 + col, y*8 + row)
+            draw_pixel(x * 8 + col, y * 8 + row, pixel_on ? fg : bg);
+        }
+    }
+}
+
 void putchr(int x, int y, char c)
 {
+    // Update shadow buffer
     g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)] = c;
+    
+    // Draw to VBE
+    draw_char_at(x, y, c, getcolor(x, y));
 }
 
 void putcolor(int x, int y, uint8_t color)
 {
+    // Update shadow buffer
     g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1] = color;
+    
+    // Draw to VBE
+    draw_char_at(x, y, getchr(x, y), color);
 }
 
 char getchr(int x, int y)
@@ -42,26 +99,37 @@ uint8_t getcolor(int x, int y)
 
 void setcursor(int x, int y)
 {
-    int pos = y * SCREEN_WIDTH + x;
-
-    i686_outb(0x3D4, 0x0F);
-    i686_outb(0x3D5, (uint8_t)(pos & 0xFF));
-    i686_outb(0x3D4, 0x0E);
-    i686_outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
+    // Hardware cursor (VGA ports) doesn't work in VBE mode.
+    // We would need to implement a software cursor (e.g., drawing an underscore).
+    // For now, we just disable the port writes to avoid issues.
+    
+    // int pos = y * SCREEN_WIDTH + x;
+    // i686_outb(0x3D4, 0x0F);
+    // i686_outb(0x3D5, (uint8_t)(pos & 0xFF));
+    // i686_outb(0x3D4, 0x0E);
+    // i686_outb(0x3D5, (uint8_t)((pos >> 8) & 0xFF));
 }
 
 void clrscr()
 {
+    // Clear the shadow buffer
     for (int y = 0; y < SCREEN_HEIGHT; y++)
         for (int x = 0; x < SCREEN_WIDTH; x++)
         {
-            putchr(x, y, '\0');
-            putcolor(x, y, DEFAULT_COLOR);
+            g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x)] = '\0';
+            g_ScreenBuffer[2 * (y * SCREEN_WIDTH + x) + 1] = DEFAULT_COLOR;
         }
 
     g_ScreenX = 0;
     g_ScreenY = 0;
-    setcursor(g_ScreenX, g_ScreenY);
+    
+    // Clear the VBE screen (fill with black)
+    if (g_vbe_screen) {
+        // Calculate total bytes: pitch * height
+        // Note: This assumes the screen is contiguous, which is usually true for VBE.
+        // A safer way is to clear line by line if pitch != width * bpp
+        memset((void*)g_vbe_screen->physical_buffer, 0, g_vbe_screen->height * g_vbe_screen->pitch);
+    }
 }
 
 void scrollback(int lines)
