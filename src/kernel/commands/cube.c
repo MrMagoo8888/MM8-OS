@@ -4,6 +4,7 @@
 #include "../stdio.h"
 #include "../memory.h"
 #include <arch/i686/io.h>
+#include <arch/i686/keyboard.h>
 
 // --- 3D Math Helpers ---
 
@@ -73,6 +74,9 @@ void cube_test() {
     int screen_h = g_vbe_screen->height;
     int half_w = screen_w / 2;
     int half_h = screen_h / 2;
+
+    // Disable interrupts to prevent the ISR from consuming the keypress
+    __asm__ volatile ("cli");
 
     // Loop until key press
     while (1) {
@@ -145,10 +149,15 @@ void cube_test() {
 
         // Check for keypress (Status Register bit 0 set)
         if (i686_inb(0x64) & 0x01) {
-            i686_inb(0x60); // Consume key
-            break;
+            uint8_t scancode = i686_inb(0x60);
+            if ((scancode & 0x80) == 0) { // Only break on Key Press (Make code), ignore Key Release
+                break;
+            }
         }
     }
+
+    // Re-enable interrupts
+    __asm__ volatile ("sti");
 
     // Cleanup: Disable double buffering (returns to direct drawing)
     graphics_set_double_buffering(false);
