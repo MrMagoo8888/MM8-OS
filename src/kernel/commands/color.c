@@ -5,6 +5,7 @@
 #include "stdio.h" 
 #include <arch/i686/screen_defs.h>
 #include "ctype.h"
+#include "stddef.h"
 
 // Helper to parse a 1 or 2 digit hex string to a byte
 static unsigned char hex_to_byte(const char* hex_str) {
@@ -21,6 +22,32 @@ static unsigned char hex_to_byte(const char* hex_str) {
     return val;
 }
 
+// Lookup table for named colors to avoid long if-else chains
+typedef struct {
+    const char* name;
+    unsigned char code;
+} ColorMap;
+
+static const ColorMap colors[] = {
+    {"blue", Color_Blue},
+    {"black", Color_Black},
+    {"green", Color_Green},
+    {"cyan", Color_Cyan},
+    {"red", Color_Red},
+    {"magenta", Color_Magenta},
+    {"brown", Color_Brown},
+    {"lightgray", Color_LightGray},
+    {"darkgray", Color_DarkGray},
+    {"lightblue", Color_LightBlue},
+    {"lightgreen", Color_LightGreen},
+    {"lightcyan", Color_LightCyan},
+    {"lightred", Color_LightRed},
+    {"lightmagenta", Color_LightMagenta},
+    {"yellow", Color_Yellow},
+    {"white", Color_White},
+    {NULL, 0}
+};
+
 
 // Global variable definition (if not defined in screendefs.c)
 // unsigned char default_screen_color = COLOR_GREEN; 
@@ -29,47 +56,21 @@ void handle_color(const char* input) {
     // The argument starts right after "color " (6 characters in)
     const char* color_arg = input + 6;
     unsigned char new_color_code = 0;
+    int found = 0;
     
     // --- 1. Try to match named colors ---
-    if (strcmp(color_arg, "blue") == 0) {
-        new_color_code = Color_Blue;
-    } else if (strcmp(color_arg, "black") == 0) {
-        new_color_code = Color_Black;
-    } else if (strcmp(color_arg, "green") == 0) {
-        new_color_code = Color_Green;
-    } else if (strcmp(color_arg, "cyan") == 0) {
-        new_color_code = Color_Cyan;
-    } else if (strcmp(color_arg, "red") == 0) {
-        new_color_code = Color_Red;
-    } else if (strcmp(color_arg, "magenta") == 0) {
-        new_color_code = Color_Magenta;
-    } else if (strcmp(color_arg, "brown") == 0) {
-        new_color_code = Color_Brown;
-    } else if (strcmp(color_arg, "lightgray") == 0) {
-        new_color_code = Color_LightGray;
-    } else if (strcmp(color_arg, "darkgray") == 0) {
-        new_color_code = Color_DarkGray;
-    } else if (strcmp(color_arg, "lightblue") == 0) {
-        new_color_code = Color_LightBlue;
-    } else if (strcmp(color_arg, "lightgreen") == 0) {
-        new_color_code = Color_LightGreen;
-    } else if (strcmp(color_arg, "lightcyan") == 0) {
-        new_color_code = Color_LightCyan;
-    } else if (strcmp(color_arg, "lightred") == 0) {
-        new_color_code = Color_LightRed;
-    } else if (strcmp(color_arg, "lightmagenta") == 0) {
-        new_color_code = Color_LightMagenta;
-    } else if (strcmp(color_arg, "yellow") == 0) {
-        new_color_code = Color_Yellow;
-    } else if (strcmp(color_arg, "white") == 0) {
-        new_color_code = Color_White;
-    } 
-    // ... add more named colors (green, red, white, etc.) ...
+    for (int i = 0; colors[i].name != NULL; i++) {
+        if (strcmp(color_arg, colors[i].name) == 0) {
+            new_color_code = colors[i].code;
+            found = 1;
+            break;
+        }
+    }
     
     // --- 2. Try to parse as a number (e.g., 0x0A, 10) ---
-    else if (color_arg[0] != '\0') {
+    if (!found && color_arg[0] != '\0') {
         new_color_code = hex_to_byte(color_arg);
-    } else {
+    } else if (!found) {
         // No argument provided (e.g., user just typed "color")
         printf("Usage: color <name | hex_code>\n");
         printf("Example: color yellow\n");
