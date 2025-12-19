@@ -78,6 +78,11 @@ void cube_test() {
     // Disable interrupts to prevent the ISR from consuming the keypress
     __asm__ volatile ("cli");
 
+    // Flush any pending keys to prevent immediate exit
+    for (int i = 0; i < 100 && (i686_inb(0x64) & 0x01); i++) {
+        i686_inb(0x60);
+    }
+
     // Loop until key press
     while (1) {
         
@@ -93,6 +98,7 @@ void cube_test() {
         int cosZ = cos_table[angleZ % 64];
 
         Point2D projected[8];
+        bool valid[8]; // Track if vertex is in front of camera
 
         // 3. Transform Vertices
         for (int i = 0; i < 8; i++) {
@@ -118,22 +124,30 @@ void cube_test() {
             // Project (Perspective)
             // distance = 200
             int distance = 200;
-            int fov = 250;
             
-            // Avoid division by zero
-            if (distance + z == 0) z = 1;
-
-            projected[i].x = (x * fov) / (distance + z) + half_w;
-            projected[i].y = (y * fov) / (distance + z) + half_h;
+            // Z-Clipping: Check if vertex is behind or too close to camera
+            if (distance + z <= 10) { 
+                valid[i] = false;
+                projected[i].x = 0; 
+                projected[i].y = 0;
+            } else {
+                valid[i] = true;
+                int fov = 250;
+                projected[i].x = (x * fov) / (distance + z) + half_w;
+                projected[i].y = (y * fov) / (distance + z) + half_h;
+            }
         }
 
         // 4. Draw Edges
         for (int i = 0; i < 12; i++) {
             int p1 = edges[i][0];
             int p2 = edges[i][1];
-            draw_line(projected[p1].x, projected[p1].y, 
-                      projected[p2].x, projected[p2].y, 
-                      0x0000FF00); // Green
+            // Only draw if both vertices are valid (simple culling)
+            if (valid[p1] && valid[p2]) {
+                draw_line(projected[p1].x, projected[p1].y, 
+                          projected[p2].x, projected[p2].y, 
+                          0x0000FF00); // Green
+            }
         }
 
         // 5. Swap Buffer to Screen
