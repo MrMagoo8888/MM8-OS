@@ -11,6 +11,7 @@
 #include "mm8Splash.h"
 
 #include "commands/credits.h"
+#include "commands/cube.h"
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
@@ -28,6 +29,7 @@ static void handle_help() {
     printf(" - credits: Shows Credits from our Wonderful contributers and viewers\n");
     printf(" - fontsize [1-9]: Change the font scale.\n");
     printf(" - json_test: Runs a test of the cJSON library and heap.\n");
+    printf(" - cube: Runs a 3D rotating cube test.\n");
 }
 
 static void handle_echo(const char* input) {
@@ -99,6 +101,8 @@ void command_dispatch(const char* input) {
         handle_calc(input);
     } else if (memcmp(input, "fontsize ", 9) == 0) {
         handle_fontsize(input);
+    } else if (strcmp(input, "cube") == 0) {
+        cube_test();
     } else {
         printf("Unknown command: %s\n", input);
     }
