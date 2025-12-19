@@ -95,7 +95,9 @@ void draw_line(int x0, int y0, int x1, int y1, uint32_t color) {
     int err = (dx > dy ? dx : -dy) / 2;
     int e2;
 
-    while (1) {
+    // Safety counter to prevent infinite loops if coordinates are wild
+    int max_iter = 1000000;
+    while (max_iter-- > 0) {
         draw_pixel(x0, y0, color);
         if (x0 == x1 && y0 == y1) break;
         e2 = err;
