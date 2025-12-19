@@ -26,6 +26,7 @@ static void handle_help() {
     printf(" - read [file]: Read a file from the disk. Example: read /test.txt\n");
     printf(" - edit [file]: Open or create a file for editing.\n");
     printf(" - credits: Shows Credits from our Wonderful contributers and viewers\n");
+    printf(" - fontsize [1-9]: Change the font scale.\n");
     printf(" - json_test: Runs a test of the cJSON library and heap.\n");
 }
 
@@ -60,6 +61,19 @@ static void handle_read(const char* input) {
     FAT_Close(&g_Disk, file);
 }
 
+static void handle_fontsize(const char* input) {
+    // Expected format: "fontsize <scale>"
+    // Skip "fontsize " (9 chars)
+    const char* arg = input + 9;
+    if (*arg >= '1' && *arg <= '9') {
+        int scale = *arg - '0';
+        console_set_font_scale(scale);
+        printf("Font scale set to %d\n", scale);
+    } else {
+        printf("Usage: fontsize <1-9>\n");
+    }
+}
+
 void command_dispatch(const char* input) {
     if (strcmp(input, "help") == 0) {
         handle_help();
@@ -83,6 +97,8 @@ void command_dispatch(const char* input) {
         handle_json_test();
     } else if (memcmp(input, "calc", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
         handle_calc(input);
+    } else if (memcmp(input, "fontsize ", 9) == 0) {
+        handle_fontsize(input);
     } else {
         printf("Unknown command: %s\n", input);
     }

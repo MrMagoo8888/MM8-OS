@@ -39,7 +39,7 @@ uint8_t* g_ScreenBuffer = NULL;
 int g_ScreenX = 0, g_ScreenY = 0;
 int g_ConsoleWidth = 80;
 int g_ConsoleHeight = 25;
-int g_FontScale = 1; // Scale 1x by default
+int g_FontScale = 2; // Scale 1x by default
 
 // --- Scrollback Buffer ---
 // char scrollback_buffer[SCROLLBACK_LINES][SCREEN_WIDTH];
@@ -69,6 +69,21 @@ void console_initialize() {
     // Clear buffers
     if (g_ShadowBuffer) memset(g_ShadowBuffer, 0, g_ConsoleWidth * g_ConsoleHeight * 2);
     if (scrollback_buffer) memset(scrollback_buffer, 0, SCROLLBACK_LINES * g_ConsoleWidth);
+}
+
+void console_set_font_scale(int scale) {
+    if (scale < 1) scale = 1;
+    if (scale > 8) scale = 8; // Limit max scale
+
+    // Free old buffers
+    if (g_ShadowBuffer) free(g_ShadowBuffer);
+    if (live_screen_backup) free(live_screen_backup);
+    if (scrollback_buffer) free(scrollback_buffer);
+
+    g_FontScale = scale;
+    
+    console_initialize();
+    clrscr();
 }
 
 // Helper to draw a character to the VBE screen
@@ -180,7 +195,7 @@ void scrollback(int lines)
         // Save the characters of the top line (y=0)
         int row_idx = (scrollback_start + scrollback_count) % SCROLLBACK_LINES;
         for (int x = 0; x < g_ConsoleWidth; x++) {
-            scrollback_buffer[row_idx * g_ConsoleWidth + x] = getchr(x, 0);
+            scrollback_buffer[row_idx * g_ConsoleWidth + x] = getchr(x, i);
         }
 
         if (scrollback_count < SCROLLBACK_LINES) {
@@ -190,11 +205,26 @@ void scrollback(int lines)
         }
     }
 
-    // Move all lines up
-    for (int y = lines; y < g_ConsoleHeight; y++) {
-        for (int x = 0; x < g_ConsoleWidth; x++) {
-            putchr(x, y - lines, getchr(x, y));
-            putcolor(x, y - lines, getcolor(x, y));
+    // Optimized Scrolling: Use memmove for instant scrolling
+    
+    // 1. Move Shadow Buffer (Text + Color)
+    if (g_ScreenBuffer) {
+        size_t line_size = g_ConsoleWidth * 2;
+        size_t move_size = (g_ConsoleHeight - lines) * line_size;
+        memmove(g_ScreenBuffer, g_ScreenBuffer + (lines * line_size), move_size);
+    }
+
+    // 2. Move VBE Framebuffer (Pixels)
+    if (g_vbe_screen) {
+        int pixel_lines = lines * 8 * g_FontScale;
+        size_t pitch = g_vbe_screen->pitch;
+        size_t total_bytes = g_vbe_screen->height * pitch;
+        size_t bytes_to_scroll = pixel_lines * pitch;
+        
+        if (bytes_to_scroll < total_bytes) {
+            memmove((void*)g_vbe_screen->physical_buffer, 
+                    (void*)(g_vbe_screen->physical_buffer + bytes_to_scroll), 
+                    total_bytes - bytes_to_scroll);
         }
     }
 
