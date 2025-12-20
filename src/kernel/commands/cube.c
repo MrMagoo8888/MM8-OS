@@ -65,28 +65,70 @@ void fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, uint32_t colo
     if (y1 > y3) { int t=x1; x1=x3; x3=t; t=y1; y1=y3; y3=t; }
     if (y2 > y3) { int t=x2; x2=x3; x3=t; t=y2; y2=y3; y3=t; }
 
-    int total_height = y3 - y1;
-    if (total_height == 0) return;
+    if (y1 == y3) return; // Zero height
 
-    for (int i = 0; i < total_height; i++) {
-        int y = y1 + i;
-        int second_half = (i > y2 - y1 || y2 == y1);
-        int segment_height = second_half ? y3 - y2 : y2 - y1;
-        if (segment_height == 0) segment_height = 1;
+    int screen_w = g_vbe_screen->width;
+    int screen_h = g_vbe_screen->height;
 
-        int alpha_num = i;
-        int alpha_den = total_height;
-        int beta_num = i - (second_half ? y2 - y1 : 0);
-        int beta_den = segment_height;
+    // Trivial rejection Y
+    if (y3 < 0 || y1 >= screen_h) return;
 
-        // Interpolate X
-        int A = x1 + (x3 - x1) * alpha_num / alpha_den;
-        int B = second_half ? x2 + (x3 - x2) * beta_num / beta_den : x1 + (x2 - x1) * beta_num / beta_den;
+    // Slopes (fixed point 16.16)
+    // Use long long to prevent overflow during shift
+    int dx13 = 0, dx12 = 0, dx23 = 0;
 
-        if (A > B) { int t=A; A=B; B=t; }
-        
-        // Draw horizontal line
-        draw_line(A, y, B, y, color);
+    if (y3 > y1) dx13 = (int)(((long long)(x3 - x1) << 16) / (y3 - y1));
+    if (y2 > y1) dx12 = (int)(((long long)(x2 - x1) << 16) / (y2 - y1));
+    if (y3 > y2) dx23 = (int)(((long long)(x3 - x2) << 16) / (y3 - y2));
+
+    long long wx1 = (long long)x1 << 16;
+    long long wx2 = (long long)x1 << 16;
+
+    int current_y = y1;
+
+    // Rasterize upper part (y1 to y2)
+    if (current_y < 0) {
+        int skip = -current_y;
+        if (current_y + skip > y2) skip = y2 - current_y;
+        wx1 += (long long)dx13 * skip;
+        wx2 += (long long)dx12 * skip;
+        current_y += skip;
+    }
+
+    for (int i = current_y; i < y2; i++) {
+        if (i >= screen_h) return;
+            int a = (int)(wx1 >> 16);
+            int b = (int)(wx2 >> 16);
+            if (a > b) { int t=a; a=b; b=t; }
+            if (a < 0) a = 0;
+            if (b >= screen_w) b = screen_w - 1;
+            if (a <= b) draw_line(a, i, b, i, color);
+        wx1 += dx13;
+        wx2 += dx12;
+    }
+
+    // Rasterize lower part (y2 to y3)
+    wx2 = (long long)x2 << 16; // Reset short edge walker to x2
+    current_y = y2;
+
+    if (current_y < 0) {
+        int skip = -current_y;
+        if (current_y + skip > y3) skip = y3 - current_y;
+        wx1 += (long long)dx13 * skip;
+        wx2 += (long long)dx23 * skip;
+        current_y += skip;
+    }
+
+    for (int i = current_y; i < y3; i++) {
+        if (i >= screen_h) return;
+            int a = (int)(wx1 >> 16);
+            int b = (int)(wx2 >> 16);
+            if (a > b) { int t=a; a=b; b=t; }
+            if (a < 0) a = 0;
+            if (b >= screen_w) b = screen_w - 1;
+            if (a <= b) draw_line(a, i, b, i, color);
+        wx1 += dx13;
+        wx2 += dx23;
     }
 }
 
@@ -94,6 +136,11 @@ void fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, uint32_t colo
 // Returns (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)
 int cross_product_2d(Point2D a, Point2D b, Point2D c) {
     return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+}
+
+void wait_for_vsync() {
+    // Wait for vertical retrace to start (bit 3 of 0x3DA is set)
+    while (!(i686_inb(0x3DA) & 0x08));
 }
 
 void cube_test() {
@@ -116,8 +163,16 @@ void cube_test() {
     int half_w = screen_w / 2;
     int half_h = screen_h / 2;
 
+    int distance = 200;
+    int fov = 250;
+
     // Disable interrupts to prevent the ISR from consuming the keypress
     __asm__ volatile ("cli");
+
+    // Drain keyboard buffer to prevent immediate exit
+    while (i686_inb(0x64) & 0x01) {
+        i686_inb(0x60);
+    }
 
     // Loop until key press
     while (1) {
@@ -163,9 +218,6 @@ void cube_test() {
             rotated[i].z = z;
 
             // Project (Perspective)
-            // distance = 200
-            int distance = 200;
-            int fov = 250;
             
             // Avoid division by zero
             if (distance + z == 0) z = 1;
@@ -180,6 +232,18 @@ void cube_test() {
             Point2D p1 = projected[faces[i][1]];
             Point2D p2 = projected[faces[i][2]];
             Point2D p3 = projected[faces[i][3]];
+
+            // Near-plane culling:
+            // If any vertex is too close to the camera (z + distance is small), 
+            // the projection math explodes. Skip these faces.
+            int too_close = 0;
+            for (int k = 0; k < 4; k++) {
+                if (rotated[faces[i][k]].z + distance < 50) { // 50 is a safety margin
+                    too_close = 1;
+                    break;
+                }
+            }
+            if (too_close) continue;
 
             // Check winding order (Cross product > 0 means facing camera)
             if (cross_product_2d(p0, p1, p2) > 0) {
@@ -208,6 +272,9 @@ void cube_test() {
             }
         }
 
+        // Sync with monitor refresh to prevent tearing
+        wait_for_vsync();
+
         // 5. Swap Buffer to Screen
         graphics_swap_buffer();
 
@@ -216,14 +283,17 @@ void cube_test() {
         angleY = (angleY + 2) % 64;
         angleZ = (angleZ + 1) % 64;
 
-        // Simple delay
-        for (volatile int d = 0; d < 5000000; d++);
+        // Delay is now handled by VSync (approx 60 FPS)
 
         // Check for keypress (Status Register bit 0 set)
-        if (i686_inb(0x64) & 0x01) {
+        uint8_t status = i686_inb(0x64);
+        if (status & 0x01) {
             uint8_t scancode = i686_inb(0x60);
-            if ((scancode & 0x80) == 0) { // Only break on Key Press (Make code), ignore Key Release
-                break;
+            // Ignore mouse data (bit 5 of status is AUX buffer full)
+            if (!(status & 0x20)) {
+                if ((scancode & 0x80) == 0) { // Only break on Key Press
+                    break;
+                }
             }
         }
     }
