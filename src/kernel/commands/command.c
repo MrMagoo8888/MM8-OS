@@ -12,13 +12,14 @@
 
 #include "commands/credits.h"
 #include "commands/cube.h"
+#include "commands/color.h"
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
 
     clrscr();
 
-    mm8Splash();
+    mm8Splash(); // this now works, noneed to comment out
 
     printf("Available commands:\n");
     printf(" - help: Show this message\n");
