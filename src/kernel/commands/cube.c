@@ -65,28 +65,37 @@ void fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, uint32_t colo
     if (y1 > y3) { int t=x1; x1=x3; x3=t; t=y1; y1=y3; y3=t; }
     if (y2 > y3) { int t=x2; x2=x3; x3=t; t=y2; y2=y3; y3=t; }
 
-    int total_height = y3 - y1;
-    if (total_height == 0) return;
+    if (y1 == y3) return; // Zero height
 
-    for (int i = 0; i < total_height; i++) {
-        int y = y1 + i;
-        int second_half = (i > y2 - y1 || y2 == y1);
-        int segment_height = second_half ? y3 - y2 : y2 - y1;
-        if (segment_height == 0) segment_height = 1;
+    // Slopes (fixed point 16.16)
+    int dx13 = 0, dx12 = 0, dx23 = 0;
 
-        int alpha_num = i;
-        int alpha_den = total_height;
-        int beta_num = i - (second_half ? y2 - y1 : 0);
-        int beta_den = segment_height;
+    if (y3 > y1) dx13 = ((x3 - x1) << 16) / (y3 - y1);
+    if (y2 > y1) dx12 = ((x2 - x1) << 16) / (y2 - y1);
+    if (y3 > y2) dx23 = ((x3 - x2) << 16) / (y3 - y2);
 
-        // Interpolate X
-        int A = x1 + (x3 - x1) * alpha_num / alpha_den;
-        int B = second_half ? x2 + (x3 - x2) * beta_num / beta_den : x1 + (x2 - x1) * beta_num / beta_den;
+    int wx1 = x1 << 16;
+    int wx2 = x1 << 16;
 
-        if (A > B) { int t=A; A=B; B=t; }
-        
-        // Draw horizontal line
-        draw_line(A, y, B, y, color);
+    // Rasterize upper part (y1 to y2)
+    for (int i = y1; i < y2; i++) {
+        int a = wx1 >> 16;
+        int b = wx2 >> 16;
+        if (a > b) { int t=a; a=b; b=t; }
+        draw_line(a, i, b + 1, i, color); // +1 to prevent cracks
+        wx1 += dx13;
+        wx2 += dx12;
+    }
+
+    // Rasterize lower part (y2 to y3)
+    wx2 = x2 << 16; // Reset short edge walker to x2
+    for (int i = y2; i < y3; i++) {
+        int a = wx1 >> 16;
+        int b = wx2 >> 16;
+        if (a > b) { int t=a; a=b; b=t; }
+        draw_line(a, i, b + 1, i, color);
+        wx1 += dx13;
+        wx2 += dx23;
     }
 }
 
