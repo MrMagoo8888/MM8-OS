@@ -5,6 +5,7 @@
 #include "../memory.h"
 #include <arch/i686/io.h>
 #include <arch/i686/keyboard.h>
+#include "../heap.h"
 
 // --- 3D Math Helpers ---
 
@@ -30,11 +31,15 @@ Point3D vertices[8] = {
     {-CUBE_SIZE,  CUBE_SIZE,  CUBE_SIZE}
 };
 
-// Edges connecting the vertices (indices into vertices array)
-int edges[12][2] = {
-    {0,1}, {1,2}, {2,3}, {3,0}, // Front face
-    {4,5}, {5,6}, {6,7}, {7,4}, // Back face
-    {0,4}, {1,5}, {2,6}, {3,7}  // Connecting lines
+// Faces (indices into vertices array)
+// Defined in Clockwise order for culling
+int faces[6][4] = {
+    {0, 1, 2, 3}, // Front
+    {1, 5, 6, 2}, // Right
+    {5, 4, 7, 6}, // Back
+    {4, 0, 3, 7}, // Left
+    {4, 5, 1, 0}, // Top
+    {3, 2, 6, 7}  // Bottom
 };
 
 // Simple Sin/Cos lookup table (0 to 360 degrees approx)
@@ -76,6 +81,16 @@ void cube_test() {
     int half_w = screen_w / 2;
     int half_h = screen_h / 2;
 
+    // Dynamic Buffer: Allocate memory for projected points
+    Point2D* projected = (Point2D*)malloc(8 * sizeof(Point2D));
+    if (!projected) {
+        printf("Error: Failed to allocate memory for projection.\n");
+        return;
+    }
+
+    // Mask IRQ 1 (Keyboard) to prevent the OS ISR from stealing the keypress
+    i686_outb(0x21, i686_inb(0x21) | 0x02);
+
     // Loop until key press
     while (1) {
         
@@ -89,8 +104,6 @@ void cube_test() {
         int cosY = cos_table[angleY % 64];
         int sinZ = sin_table[angleZ % 64];
         int cosZ = cos_table[angleZ % 64];
-
-        Point2D projected[8];
 
         // 3. Transform Vertices
         for (int i = 0; i < 8; i++) {
@@ -134,13 +147,23 @@ void cube_test() {
             projected[i].y = py;
         }
 
-        // 4. Draw Edges
-        for (int i = 0; i < 12; i++) {
-            int p1 = edges[i][0];
-            int p2 = edges[i][1];
-            draw_line(projected[p1].x, projected[p1].y, 
-                      projected[p2].x, projected[p2].y, 
-                      0x0000FF00); // Green
+        // 4. Draw Faces (with Back-face Culling)
+        for (int f = 0; f < 6; f++) {
+            Point2D p0 = projected[faces[f][0]];
+            Point2D p1 = projected[faces[f][1]];
+            Point2D p2 = projected[faces[f][2]];
+
+            // Calculate signed area (2D Cross Product) to determine visibility
+            // If area > 0, the face is facing the camera (Clockwise winding)
+            int area = (p1.x - p0.x) * (p2.y - p0.y) - (p1.y - p0.y) * (p2.x - p0.x);
+
+            if (area > 0) {
+                for (int i = 0; i < 4; i++) {
+                    int idx1 = faces[f][i];
+                    int idx2 = faces[f][(i + 1) % 4];
+                    draw_line(projected[idx1].x, projected[idx1].y, projected[idx2].x, projected[idx2].y, 0x0000FF00);
+                }
+            }
         }
 
         // 5. Swap Buffer to Screen
@@ -154,20 +177,20 @@ void cube_test() {
         // Simple delay
         for (volatile int d = 0; d < 1000000; d++);
 
-        // Check for keypress safely
-        // Disable interrupts briefly to poll the controller without ISR interference
-        __asm__ volatile ("cli");
+        // Check for keypress (Polling directly, IRQ 1 is masked)
         if (i686_inb(0x64) & 0x01) {
             uint8_t scancode = i686_inb(0x60);
             if ((scancode & 0x80) == 0) { // Only break on Key Press (Make code), ignore Key Release
-                __asm__ volatile ("sti"); // Re-enable before breaking
                 break;
             }
         }
-        __asm__ volatile ("sti"); // Re-enable interrupts for the next frame
     }
 
-    // Interrupts are already enabled here
+    // Restore IRQ 1 (Unmask Keyboard)
+    i686_outb(0x21, i686_inb(0x21) & ~0x02);
+
+    // Free dynamic memory
+    free(projected);
 
     // Cleanup: Disable double buffering (returns to direct drawing)
     graphics_set_double_buffering(false);
