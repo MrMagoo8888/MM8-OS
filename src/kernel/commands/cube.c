@@ -30,11 +30,14 @@ Point3D vertices[8] = {
     {-CUBE_SIZE,  CUBE_SIZE,  CUBE_SIZE}
 };
 
-// Edges connecting the vertices (indices into vertices array)
-int edges[12][2] = {
-    {0,1}, {1,2}, {2,3}, {3,0}, // Front face
-    {4,5}, {5,6}, {6,7}, {7,4}, // Back face
-    {0,4}, {1,5}, {2,6}, {3,7}  // Connecting lines
+// Faces (indices into vertices array) - CW winding for backface culling
+int faces[6][4] = {
+    {0, 1, 2, 3}, // Front
+    {1, 5, 6, 2}, // Right
+    {5, 4, 7, 6}, // Back
+    {4, 0, 3, 7}, // Left
+    {4, 5, 1, 0}, // Top
+    {3, 2, 6, 7}  // Bottom
 };
 
 // Simple Sin/Cos lookup table (0 to 360 degrees approx)
@@ -54,6 +57,44 @@ int cos_table[64] = {
     -124, -119, -113, -107, -99, -90, -81, -71, -60, -49, -37, -25, -12, 0, 12,
     25, 37, 49, 60, 71, 81, 90, 99, 107, 113, 119, 124, 127, 128, 127, 124
 };
+
+// Helper to fill a triangle using scanlines
+void fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, uint32_t color) {
+    // Sort vertices by Y
+    if (y1 > y2) { int t=x1; x1=x2; x2=t; t=y1; y1=y2; y2=t; }
+    if (y1 > y3) { int t=x1; x1=x3; x3=t; t=y1; y1=y3; y3=t; }
+    if (y2 > y3) { int t=x2; x2=x3; x3=t; t=y2; y2=y3; y3=t; }
+
+    int total_height = y3 - y1;
+    if (total_height == 0) return;
+
+    for (int i = 0; i < total_height; i++) {
+        int y = y1 + i;
+        int second_half = (i > y2 - y1 || y2 == y1);
+        int segment_height = second_half ? y3 - y2 : y2 - y1;
+        if (segment_height == 0) segment_height = 1;
+
+        int alpha_num = i;
+        int alpha_den = total_height;
+        int beta_num = i - (second_half ? y2 - y1 : 0);
+        int beta_den = segment_height;
+
+        // Interpolate X
+        int A = x1 + (x3 - x1) * alpha_num / alpha_den;
+        int B = second_half ? x2 + (x3 - x2) * beta_num / beta_den : x1 + (x2 - x1) * beta_num / beta_den;
+
+        if (A > B) { int t=A; A=B; B=t; }
+        
+        // Draw horizontal line
+        draw_line(A, y, B, y, color);
+    }
+}
+
+// Calculate 2D cross product (for winding order)
+// Returns (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)
+int cross_product_2d(Point2D a, Point2D b, Point2D c) {
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+}
 
 void cube_test() {
     if (!g_vbe_screen) {
@@ -93,6 +134,7 @@ void cube_test() {
         int cosZ = cos_table[angleZ % 64];
 
         Point2D projected[8];
+        Point3D rotated[8];
 
         // 3. Transform Vertices
         for (int i = 0; i < 8; i++) {
@@ -115,6 +157,11 @@ void cube_test() {
             y1 = (x * sinZ + y * cosZ) / 128;
             x = x1; y = y1;
 
+            // Store rotated vertices for lighting calculation
+            rotated[i].x = x;
+            rotated[i].y = y;
+            rotated[i].z = z;
+
             // Project (Perspective)
             // distance = 200
             int distance = 200;
@@ -127,13 +174,38 @@ void cube_test() {
             projected[i].y = (y * fov) / (distance + z) + half_h;
         }
 
-        // 4. Draw Edges
-        for (int i = 0; i < 12; i++) {
-            int p1 = edges[i][0];
-            int p2 = edges[i][1];
-            draw_line(projected[p1].x, projected[p1].y, 
-                      projected[p2].x, projected[p2].y, 
-                      0x0000FF00); // Green
+        // 4. Draw Faces (with backface culling)
+        for (int i = 0; i < 6; i++) {
+            Point2D p0 = projected[faces[i][0]];
+            Point2D p1 = projected[faces[i][1]];
+            Point2D p2 = projected[faces[i][2]];
+            Point2D p3 = projected[faces[i][3]];
+
+            // Check winding order (Cross product > 0 means facing camera)
+            if (cross_product_2d(p0, p1, p2) > 0) {
+                // Calculate lighting based on face normal (Z component)
+                Point3D r0 = rotated[faces[i][0]];
+                Point3D r1 = rotated[faces[i][1]];
+                Point3D r2 = rotated[faces[i][2]];
+
+                // Normal Z = (v1.x * v2.y) - (v1.y * v2.x)
+                int ax = r1.x - r0.x;
+                int ay = r1.y - r0.y;
+                int bx = r2.x - r0.x;
+                int by = r2.y - r0.y;
+                
+                int nz = ax * by - ay * bx;
+                if (nz < 0) nz = -nz;
+
+                // Map nz (0 to ~10000) to brightness (50 to 255)
+                int brightness = 50 + (nz * 205) / 10000;
+                if (brightness > 255) brightness = 255;
+                
+                uint32_t color = 0xFF000000 | (brightness << 16) | (brightness << 8) | brightness;
+
+                fill_triangle(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, color);
+                fill_triangle(p0.x, p0.y, p2.x, p2.y, p3.x, p3.y, color);
+            }
         }
 
         // 5. Swap Buffer to Screen
@@ -145,7 +217,7 @@ void cube_test() {
         angleZ = (angleZ + 1) % 64;
 
         // Simple delay
-        for (volatile int d = 0; d < 1000000; d++);
+        for (volatile int d = 0; d < 5000000; d++);
 
         // Check for keypress (Status Register bit 0 set)
         if (i686_inb(0x64) & 0x01) {
