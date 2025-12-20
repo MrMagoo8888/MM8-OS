@@ -1,5 +1,12 @@
 We got 3d!!
 
+Latest Demo Video:
+
+
+
+https://github.com/user-attachments/assets/2abbc785-84bb-4b6a-a72f-7eb1019bb085
+
+
 
 Hello, I am making this OS for fun and would love help, tips and suggestions!
 
