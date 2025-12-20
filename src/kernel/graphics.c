@@ -3,6 +3,7 @@
 #include "heap.h"
 #include "memory.h"
 #include "stdio.h"
+#include "arch/i686/keyboard.h"
 
 static uint32_t* g_BackBuffer = NULL;
 static bool g_DoubleBufferEnabled = false;
@@ -22,19 +23,28 @@ void graphics_init_double_buffer() {
         g_BackBuffer = (uint32_t*)malloc(buffer_size);
         if (g_BackBuffer) {
             memset(g_BackBuffer, 0, buffer_size);
-            printf("DEBUG: BackBuffer allocated at: %p (Size: %d)\n", g_BackBuffer, buffer_size);
-            printf("DEBUG: BackBuffer ends at:      %p\n", (uint8_t*)g_BackBuffer + buffer_size);
+            // printf("DEBUG: BackBuffer allocated at: %p (Size: %d)\n", g_BackBuffer, buffer_size);
+            // printf("DEBUG: BackBuffer ends at:      %p\n", (uint8_t*)g_BackBuffer + buffer_size);
         } else {
             printf("DEBUG: BackBuffer allocation FAILED (Out of memory)!\n");
+            getch(); // Wait so user sees the error
         }
     }
 }
 
 void graphics_set_double_buffering(bool enabled) {
-    if (enabled && !g_BackBuffer) {
-        graphics_init_double_buffer();
+    if (enabled) {
+        if (!g_BackBuffer) {
+            graphics_init_double_buffer();
+        }
+        g_DoubleBufferEnabled = (g_BackBuffer != NULL);
+    } else {
+        g_DoubleBufferEnabled = false;
+        if (g_BackBuffer) {
+            free(g_BackBuffer);
+            g_BackBuffer = NULL;
+        }
     }
-    g_DoubleBufferEnabled = enabled && (g_BackBuffer != NULL);
 }
 
 void graphics_swap_buffer() {

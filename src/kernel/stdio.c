@@ -61,10 +61,19 @@ void console_initialize() {
 
     // Allocate buffers based on dynamic size
     g_ShadowBuffer = (uint8_t*)malloc(g_ConsoleWidth * g_ConsoleHeight * 2);
+    if (!g_ShadowBuffer) {
+        printf("CRITICAL: Failed to allocate console shadow buffer!\n");
+    }
     g_ScreenBuffer = g_ShadowBuffer;
     
     live_screen_backup = (uint8_t*)malloc(g_ConsoleWidth * g_ConsoleHeight * 2);
+    if (!live_screen_backup) {
+        printf("WARNING: Failed to allocate live screen backup.\n");
+    }
     scrollback_buffer = (char*)malloc(SCROLLBACK_LINES * g_ConsoleWidth);
+    if (!scrollback_buffer) {
+        printf("WARNING: Failed to allocate scrollback buffer.\n");
+    }
 
     // Clear buffers
     if (g_ShadowBuffer) memset(g_ShadowBuffer, 0, g_ConsoleWidth * g_ConsoleHeight * 2);
@@ -121,9 +130,10 @@ static void draw_char_at(int x, int y, char c, uint8_t color) {
 
 void putchr(int x, int y, char c)
 {
-    if (!g_ScreenBuffer) return;
-    // Update shadow buffer
-    g_ScreenBuffer[2 * (y * g_ConsoleWidth + x)] = c;
+    if (g_ScreenBuffer) {
+        // Update shadow buffer
+        g_ScreenBuffer[2 * (y * g_ConsoleWidth + x)] = c;
+    }
     
     // Draw to VBE
     draw_char_at(x, y, c, getcolor(x, y));
@@ -147,7 +157,7 @@ char getchr(int x, int y)
 
 uint8_t getcolor(int x, int y)
 {
-    if (!g_ScreenBuffer) return 0;
+    if (!g_ScreenBuffer) return DEFAULT_COLOR;
     return g_ScreenBuffer[2 * (y * g_ConsoleWidth + x) + 1];
 }
 
@@ -166,14 +176,15 @@ void setcursor(int x, int y)
 
 void clrscr()
 {
-    if (!g_ScreenBuffer) return;
-    // Clear the shadow buffer
-    for (int y = 0; y < g_ConsoleHeight; y++)
-        for (int x = 0; x < g_ConsoleWidth; x++)
-        {
-            g_ScreenBuffer[2 * (y * g_ConsoleWidth + x)] = '\0';
-            g_ScreenBuffer[2 * (y * g_ConsoleWidth + x) + 1] = DEFAULT_COLOR;
-        }
+    if (g_ScreenBuffer) {
+        // Clear the shadow buffer
+        for (int y = 0; y < g_ConsoleHeight; y++)
+            for (int x = 0; x < g_ConsoleWidth; x++)
+            {
+                g_ScreenBuffer[2 * (y * g_ConsoleWidth + x)] = '\0';
+                g_ScreenBuffer[2 * (y * g_ConsoleWidth + x) + 1] = DEFAULT_COLOR;
+            }
+    }
 
     g_ScreenX = 0;
     g_ScreenY = 0;
@@ -271,6 +282,7 @@ static void redraw_from_scrollback() {
 
 void view_scrollback_up() {
     if (scrollback_count == 0) return;
+    if (!live_screen_backup || !g_ScreenBuffer) return;
     if (!in_scrollback_mode) {
         memcpy(live_screen_backup, g_ScreenBuffer, g_ConsoleWidth * g_ConsoleHeight * 2);
         in_scrollback_mode = true;
@@ -284,6 +296,7 @@ void view_scrollback_up() {
 
 void view_scrollback_down() {
     if (!in_scrollback_mode) return;
+    if (!live_screen_backup || !g_ScreenBuffer) return;
     scrollback_view--;
     if (scrollback_view <= 0) {
         scrollback_view = 0;
