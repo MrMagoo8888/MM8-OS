@@ -1,6 +1,14 @@
 #include "stdio.h"
 #include "string.h"
 
+void credits_lucas() {
+    printf("Thanks? To the \"awesome\" people from Lucas' discord:\n\n");
+    printf(" - Lucas\n");
+    printf(" - Harold\n");
+    printf(" - Damon\n");
+    printf(" - ttchef\n\n");
+}
+
 void credits_followers() {
     printf("Credits to our Wonderful Followers:\n\n");
     printf(" - MrJBMG\n");
@@ -50,6 +58,7 @@ void credits() {
     clrscr();
     printf("MM8-OS Credits\n\n");
 
+    credits_lucas();
     credits_followers();
     credits_streamers();
     credits_gf();
