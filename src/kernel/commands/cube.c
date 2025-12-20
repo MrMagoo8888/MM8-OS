@@ -140,7 +140,12 @@ int cross_product_2d(Point2D a, Point2D b, Point2D c) {
 
 void wait_for_vsync() {
     // Wait for vertical retrace to start (bit 3 of 0x3DA is set)
-    while (!(i686_inb(0x3DA) & 0x08));
+    // Add a timeout to prevent infinite hang if hardware/emulator doesn't support it
+    int timeout = 100000;
+    while (!(i686_inb(0x3DA) & 0x08)) {
+        if (--timeout == 0) break;
+        __asm__ volatile ("nop");
+    }
 }
 
 void cube_test() {
@@ -267,8 +272,19 @@ void cube_test() {
                 
                 uint32_t color = 0xFF000000 | (brightness << 16) | (brightness << 8) | brightness;
 
-                fill_triangle(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, color);
-                fill_triangle(p0.x, p0.y, p2.x, p2.y, p3.x, p3.y, color);
+                // Clamp coordinates to prevent integer overflow in fill_triangle
+                // A range of +/- 4000 is safe for 16.16 fixed point math
+                #define CLAMP(v, min, max) ((v) < (min) ? (min) : ((v) > (max) ? (max) : (v)))
+                int min_c = -4000;
+                int max_c = 4000;
+
+                int x0 = CLAMP(p0.x, min_c, max_c); int y0 = CLAMP(p0.y, min_c, max_c);
+                int x1 = CLAMP(p1.x, min_c, max_c); int y1 = CLAMP(p1.y, min_c, max_c);
+                int x2 = CLAMP(p2.x, min_c, max_c); int y2 = CLAMP(p2.y, min_c, max_c);
+                int x3 = CLAMP(p3.x, min_c, max_c); int y3 = CLAMP(p3.y, min_c, max_c);
+
+                fill_triangle(x0, y0, x1, y1, x2, y2, color);
+                fill_triangle(x0, y0, x2, y2, x3, y3, color);
             }
         }
 
