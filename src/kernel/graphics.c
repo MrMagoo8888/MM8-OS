@@ -2,6 +2,7 @@
 #include "vbe.h"
 #include "heap.h"
 #include "memory.h"
+#include "stdio.h"
 
 static uint32_t* g_BackBuffer = NULL;
 static bool g_DoubleBufferEnabled = false;
@@ -21,6 +22,10 @@ void graphics_init_double_buffer() {
         g_BackBuffer = (uint32_t*)malloc(buffer_size);
         if (g_BackBuffer) {
             memset(g_BackBuffer, 0, buffer_size);
+            printf("DEBUG: BackBuffer allocated at: %p (Size: %d)\n", g_BackBuffer, buffer_size);
+            printf("DEBUG: BackBuffer ends at:      %p\n", (uint8_t*)g_BackBuffer + buffer_size);
+        } else {
+            printf("DEBUG: BackBuffer allocation FAILED (Out of memory)!\n");
         }
     }
 }
