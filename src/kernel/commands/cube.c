@@ -155,12 +155,17 @@ int cross_product_2d(Point2D a, Point2D b, Point2D c) {
 }
 
 void wait_for_vsync() {
-    // Wait for vertical retrace to start (bit 3 of 0x3DA is set)
-    // Add a timeout to prevent infinite hang if hardware/emulator doesn't support it
+    // 1. Wait for the current retrace to finish (if we are in one)
+    // This prevents exiting immediately if we catch the tail end of a VSync
     int timeout = 1000000;
+    while (i686_inb(0x3DA) & 0x08) {
+        if (--timeout == 0) break;
+    }
+
+    // 2. Wait for the next retrace to start
+    timeout = 1000000;
     while (!(i686_inb(0x3DA) & 0x08)) {
         if (--timeout == 0) break;
-        __asm__ volatile ("nop");
     }
 }
 
@@ -194,12 +199,14 @@ void cube_test() {
         graphics_clear_buffer(0x00000000);
 
         // 2. Calculate Rotation
-        int sinX = sin_table[angleX % 64];
-        int cosX = cos_table[angleX % 64];
-        int sinY = sin_table[angleY % 64];
-        int cosY = cos_table[angleY % 64];
-        int sinZ = sin_table[angleZ % 64];
-        int cosZ = cos_table[angleZ % 64];
+        // Divide by 4 to allow finer speed control (simulating fixed-point math)
+        // This allows us to increment by 1 for slow speed (0.25 real steps), or 4 for normal speed
+        int sinX = sin_table[(angleX / 8) % 64];
+        int cosX = cos_table[(angleX / 8) % 64];
+        int sinY = sin_table[(angleY / 8) % 64];
+        int cosY = cos_table[(angleY / 8) % 64];
+        int sinZ = sin_table[(angleZ / 8) % 64];
+        int cosZ = cos_table[(angleZ / 8) % 64];
 
         Point2D projected[8];
         Point3D rotated[8];
@@ -297,18 +304,20 @@ void cube_test() {
         }
 
         // Sync with monitor refresh to prevent tearing
-        //wait_for_vsync();
+        // Disable interrupts to prevent the copy from being paused by the timer
+        __asm__ volatile ("cli");
+        wait_for_vsync();
 
         // 5. Swap Buffer to Screen
         graphics_swap_buffer();
+        __asm__ volatile ("sti");
 
         // Update angles
-        angleX = (angleX + 1) % 64;
-        angleY = (angleY + 2) % 64;
-        angleZ = (angleZ + 1) % 64;
-
-        // Simple delay
-        for (volatile int d = 0; d < 1000000; d++);
+        // Change these values to adjust speed.
+        // +1 is now slow (quarter speed). +4 would be the original speed.
+        angleX = (angleX + 1) % 256; // Range is now 0-255 (64 * 4)
+        angleY = (angleY + 2) % 256;
+        angleZ = (angleZ + 1) % 256;
 
         // Check for keypress (Status Register bit 0 set)
         if (i686_inb(0x64) & 0x01) {
