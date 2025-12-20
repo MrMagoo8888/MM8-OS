@@ -16,8 +16,8 @@ extern uint8_t __end;
 // The start of our heap, which is a linked list of memory blocks
 static block_header_t* heap_start = NULL;
 
-// Define a fixed size for the heap (e.g., 4MB)
-#define HEAP_SIZE (1024 * 1024 * 16)
+// Define a fixed size for the heap (e.g., 64MB)
+#define HEAP_SIZE (1024 * 1024 * 64)
 
 void heap_initialize() {
     // The heap starts right after the kernel's end address.
@@ -101,4 +101,20 @@ void* realloc(void* ptr, size_t new_size) {
     memcpy(new_ptr, ptr, header->size); // Copy data from the old block
     free(ptr); // Free the old block
     return new_ptr;
+}
+
+void heap_get_stats(size_t* total, size_t* used, size_t* free_mem) {
+    *total = HEAP_SIZE;
+    *used = 0;
+    *free_mem = 0;
+
+    block_header_t* current = heap_start;
+    while (current) {
+        if (current->is_free) {
+            *free_mem += current->size;
+        } else {
+            *used += current->size;
+        }
+        current = current->next;
+    }
 }

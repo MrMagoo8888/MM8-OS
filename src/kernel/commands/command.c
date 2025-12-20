@@ -13,6 +13,7 @@
 #include "commands/credits.h"
 #include "commands/cube.h"
 #include "commands/color.h"
+#include "heap.h"
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
@@ -33,6 +34,7 @@ static void handle_help() {
     printf(" - fontsize [1-9]: Change the font scale.\n");
     printf(" - json_test: Runs a test of the cJSON library and heap.\n");
     printf(" - cube: Runs a 3D rotating cube test.\n");
+    printf(" - memory: Show heap memory usage statistics.\n");
 }
 
 static void handle_echo(const char* input) {
@@ -79,6 +81,16 @@ static void handle_fontsize(const char* input) {
     }
 }
 
+static void handle_memory() {
+    size_t total, used, free_mem;
+    heap_get_stats(&total, &used, &free_mem);
+    printf("Heap Statistics:\n");
+    printf("  Total Size: %u bytes (%u MB)\n", total, total / 1024 / 1024);
+    printf("  Used:       %u bytes\n", used);
+    printf("  Free:       %u bytes\n", free_mem);
+    printf("  Overhead:   %u bytes\n", total - used - free_mem);
+}
+
 void command_dispatch(const char* input) {
     if (strcmp(input, "help") == 0) {
         handle_help();
@@ -106,6 +118,8 @@ void command_dispatch(const char* input) {
         handle_fontsize(input);
     } else if (strcmp(input, "cube") == 0) {
         cube_test();
+    } else if (strcmp(input, "memory") == 0) {
+        handle_memory();
     } else {
         printf("Unknown command: %s\n", input);
     }

@@ -64,6 +64,7 @@ int cos_table[64] = {
 void cube_test() {
     if (!g_vbe_screen) {
         printf("Error: Graphics not initialized.\n");
+        getch();
         return;
     }
 
@@ -85,6 +86,7 @@ void cube_test() {
     Point2D* projected = (Point2D*)malloc(8 * sizeof(Point2D));
     if (!projected) {
         printf("Error: Failed to allocate memory for projection.\n");
+        getch();
         return;
     }
 

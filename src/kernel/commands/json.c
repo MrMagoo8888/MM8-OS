@@ -4,6 +4,7 @@
 #include "heap.h"
 //#include "../src/kernel/libs/cjson/cJSON.h"
 #include <libs/cJSON/cJSON.h>
+#include <arch/i686/keyboard.h>
 
 void handle_json_test() {
     printf("Running cJSON test...\n");
@@ -19,6 +20,7 @@ void handle_json_test() {
     if (!file_buffer) {
         printf("malloc failed for file buffer!\n");
         FAT_Close(&g_Disk, file);
+        getch();
         return;
     }
 
