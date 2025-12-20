@@ -21,10 +21,12 @@ static void handle_help() {
 
     mm8Splash(); // this now works, noneed to comment out
 
-    printf("Available commands:\n");
+    printf("Available commands:\n\n");
     printf(" - help: Show this message\n");
     printf(" - echo [text]: Print back the given text\n");
     printf(" - cls: Clear the screen\n");
+    printf(" - afk: Activate AFK mode with a screensaver\n");
+    printf(" - color [color or Hexadecimal]: Change text color.\n");
     printf(" - read [file]: Read a file from the disk. Example: read /test.txt\n");
     printf(" - edit [file]: Open or create a file for editing.\n");
     printf(" - credits: Shows Credits from our Wonderful contributers and viewers\n");

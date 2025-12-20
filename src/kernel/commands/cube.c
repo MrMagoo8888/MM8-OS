@@ -84,51 +84,67 @@ void fill_triangle(int x1, int y1, int x2, int y2, int x3, int y3, uint32_t colo
     long long wx1 = (long long)x1 << 16;
     long long wx2 = (long long)x1 << 16;
 
-    int current_y = y1;
-
     // Rasterize upper part (y1 to y2)
-    if (current_y < 0) {
-        int skip = -current_y;
-        if (current_y + skip > y2) skip = y2 - current_y;
-        wx1 += (long long)dx13 * skip;
-        wx2 += (long long)dx12 * skip;
-        current_y += skip;
-    }
+    int y_start = y1;
+    int y_end = y2;
+    
+    if (y_start < 0) y_start = 0;
+    if (y_end > screen_h) y_end = screen_h;
 
-    for (int i = current_y; i < y2; i++) {
-        if (i >= screen_h) return;
+    if (y_start < y_end) {
+        // Advance walkers to y_start if we clipped the top
+        if (y_start > y1) {
+            int skip = y_start - y1;
+            wx1 += (long long)dx13 * skip;
+            wx2 += (long long)dx12 * skip;
+        }
+
+        for (int i = y_start; i < y_end; i++) {
             int a = (int)(wx1 >> 16);
             int b = (int)(wx2 >> 16);
             if (a > b) { int t=a; a=b; b=t; }
             if (a < 0) a = 0;
             if (b >= screen_w) b = screen_w - 1;
             if (a <= b) draw_line(a, i, b, i, color);
-        wx1 += dx13;
-        wx2 += dx12;
+            wx1 += dx13;
+            wx2 += dx12;
+        }
+        // If we clipped the bottom of this segment, advance wx1 to y2 for the next segment
+        if (y_end < y2) {
+            int remain = y2 - y_end;
+            wx1 += (long long)dx13 * remain;
+        }
+    } else {
+        // Segment completely skipped (off-screen), just advance wx1
+        int dist = y2 - y1;
+        wx1 += (long long)dx13 * dist;
     }
 
     // Rasterize lower part (y2 to y3)
     wx2 = (long long)x2 << 16; // Reset short edge walker to x2
-    current_y = y2;
+    
+    y_start = y2;
+    y_end = y3;
+    if (y_start < 0) y_start = 0;
+    if (y_end > screen_h) y_end = screen_h;
 
-    if (current_y < 0) {
-        int skip = -current_y;
-        if (current_y + skip > y3) skip = y3 - current_y;
-        wx1 += (long long)dx13 * skip;
-        wx2 += (long long)dx23 * skip;
-        current_y += skip;
-    }
+    if (y_start < y_end) {
+        if (y_start > y2) {
+            int skip = y_start - y2;
+            wx1 += (long long)dx13 * skip;
+            wx2 += (long long)dx23 * skip;
+        }
 
-    for (int i = current_y; i < y3; i++) {
-        if (i >= screen_h) return;
+        for (int i = y_start; i < y_end; i++) {
             int a = (int)(wx1 >> 16);
             int b = (int)(wx2 >> 16);
             if (a > b) { int t=a; a=b; b=t; }
             if (a < 0) a = 0;
             if (b >= screen_w) b = screen_w - 1;
             if (a <= b) draw_line(a, i, b, i, color);
-        wx1 += dx13;
-        wx2 += dx23;
+            wx1 += dx13;
+            wx2 += dx23;
+        }
     }
 }
 
@@ -141,7 +157,7 @@ int cross_product_2d(Point2D a, Point2D b, Point2D c) {
 void wait_for_vsync() {
     // Wait for vertical retrace to start (bit 3 of 0x3DA is set)
     // Add a timeout to prevent infinite hang if hardware/emulator doesn't support it
-    int timeout = 100000;
+    int timeout = 1000000;
     while (!(i686_inb(0x3DA) & 0x08)) {
         if (--timeout == 0) break;
         __asm__ volatile ("nop");
@@ -170,14 +186,6 @@ void cube_test() {
 
     int distance = 200;
     int fov = 250;
-
-    // Disable interrupts to prevent the ISR from consuming the keypress
-    __asm__ volatile ("cli");
-
-    // Drain keyboard buffer to prevent immediate exit
-    while (i686_inb(0x64) & 0x01) {
-        i686_inb(0x60);
-    }
 
     // Loop until key press
     while (1) {
@@ -289,7 +297,7 @@ void cube_test() {
         }
 
         // Sync with monitor refresh to prevent tearing
-        wait_for_vsync();
+        //wait_for_vsync();
 
         // 5. Swap Buffer to Screen
         graphics_swap_buffer();
@@ -299,17 +307,14 @@ void cube_test() {
         angleY = (angleY + 2) % 64;
         angleZ = (angleZ + 1) % 64;
 
-        // Delay is now handled by VSync (approx 60 FPS)
+        // Simple delay
+        for (volatile int d = 0; d < 1000000; d++);
 
         // Check for keypress (Status Register bit 0 set)
-        uint8_t status = i686_inb(0x64);
-        if (status & 0x01) {
+        if (i686_inb(0x64) & 0x01) {
             uint8_t scancode = i686_inb(0x60);
-            // Ignore mouse data (bit 5 of status is AUX buffer full)
-            if (!(status & 0x20)) {
-                if ((scancode & 0x80) == 0) { // Only break on Key Press
-                    break;
-                }
+            if ((scancode & 0x80) == 0) { // Only break on Key Press (Make code), ignore Key Release
+                break;
             }
         }
     }
