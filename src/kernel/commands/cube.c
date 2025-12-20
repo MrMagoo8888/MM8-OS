@@ -96,6 +96,13 @@ int cross_product_2d(Point2D a, Point2D b, Point2D c) {
     return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }
 
+void wait_for_vsync() {
+    // Wait for current retrace to end (if any)
+    while (i686_inb(0x3DA) & 0x08);
+    // Wait for next retrace to start
+    while (!(i686_inb(0x3DA) & 0x08));
+}
+
 void cube_test() {
     if (!g_vbe_screen) {
         printf("Error: Graphics not initialized.\n");
@@ -115,6 +122,8 @@ void cube_test() {
     int screen_h = g_vbe_screen->height;
     int half_w = screen_w / 2;
     int half_h = screen_h / 2;
+
+    int frame_counter = 0;
 
     // Disable interrupts to prevent the ISR from consuming the keypress
     __asm__ volatile ("cli");
@@ -208,16 +217,18 @@ void cube_test() {
             }
         }
 
+        // Sync with Vertical Retrace to prevent flickering/tearing
+        wait_for_vsync();
+
         // 5. Swap Buffer to Screen
         graphics_swap_buffer();
 
         // Update angles
-        angleX = (angleX + 1) % 64;
-        angleY = (angleY + 2) % 64;
-        angleZ = (angleZ + 1) % 64;
-
-        // Simple delay
-        for (volatile int d = 0; d < 5000000; d++);
+        if (frame_counter++ % 5 == 0) {
+            angleX = (angleX + 1) % 64;
+            angleY = (angleY + 2) % 64;
+            angleZ = (angleZ + 1) % 64;
+        }
 
         // Check for keypress (Status Register bit 0 set)
         if (i686_inb(0x64) & 0x01) {
