@@ -21,6 +21,12 @@ umount "$MOUNT_POINT" || true
 losetup -d $(losetup -j "$HDD_IMAGE" | cut -d: -f1) 2>/dev/null || true
 # --- End: Robust Cleanup ---
 
+# Create the disk image if it doesn't exist (64MB)
+if [ ! -f "$HDD_IMAGE" ]; then
+    echo "Creating $HDD_IMAGE..."
+    dd if=/dev/zero of="$HDD_IMAGE" bs=1M count=64
+fi
+
 echo "Setting up loopback device for $HDD_IMAGE..."
 LOOP_DEV=$(losetup -fP --show "$HDD_IMAGE")
 if [ -z "$LOOP_DEV" ]; then
@@ -57,6 +63,12 @@ EOL
 echo "Unmounting and detaching loopback device..."
 umount "$MOUNT_POINT"
 losetup -d "$LOOP_DEV"
+
+# Fix permissions so the regular user can run QEMU
+if [ ! -z "$SUDO_USER" ]; then
+    echo "Fixing permissions for $HDD_IMAGE..."
+    chown "$SUDO_USER" "$HDD_IMAGE"
+fi
 
 echo ""
 echo "Hard disk image formatted successfully."
