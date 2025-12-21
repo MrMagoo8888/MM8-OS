@@ -6,11 +6,11 @@ void credits_lucas() {
     printf(" - Lucas\n");
     printf(" - Harold\n");
     printf(" - Damon\n");
-    printf(" - ttchef\n\n");
+    printf(" - ttchef\n");
 }
 
 void credits_followers() {
-    printf("Credits to our Wonderful Followers:\n\n");
+    printf("\n\nCredits to our Wonderful Followers:\n\n");
     printf(" - MrJBMG\n");
     printf(" - Una\n");
     printf(" - ChrisWestbro\n");
@@ -28,14 +28,12 @@ void credits_streamers() {
     printf("\n\nCredits to my Supportive Streamers:\n\n");
     printf(" - DIGITALILIAD\n");
     
-
-
 }
 
 void credits_gf() {
 
     printf("\n\nAnd, one of the biggest supports, my amazing Girlfriend who will remain anonymous!\n\n");
-    printf(" - E <3\n\n");
+    printf(" - E <3\n");
 
 }
 
