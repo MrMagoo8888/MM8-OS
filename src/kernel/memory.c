@@ -3,6 +3,16 @@
 
 void* memcpy(void* dst, const void* src, size_t num)
 {
+    // Optimization: Copy 4 bytes at a time if aligned
+    if (((uint32_t)dst % 4 == 0) && ((uint32_t)src % 4 == 0) && (num % 4 == 0)) {
+        uint32_t* u32Dst = (uint32_t *)dst;
+        const uint32_t* u32Src = (const uint32_t *)src;
+        size_t n = num / 4;
+        for (size_t i = 0; i < n; i++)
+            u32Dst[i] = u32Src[i];
+        return dst;
+    }
+
     uint8_t* u8Dst = (uint8_t *)dst;
     const uint8_t* u8Src = (const uint8_t *)src;
 

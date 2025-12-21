@@ -19,6 +19,9 @@
 
 DISK g_Disk;
 
+// Add a global tick counter, updated by the timer IRQ
+volatile uint32_t g_ticks = 0;
+
 // Define the global pointer to the VBE info structure.
 VbeScreenInfo* g_vbe_screen;
 
@@ -30,8 +33,7 @@ extern uint8_t __end;
 
 void timer(Registers* regs)
 {
-    // This function is called by the system timer (IRQ 0).
-    // For now, it does nothing but is required to acknowledge the interrupt.
+    g_ticks++;
 }
 
 #define HISTORY_SIZE 10 // Define the size of the command history

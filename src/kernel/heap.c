@@ -21,7 +21,12 @@ static block_header_t* heap_start = NULL;
 
 void heap_initialize() {
     // The heap starts right after the kernel's end address.
-    heap_start = (block_header_t*)&__end;
+    // Align to 16 bytes to ensure proper alignment for larger types
+    uint32_t heap_addr = (uint32_t)&__end;
+    if (heap_addr % 16 != 0) {
+        heap_addr += 16 - (heap_addr % 16);
+    }
+    heap_start = (block_header_t*)heap_addr;
 
     // Initially, we have one large free block
     heap_start->size = HEAP_SIZE - sizeof(block_header_t);
