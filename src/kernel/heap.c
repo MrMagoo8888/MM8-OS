@@ -16,8 +16,8 @@ extern uint8_t __end;
 // The start of our heap, which is a linked list of memory blocks
 static block_header_t* heap_start = NULL;
 
-// Define a fixed size for the heap (e.g., 64MB)
-#define HEAP_SIZE (1024 * 1024 * 64)
+// Define a fixed size for the heap (e.g., 128MB)
+#define HEAP_SIZE (1024 * 1024 * 128)
 
 void heap_initialize() {
     // The heap starts right after the kernel's end address.

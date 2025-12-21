@@ -34,7 +34,7 @@ void credits_streamers() {
 
 void credits_gf() {
 
-    printf("\n\nAnd, one of the biggest supports, my amazing Girlfriend who with remain anonomous!\n\n");
+    printf("\n\nAnd, one of the biggest supports, my amazing Girlfriend who will remain anonymous!\n\n");
     printf(" - E <3\n\n");
 
 }
