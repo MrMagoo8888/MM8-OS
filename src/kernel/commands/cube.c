@@ -61,6 +61,65 @@ int cos_table[64] = {
     125, 126, 127, 128 // Fill remaining 4 elements to smooth transition
 };
 
+static uint32_t face_colors[6] = {
+    0x00FF0000, // Front - Red
+    0x0000FF00, // Right - Green
+    0x000000FF, // Back - Blue
+    0x00FFFF00, // Left - Yellow
+    0x0000FFFF, // Top - Cyan
+    0x00FF00FF  // Bottom - Magenta
+};
+
+static void swap_int(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static uint32_t apply_light(uint32_t color, int intensity) {
+    if (intensity < 0) intensity = 0;
+    if (intensity > 255) intensity = 255;
+    
+    uint32_t r = (color >> 16) & 0xFF;
+    uint32_t g = (color >> 8) & 0xFF;
+    uint32_t b = color & 0xFF;
+    
+    r = (r * intensity) / 255;
+    g = (g * intensity) / 255;
+    b = (b * intensity) / 255;
+    
+    return (r << 16) | (g << 8) | b;
+}
+
+static void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color) {
+    // Sort vertices by y
+    if (y0 > y1) { swap_int(&x0, &x1); swap_int(&y0, &y1); }
+    if (y0 > y2) { swap_int(&x0, &x2); swap_int(&y0, &y2); }
+    if (y1 > y2) { swap_int(&x1, &x2); swap_int(&y1, &y2); }
+
+    int total_height = y2 - y0;
+    if (total_height == 0) return;
+
+    for (int i = 0; i < total_height; i++) {
+        bool second_half = i > y1 - y0 || y1 == y0;
+        int segment_height = second_half ? y2 - y1 : y1 - y0;
+        if (segment_height == 0) continue;
+
+        int A_x = x0 + (x2 - x0) * i / total_height;
+        
+        int offset = second_half ? y1 - y0 : 0;
+        int B_x = second_half ? 
+                  x1 + (x2 - x1) * (i - offset) / segment_height : 
+                  x0 + (x1 - x0) * (i - offset) / segment_height;
+        
+        if (A_x > B_x) { swap_int(&A_x, &B_x); }
+        
+        for (int j = A_x; j <= B_x; j++) {
+            draw_pixel(j, y0 + i, color);
+        }
+    }
+}
+
 void cube_test() {
     if (!g_vbe_screen) {
         printf("Error: Graphics not initialized.\n");
@@ -154,17 +213,19 @@ void cube_test() {
             Point2D p0 = projected[faces[f][0]];
             Point2D p1 = projected[faces[f][1]];
             Point2D p2 = projected[faces[f][2]];
+            Point2D p3 = projected[faces[f][3]];
 
             // Calculate signed area (2D Cross Product) to determine visibility
             // If area > 0, the face is facing the camera (Clockwise winding)
             int area = (p1.x - p0.x) * (p2.y - p0.y) - (p1.y - p0.y) * (p2.x - p0.x);
 
             if (area > 0) {
-                for (int i = 0; i < 4; i++) {
-                    int idx1 = faces[f][i];
-                    int idx2 = faces[f][(i + 1) % 4];
-                    draw_line(projected[idx1].x, projected[idx1].y, projected[idx2].x, projected[idx2].y, 0x0000FF00);
-                }
+                // Use area as a proxy for lighting intensity (Lambertian / Diffuse)
+                int intensity = area * 200 / 15000 + 55; // Base ambient + directional
+                uint32_t color = apply_light(face_colors[f], intensity);
+
+                draw_triangle(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, color);
+                draw_triangle(p0.x, p0.y, p2.x, p2.y, p3.x, p3.y, color);
             }
         }
 
