@@ -6,7 +6,7 @@
 #include "arch/i686/keyboard.h"
 
 static uint32_t* g_BackBuffer = NULL;
-static bool g_DoubleBufferEnabled = false;
+bool g_DoubleBufferEnabled = false;
 
 static int abs(int n) {
     return (n < 0) ? -n : n;

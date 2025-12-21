@@ -201,12 +201,13 @@ static void itoa(int n, char s[]) {
 
 static void render_cube(int angleX, int angleY, int angleZ, 
                         int offsetX, int offsetY, int offsetZ, int size,
+                        int camX, int camY, int camZ,
                         Point2D* projected, uint32_t* z_buffer, 
                         int screen_w, int screen_h)
 {
     int half_w = screen_w / 2;
     int half_h = screen_h / 2;
-
+    
     // 1. Calculate Rotation
     int sinX = sin_table[angleX % 64];
     int cosX = cos_table[angleX % 64];
@@ -238,18 +239,24 @@ static void render_cube(int angleX, int angleY, int angleZ,
         x = x1; y = y1;
 
         // Translate
-        x += offsetX;
+        x += offsetX; // to world space
         y += offsetY;
         z += offsetZ;
 
-        // Project (Perspective)
-        int distance = 200;
-        int fov = 250;
-        if (distance + z == 0) z = 1; // Avoid division by zero
+        // Transform to camera space
+        x -= camX;
+        y -= camY;
+        z -= camZ;
 
-        projected[i].x = (x * fov) / (distance + z) + half_w;
-        projected[i].y = (y * fov) / (distance + z) + half_h;
-        projected[i].depth = distance + z;
+        // Project (Perspective)
+        int distance_to_plane = 200;
+        int fov = 250;
+        int depth_val = distance_to_plane + z;
+        if (depth_val == 0) depth_val = 1; // Avoid division by zero
+
+        projected[i].x = (x * fov) / depth_val + half_w;
+        projected[i].y = (y * fov) / depth_val + half_h;
+        projected[i].depth = depth_val;
     }
 
     // 3. Draw Faces (with Back-face Culling)
@@ -281,12 +288,18 @@ void cube_test() {
     // Enable double buffering
     graphics_set_double_buffering(true);
 
-    int angleX = 0;
-    int angleY = 0;
-    int angleZ = 0;
-
+    if (!g_DoubleBufferEnabled) {
+        printf("Error: Double buffering not available.\n");
+        getch();
+        return;
+    }
+    
     int screen_w = g_vbe_screen->width;
     int screen_h = g_vbe_screen->height;
+
+    // Scene and Camera state
+    int angleX = 0, angleY = 0, angleZ = 0;
+    int camX = 0, camY = 0, camZ = -300;
 
     // Dynamic Buffer: Allocate memory for projected points
     Point2D* projected = (Point2D*)malloc(8 * sizeof(Point2D));
@@ -317,7 +330,7 @@ void cube_test() {
     char fps_str[16];
 
     // Loop until key press
-    while (1) {
+    while (1) { // Main loop
         
         // 1. Clear Buffer (Black)
         graphics_clear_buffer(0x00000000);
@@ -325,7 +338,7 @@ void cube_test() {
 
         // Render main cube (stationary, rotating)
         render_cube(angleX, angleY, angleZ, 0, 0, 0, CUBE_SIZE,
-                    projected, z_buffer, screen_w, screen_h);
+                    camX, camY, camZ, projected, z_buffer, screen_w, screen_h);
 
         // Calculate orbit for second cube
         int orbit_radius = 150;
@@ -336,7 +349,7 @@ void cube_test() {
         // Render orbiting cube (smaller, rotating faster, orbiting)
         render_cube((angleX * 2) % 64, (angleY * 3) % 64, (angleZ * 4) % 64,
                     orbit_x, 0, orbit_z, CUBE_SIZE / 2,
-                    projected, z_buffer, screen_w, screen_h);
+                    camX, camY, camZ, projected, z_buffer, screen_w, screen_h);
 
         // Calculate orbit for a third cube around the X-axis
         int orbit_radius_2 = 120;
@@ -347,7 +360,7 @@ void cube_test() {
         // Render third cube (even smaller, orbiting on Y-Z plane)
         render_cube((angleX * 4) % 64, (angleY * 2) % 64, (angleZ * 3) % 64,
                     0, orbit_y_2, orbit_z_2, CUBE_SIZE / 3,
-                    projected, z_buffer, screen_w, screen_h);
+                    camX, camY, camZ, projected, z_buffer, screen_w, screen_h);
 
         // --- FPS Calculation & Display ---
         frame_count++;
@@ -360,7 +373,9 @@ void cube_test() {
         }
         strcpy(fps_str, "FPS: ");
         itoa(fps, fps_str + 5);
-        draw_string(10, 10, fps_str, 0x00FFFFFF);
+        draw_string(10, 10, fps_str, 0x00FFFFFF); // White text
+
+        draw_string(10, screen_h - 20, "Move: WASD, Space, L-Ctrl | Exit: ESC", 0x00CCCCCC);
 
         // Wait for Vertical Sync to prevent tearing ("scanning" effect)
         wait_for_vsync();
@@ -373,15 +388,37 @@ void cube_test() {
         angleY = (angleY + 2) % 64;
         angleZ = (angleZ + 1) % 64;
 
-        // Check for keypress (Polling directly, IRQ 1 is masked)
+        // Handle keyboard input for camera movement
         if (i686_inb(0x64) & 0x01) {
             uint8_t scancode = i686_inb(0x60);
-            if ((scancode & 0x80) == 0) { // Only break on Key Press (Make code), ignore Key Release
-                break;
+            if ((scancode & 0x80) == 0) { // Key Press (Make code)
+                int move_speed = 10;
+                switch (scancode) {
+                    case 0x01: // ESC
+                        goto end_loop;
+                    case 0x11: // W (forward)
+                        camZ += move_speed;
+                        break;
+                    case 0x1F: // S (backward)
+                        camZ -= move_speed;
+                        break;
+                    case 0x1E: // A (left)
+                        camX -= move_speed;
+                        break;
+                    case 0x20: // D (right)
+                        camX += move_speed;
+                        break;
+                    case 0x39: // Space (up)
+                        camY += move_speed;
+                        break;
+                    case 0x1D: // Left Ctrl (down)
+                        camY -= move_speed;
+                        break;
+                }
             }
         }
     }
-
+end_loop:;
     // Restore IRQ 1 (Unmask Keyboard)
     i686_outb(0x21, i686_inb(0x21) & ~0x02);
 
