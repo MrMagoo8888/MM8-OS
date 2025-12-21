@@ -16,8 +16,8 @@ extern uint8_t __end;
 // The start of our heap, which is a linked list of memory blocks
 static block_header_t* heap_start = NULL;
 
-// Define a fixed size for the heap (e.g., 128MB)
-#define HEAP_SIZE (1024 * 1024 * 128)
+// Define a fixed size for the heap (e.g., 512MB)
+#define HEAP_SIZE (1024 * 1024 * 512) // 512 MB
 
 void heap_initialize() {
     // The heap starts right after the kernel's end address.
@@ -76,8 +76,19 @@ void free(void* ptr) {
     block_header_t* header = (block_header_t*)((uint8_t*)ptr - sizeof(block_header_t));
     header->is_free = true;
 
-    // TODO: Implement coalescing (merging) of adjacent free blocks for better memory usage.
-    // For now, we just mark it as free.
+    // Coalesce adjacent free blocks to prevent fragmentation
+    block_header_t* current = heap_start;
+    while (current && current->next) {
+        if (current->is_free && current->next->is_free) {
+            // Merge current block with the next one
+            current->size += sizeof(block_header_t) + current->next->size;
+            current->next = current->next->next;
+            // After merging, we stay at `current` to check if the new `current->next` can also be merged
+        } else {
+            // Otherwise, move to the next block
+            current = current->next;
+        }
+    }
 }
 
 void* realloc(void* ptr, size_t new_size) {
@@ -103,6 +114,10 @@ void* realloc(void* ptr, size_t new_size) {
 
     // Allocate a new, larger block
     void* new_ptr = malloc(new_size);
+    if (!new_ptr) {
+        // Allocation failed, original block is untouched as per realloc spec
+        return NULL;
+    }
     memcpy(new_ptr, ptr, header->size); // Copy data from the old block
     free(ptr); // Free the old block
     return new_ptr;
