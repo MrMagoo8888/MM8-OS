@@ -1,5 +1,5 @@
 #pragma once
-#include "stdint.h"
+#include <stdint.h>
 #include "arch/i686/screen_defs.h"
 
 void console_initialize();

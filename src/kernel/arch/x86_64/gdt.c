@@ -13,7 +13,7 @@ typedef struct {
 
 typedef struct {
     uint16_t limit;
-    uint32_t base;
+    uint64_t base;
 } __attribute__((packed)) gdt_ptr_t;
 
 static gdt_entry_t gdt_entries[5];
@@ -31,7 +31,7 @@ static void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t acc
     gdt_entries[num].access      = access;
 }
 
-static void gdt_flush(uint32_t gdt_ptr_addr) {
+static void gdt_flush(uint64_t gdt_ptr_addr) {
     __asm__ volatile (
         "lgdt (%0)\n\t"
         "mov $0x10, %%ax\n\t"
@@ -40,23 +40,26 @@ static void gdt_flush(uint32_t gdt_ptr_addr) {
         "mov %%ax, %%fs\n\t"
         "mov %%ax, %%gs\n\t"
         "mov %%ax, %%ss\n\t"
-        "ljmp $0x08, $1f\n\t"
+        "pushq $0x08\n\t"           // Push CS selector
+        "leaq 1f(%%rip), %%rax\n\t" // Load effective address of label '1'
+        "pushq %%rax\n\t"           // Push return address (RIP)
+        "lretq\n\t"                 // Far return to reload CS and jump to '1'
         "1:\n\t"
         : 
         : "r" (gdt_ptr_addr) 
-        : "eax", "memory"
+        : "rax", "memory"
     );
 }
 
 void gdt_initialize() {
     gdt_ptr.limit = (sizeof(gdt_entry_t) * 5) - 1;
-    gdt_ptr.base  = (uint32_t)&gdt_entries;
+    gdt_ptr.base  = (uint64_t)&gdt_entries;
 
     gdt_set_gate(0, 0, 0, 0, 0);                // Null segment
-    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF); // Code segment
+    gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xAF); // Code segment (64-bit: L=1, D=0)
     gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF); // Data segment
-    gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF); // User mode code
+    gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xAF); // User mode code (64-bit: L=1, D=0)
     gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF); // User mode data
 
-    gdt_flush((uint32_t)&gdt_ptr);
+    gdt_flush((uint64_t)&gdt_ptr);
 }
