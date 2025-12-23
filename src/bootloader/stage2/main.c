@@ -44,29 +44,15 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     }
     FAT_Close(fd);
 
-    // Prepare to execute the kernel
-    // We will pass a pointer to the vbe_screen info structure in the EAX register
-    // and the boot drive in the EBX register.
-
     printf("Bootloader VBE Info:\r\n");
     printf("  Width: %u\r\n", vbe_screen.width);
     printf("  Height: %u\r\n", vbe_screen.height);
     printf("  Pitch: %u\r\n", vbe_screen.pitch);
     printf("  BPP: %u\r\n", vbe_screen.bpp);
     printf("  Physical Buffer: 0x%x\r\n", vbe_screen.physical_buffer);
-    KernelStart kernelStart = (KernelStart)Kernel; // Kernel's entry point
-    __asm__ volatile (
-        "push %0\n\t"
-        "push %1\n\t"
-        "call *%2\n\t"
-        "add $8, %%esp"
-        : /* no outputs */
-        : "r"((uint32_t)bootDrive), "r"(&vbe_screen), "r"(kernelStart)
-        : "memory"
-    );
-
-end:
-    for (;;);
+    
+    // Return to assembly to switch to Long Mode and execute kernel
+    return;
 }
 
 // testing

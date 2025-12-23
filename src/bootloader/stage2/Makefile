@@ -1,7 +1,7 @@
 TARGET_ASMFLAGS += -f elf
-TARGET_CFLAGS += -ffreestanding -nostdlib
+TARGET_CFLAGS += -ffreestanding -nostdlib -m32
 TARGET_LIBS += -lgcc
-TARGET_LINKFLAGS += -T linker.ld -nostdlib
+TARGET_LINKFLAGS += -T linker.ld -nostdlib -m32
 
 SOURCES_C=$(wildcard *.c)
 SOURCES_ASM=$(wildcard *.asm)

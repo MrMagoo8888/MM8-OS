@@ -70,15 +70,144 @@ entry:
     cld
     rep stosb
 
-    ; expect boot drive in dl, send it as argument to cstart function
-    xor edx, edx
-    mov dl, [g_BootDrive]
-    push edx
-    call start
+    ; 7 - Load Kernel from Disk (Call 32-bit C bootloader)
+    xor eax, eax
+    mov al, [g_BootDrive]
+    push eax
+    call start          ; Loads kernel to MEMORY_KERNEL_ADDR (0x100000)
+    add esp, 4
+
+    ; Check for long mode support and switch
+    call CheckLongMode
+    jmp SwitchToLongMode
 
     cli
     hlt
 
+; Assumes we are in 32-bit Protected Mode with Paging DISABLED.
+; Assumes EDI points to a free memory area for page tables (e.g., 0x1000).
+
+SwitchToLongMode:
+    ; 1. Setup Page Tables (Identity map first 2MB)
+    ; We need a PML4, PDP, and PD. We will use 2MB huge pages in the PD.
+    
+    ; Clear 4KB for PML4, 4KB for PDP, 4KB for PD (Total 12KB cleared)
+    mov edi, 0x1000    ; Base address for Page Tables
+    mov cr3, edi       ; Load CR3 with PML4 address
+    xor eax, eax
+    mov ecx, 3072      ; 3 * 1024 dwords = 12KB
+    rep stosd
+    mov edi, cr3       ; Reset EDI to start of PML4
+
+    ; PML4[0] -> PDP (at 0x2000)
+    mov dword [edi], 0x2003      ; 0x2000 | Present (1) | Write (2)
+    add edi, 0x1000
+
+    ; PDP[0] -> PD (at 0x3000)
+    mov dword [edi], 0x3003      ; 0x3000 | Present (1) | Write (2)
+    add edi, 0x1000
+
+    ; PD[0] -> 2MB Page (Physical Address 0)
+    ; Bit 7 (Size) must be 1 for huge pages.
+    mov dword [edi], 0x83        ; 0x0 | Present (1) | Write (2) | Huge (128)
+
+    ; 2. Enable Physical Address Extension (PAE) in CR4
+    mov eax, cr4
+    or eax, 1 << 5
+    mov cr4, eax
+
+    ; 3. Set Long Mode Enable (LME) bit in EFER MSR
+    mov ecx, 0xC0000080          ; EFER MSR number
+    rdmsr
+    or eax, 1 << 8               ; Set LME bit
+    wrmsr
+
+    ; 4. Enable Paging (PG) in CR0
+    mov eax, cr0
+    or eax, 1 << 31
+    mov cr0, eax
+
+    ; 5. Load 64-bit GDT
+    lgdt [GDT64.Pointer]
+
+    ; 6. Far Jump to 64-bit Code Segment
+    jmp 0x08:LongModeEntry
+
+[bits 64]
+LongModeEntry:
+    ; We are now in 64-bit mode!
+    cli
+    mov ax, 0x10       ; Set data segments to 64-bit data selector
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+
+    ; 7. Execute Kernel
+    ; System V AMD64 ABI: Args in RDI, RSI, RDX, RCX, R8, R9
+    mov rdi, vbe_screen         ; Arg1: VbeScreenInfo*
+    xor rsi, rsi
+    mov sil, [g_BootDrive]      ; Arg2: BootDrive
+
+    mov rax, 0x100000           ; Kernel Entry Point (Must match MEMORY_KERNEL_ADDR)
+    call rax
+
+    hlt
+
+; --- 64-bit GDT Structure ---
+align 4
+GDT64:
+    .Null: equ $ - GDT64
+        dq 0
+    .Code: equ $ - GDT64
+        dd 0
+        db 0
+        db 10011010b  ; Access: Present, Ring 0, Code, Readable
+        db 00100000b  ; Flags: Long Mode (bit 5), Granularity 0
+        db 0
+    .Data: equ $ - GDT64
+        dd 0
+        db 0
+        db 10010010b  ; Access: Present, Ring 0, Data, Writable
+        db 00000000b
+        db 0
+    .Pointer:
+        dw $ - GDT64 - 1
+        dq GDT64
+
+CheckLongMode:
+    ; 1. Check if CPUID is supported by attempting to flip the ID bit (bit 21) in EFLAGS
+    pushfd
+    pop eax
+    mov ecx, eax
+    xor eax, 1 << 21
+    push eax
+    popfd
+    pushfd
+    pop eax
+    push ecx
+    popfd
+    cmp eax, ecx
+    je .no_long_mode
+
+    ; 2. Check if Extended CPUID functions are available
+    mov eax, 0x80000000
+    cpuid
+    cmp eax, 0x80000001
+    jb .no_long_mode
+
+    ; 3. Check for Long Mode support (Bit 29 of EDX in function 0x80000001)
+    mov eax, 0x80000001
+    cpuid
+    test edx, 1 << 29
+    jz .no_long_mode
+    
+    ret
+
+.no_long_mode:
+    ; Print error or hang
+    hlt
 
 EnableA20:
     [bits 16]

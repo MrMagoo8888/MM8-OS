@@ -2,11 +2,14 @@
 #include "stdio.h"
 #include "memory.h"
 #include <hal/hal.h>
-#include <arch/i686/irq.h>
-#include <arch/i686/io.h>
-#include <arch/i686/keyboard.h> // This include is already present, but good to confirm
+/* 
+ * TODO: Create x86_64 implementations for these.
+ * For now, ensure these headers exist in src/kernel/arch/x86_64/
+ */
+#include <arch/x86_64/irq.h>
+#include <arch/x86_64/io.h>
+#include <arch/x86_64/keyboard.h>
 #include "fat.h"
-#include <arch/i686/keyboard.h>
 #include "string.h"
 #include "heap.h"
 #include <commands/command.h>
@@ -103,11 +106,11 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
         printf("FAT initialization failed on hard disk.\n");
     }
 
-    i686_IRQ_RegisterHandler(0, timer);
-    i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
+    // x86_64_IRQ_RegisterHandler(0, timer);
+    // x86_64_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
 
     // Enable interrupts now that all handlers are set up
-    i686_EnableInterrupts();
+    // x86_64_EnableInterrupts();
 
     char input_buffer[256];
 
