@@ -1,6 +1,6 @@
 #include "disk.h"
 #include "arch/i686/io.h"
-#include "stdio.h"
+void printf(const char* fmt, ...);
 
 // ATA PIO port definitions
 #define ATA_PRIMARY_DATA         0x1F0

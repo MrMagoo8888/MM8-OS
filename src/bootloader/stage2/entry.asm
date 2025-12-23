@@ -88,6 +88,7 @@ entry:
 ; Assumes EDI points to a free memory area for page tables (e.g., 0x1000).
 
 SwitchToLongMode:
+    [BITS 32]
     ; 1. Setup Page Tables (Identity map first 2MB)
     ; We need a PML4, PDP, and PD. We will use 2MB huge pages in the PD.
     
@@ -128,10 +129,13 @@ SwitchToLongMode:
     mov cr0, eax
 
     ; 5. Load 64-bit GDT
-    lgdt [GDT64.Pointer]
+    mov eax, GDT64.Pointer
+    lgdt [eax]
 
     ; 6. Far Jump to 64-bit Code Segment
-    jmp 0x08:LongModeEntry
+    push 0x08
+    push dword LongModeEntry
+    retf
 
 [bits 64]
 LongModeEntry:
@@ -146,9 +150,9 @@ LongModeEntry:
 
     ; 7. Execute Kernel
     ; System V AMD64 ABI: Args in RDI, RSI, RDX, RCX, R8, R9
-    mov rdi, vbe_screen         ; Arg1: VbeScreenInfo*
-    xor rsi, rsi
-    mov sil, [g_BootDrive]      ; Arg2: BootDrive
+    mov edi, vbe_screen         ; Arg1: VbeScreenInfo*
+    mov eax, g_BootDrive        ; Load address into temporary register
+    movzx esi, byte [rax]       ; Arg2: BootDrive (Zero-extend byte to 32/64-bit register)
 
     mov rax, 0x100000           ; Kernel Entry Point (Must match MEMORY_KERNEL_ADDR)
     call rax
@@ -176,21 +180,35 @@ GDT64:
         dw $ - GDT64 - 1
         dq GDT64
 
+EFLAGS_ID equ 0x200000
+
 CheckLongMode:
-    ; 1. Check if CPUID is supported by attempting to flip the ID bit (bit 21) in EFLAGS
+    [BITS 32]
     pushfd
     pop eax
+
+    ; The original value should be saved for comparison and restoration later
     mov ecx, eax
-    xor eax, 1 << 21
-    push eax
+    xor eax, EFLAGS_ID
+
+    ; storing the eflags and then retrieving it again will show whether or not
+    ; the bit could successfully be flipped
+    push eax                    ; save to eflags
     popfd
-    pushfd
+    pushfd                      ; restore from eflags
     pop eax
+
+    ; Restore EFLAGS to its original value
     push ecx
     popfd
-    cmp eax, ecx
-    je .no_long_mode
 
+    ; if the bit in eax was successfully flipped (eax != ecx), CPUID is supported.
+    xor eax, ecx
+    jnz .supported
+    ; CPUID not supported
+    jmp .no_long_mode
+
+.supported:
     ; 2. Check if Extended CPUID functions are available
     mov eax, 0x80000000
     cpuid
@@ -206,7 +224,16 @@ CheckLongMode:
     ret
 
 .no_long_mode:
-    ; Print error or hang
+    ; Print pixel error or handle lack of long mode support
+    mov edi, [vbe_screen.physical_buffer]   ; Get framebuffer base address
+    movzx eax, word [vbe_screen.pitch]      ; eax = bytes per scanline (pitch)
+    mov ebx, 500                             ; y = 500
+    mul ebx                                 ; eax = y * pitch
+    mov ebx, 500                             ; x = 500
+    shl ebx, 2                              ; ebx = x * 4 (for 32 bpp)
+    add eax, ebx                            ; eax = y * pitch + x * 4
+    add edi, eax                            ; edi = framebuffer + offset
+    mov dword [edi], 0x00FF0000         ; Draw a red pixel (0x00RRGGBB)
     hlt
 
 EnableA20:

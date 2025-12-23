@@ -52,6 +52,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     printf("  Physical Buffer: 0x%x\r\n", vbe_screen.physical_buffer);
     
     // Return to assembly to switch to Long Mode and execute kernel
+end:
     return;
 }
 

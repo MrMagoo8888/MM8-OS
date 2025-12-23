@@ -121,7 +121,7 @@ void puts(const char* str)
 
 const char g_HexChars[] = "0123456789abcdef";
 
-void printf_unsigned(unsigned long long number, int radix)
+void printf_unsigned(uint32_t number, int radix)
 {
     char buffer[32];
     int pos = 0;
@@ -129,7 +129,7 @@ void printf_unsigned(unsigned long long number, int radix)
     // convert number to ASCII
     do 
     {
-        unsigned long long rem = number % radix;
+        uint32_t rem = number % radix;
         number /= radix;
         buffer[pos++] = g_HexChars[rem];
     } while (number > 0);
@@ -139,7 +139,7 @@ void printf_unsigned(unsigned long long number, int radix)
         putc(buffer[pos]);
 }
 
-void printf_signed(long long number, int radix)
+void printf_signed(int32_t number, int radix)
 {
     if (number < 0)
     {
@@ -261,10 +261,10 @@ void printf(const char* fmt, ...)
                         case PRINTF_LENGTH_DEFAULT:     printf_signed(va_arg(args, int), radix);
                                                         break;
 
-                        case PRINTF_LENGTH_LONG:        printf_signed(va_arg(args, long), radix);
+                        case PRINTF_LENGTH_LONG:        printf_signed(va_arg(args, long int), radix);
                                                         break;
 
-                        case PRINTF_LENGTH_LONG_LONG:   printf_signed(va_arg(args, long long), radix);
+                        case PRINTF_LENGTH_LONG_LONG:   printf_signed((int32_t)va_arg(args, long long), radix);
                                                         break;
                         }
                     }
@@ -277,10 +277,10 @@ void printf(const char* fmt, ...)
                         case PRINTF_LENGTH_DEFAULT:     printf_unsigned(va_arg(args, unsigned int), radix);
                                                         break;
                                                         
-                        case PRINTF_LENGTH_LONG:        printf_unsigned(va_arg(args, unsigned  long), radix);
+                        case PRINTF_LENGTH_LONG:        printf_unsigned(va_arg(args, unsigned long), radix);
                                                         break;
 
-                        case PRINTF_LENGTH_LONG_LONG:   printf_unsigned(va_arg(args, unsigned  long long), radix);
+                        case PRINTF_LENGTH_LONG_LONG:   printf_unsigned((uint32_t)va_arg(args, unsigned long long), radix);
                                                         break;
                         }
                     }

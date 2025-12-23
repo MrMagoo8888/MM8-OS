@@ -1,7 +1,6 @@
-TARGET_ASMFLAGS += -f elf
+TARGET_ASMFLAGS += -f elf32 -w-zext-reloc
 TARGET_CFLAGS += -ffreestanding -nostdlib -m32
-TARGET_LIBS += -lgcc
-TARGET_LINKFLAGS += -T linker.ld -nostdlib -m32
+TARGET_LINKFLAGS += -T linker.ld -nostdlib -m32 -Wl,-m,elf_i386
 
 SOURCES_C=$(wildcard *.c)
 SOURCES_ASM=$(wildcard *.asm)
@@ -15,7 +14,7 @@ all: stage2
 stage2: $(BUILD_DIR)/stage2.bin
 
 $(BUILD_DIR)/stage2.bin: $(OBJECTS_ASM) $(OBJECTS_C)
-	@$(TARGET_LD) $(TARGET_LINKFLAGS) -Wl,-Map=$(BUILD_DIR)/stage2.map -o $@ $^ $(TARGET_LIBS)
+	@$(TARGET_CC) $(TARGET_LINKFLAGS) -Wl,-Map=$(BUILD_DIR)/stage2.map -o $@ $^ $(TARGET_LIBS)
 	@echo "--> Created  stage2.bin"
 
 $(BUILD_DIR)/stage2/c/%.obj: %.c
