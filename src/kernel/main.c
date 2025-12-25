@@ -1,24 +1,24 @@
 #include <stdint.h>
 #include "stdio.h"
 #include "memory.h"
-#include <hal/hal.h>
+#include "hal/hal.h"
 /* 
  * TODO: Create x86_64 implementations for these.
  * For now, ensure these headers exist in src/kernel/arch/x86_64/
  */
-#include <arch/x86_64/irq.h>
-#include <arch/x86_64/io.h>
-#include <arch/x86_64/keyboard.h>
+#include "arch/x86_64/irq.h"
+#include "arch/x86_64/io.h"
+#include "arch/x86_64/keyboard.h"
 #include "fat.h"
 #include "string.h"
 #include "heap.h"
-#include <commands/command.h>
-#include <apps/editor/editor.h>
+#include "commands/command.h"
+#include "apps/editor/editor.h"
 #include "globals.h"
-#include <apps/calc/calc.h> // Include for handle_calc
+#include "apps/calc/calc.h" // Include for handle_calc
 #include "vbe.h"
 #include "graphics.h"
-#include "gdt.h"
+#include "arch/x86_64/gdt.h"
 
 
 DISK g_Disk;
@@ -58,6 +58,22 @@ void add_to_history(const char* command) {
     }
 }
 
+void enable_sse()
+{
+    uint64_t cr0;
+    uint64_t cr4;
+
+    __asm__ volatile("mov %%cr0, %0" : "=r"(cr0));
+    cr0 &= ~(1 << 2); // Clear EM (Emulation)
+    cr0 |= (1 << 1);  // Set MP (Monitor Coprocessor)
+    __asm__ volatile("mov %0, %%cr0" :: "r"(cr0));
+
+    __asm__ volatile("mov %%cr4, %0" : "=r"(cr4));
+    cr4 |= (1 << 9);  // Set OSFXSR
+    cr4 |= (1 << 10); // Set OSXMMEXCPT
+    __asm__ volatile("mov %0, %%cr4" :: "r"(cr4));
+}
+
 void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
 {
     // Crash the system to verify we've reached the kernel.
@@ -72,6 +88,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     // Now that BSS is clear, we can safely initialize our global variables.
     g_vbe_screen = &s_vbe_screen;
 
+    enable_sse();
     gdt_initialize();
     HAL_Initialize();
 

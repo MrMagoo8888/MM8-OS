@@ -4,7 +4,7 @@
 void* memcpy(void* dst, const void* src, size_t num)
 {
     // Optimization: Copy 4 bytes at a time if aligned
-    if (((uint32_t)dst % 4 == 0) && ((uint32_t)src % 4 == 0) && (num % 4 == 0)) {
+    if (((uintptr_t)dst % 4 == 0) && ((uintptr_t)src % 4 == 0) && (num % 4 == 0)) {
         uint32_t* u32Dst = (uint32_t *)dst;
         const uint32_t* u32Src = (const uint32_t *)src;
         size_t n = num / 4;

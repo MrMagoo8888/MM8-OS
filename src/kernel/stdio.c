@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <arch/i686/io.h>
+#include "arch/x86_64/io.h"
 #include <stdint.h>
 #include "stdio.h"
 #include "stdbool.h"
@@ -194,7 +193,7 @@ void clrscr()
         // Calculate total bytes: pitch * height
         // Note: This assumes the screen is contiguous, which is usually true for VBE.
         // A safer way is to clear line by line if pitch != width * bpp
-        memset((void*)g_vbe_screen->physical_buffer, 0, g_vbe_screen->height * g_vbe_screen->pitch);
+        memset((void*)(uintptr_t)g_vbe_screen->physical_buffer, 0, g_vbe_screen->height * g_vbe_screen->pitch);
     }
 }
 
@@ -233,8 +232,8 @@ void scrollback(int lines)
         size_t bytes_to_scroll = pixel_lines * pitch;
         
         if (bytes_to_scroll < total_bytes) {
-            memmove((void*)g_vbe_screen->physical_buffer, 
-                    (void*)(g_vbe_screen->physical_buffer + bytes_to_scroll), 
+            memmove((void*)(uintptr_t)g_vbe_screen->physical_buffer, 
+                    (void*)(uintptr_t)(g_vbe_screen->physical_buffer + bytes_to_scroll), 
                     total_bytes - bytes_to_scroll);
         }
     }

@@ -1,15 +1,14 @@
 #include "hal.h"
-#include <arch/i686/gdt.h>
-#include <arch/i686/idt.h>
-#include <arch/i686/isr.h>
-#include <arch/i686/irq.h>
+// #include "arch/x86_64/gdt.h" // gdt_initialize() is called from main.c
+#include "arch/x86_64/idt.h"
+#include "arch/x86_64/isr.h"
+#include "arch/x86_64/irq.h"
 
 void HAL_Initialize()
 {
-    i686_GDT_Initialize();
-    i686_IDT_Initialize();
-    i686_ISR_Initialize();
-    i686_IRQ_Initialize();
+    x86_64_IDT_Initialize();
+    x86_64_ISR_Initialize();
+    x86_64_IRQ_Initialize();
 }
 
 // Hardware Abstraction Layer

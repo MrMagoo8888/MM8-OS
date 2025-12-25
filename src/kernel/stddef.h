@@ -1,5 +1,3 @@
 #pragma once
-
-#ifndef NULL
-#define NULL ((void*)0)
-#endif
+// Use the cross-compiler's standard stddef.h which defines size_t and NULL
+#include_next <stddef.h>

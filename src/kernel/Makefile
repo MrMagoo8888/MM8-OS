@@ -4,7 +4,7 @@ TARGET_ASMFLAGS += -f elf64
 # -mno-red-zone:  Disable the "red zone" (128 bytes below stack pointer) because interrupts can clobber it.
 # -mcmodel=kernel: Use the kernel code model (absolute addressing in upper 2GB or negative 2GB).
 # -ffreestanding: No standard library.
-TARGET_CFLAGS = -ffreestanding -m64 -g -c -I src/kernel -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mcmodel=kernel -Wno-attributes #src/cjson
+TARGET_CFLAGS = -ffreestanding -m64 -g -c -I. -mno-red-zone -mno-mmx -mcmodel=kernel -Wno-attributes #src/cjson
 TARGET_LIBS += -lgcc
 TARGET_LINKFLAGS += -T src/kernel/linker.ld -z max-page-size=0x1000 -nostdlib
 

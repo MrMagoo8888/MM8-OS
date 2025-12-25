@@ -3,7 +3,7 @@
 #include "color.h" // Include your header
 #include "string.h"  // For strcmp, strtoul, etc.
 #include "stdio.h" 
-#include <arch/i686/screen_defs.h>
+#include <arch/x86_64/screen_defs.h>
 #include "ctype.h"
 #include "stddef.h"
 

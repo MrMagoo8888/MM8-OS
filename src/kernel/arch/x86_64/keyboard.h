@@ -25,7 +25,7 @@ enum {
     KEY_DELETE,
 };
 
-void i686_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, int* history_index, int history_size);
+void x86_64_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, int* history_index, int history_size);
 void keyboard_irq_handler(Registers* regs);
 
 // Reads a line of input from the keyboard into the provided buffer.

@@ -3,9 +3,9 @@
 #include "string.h"
 
 
-#include "commands/command.h"
+#include "command.h"
 
-#include "arch/i686/keyboard.h"
+#include "arch/x86_64/keyboard.h"
 #include "mm8Splash.h"
 
 void afk()

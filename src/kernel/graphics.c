@@ -3,7 +3,7 @@
 #include "heap.h"
 #include "memory.h"
 #include "stdio.h"
-#include "arch/i686/keyboard.h"
+#include "arch/x86_64/keyboard.h"
 
 static uint32_t* g_BackBuffer = NULL;
 bool g_DoubleBufferEnabled = false;
@@ -49,7 +49,7 @@ void graphics_set_double_buffering(bool enabled) {
 
 void graphics_swap_buffer() {
     if (!g_BackBuffer || !g_vbe_screen) return;
-    memcpy((void*)g_vbe_screen->physical_buffer, g_BackBuffer, g_vbe_screen->height * g_vbe_screen->pitch);
+    memcpy((void*)(uintptr_t)g_vbe_screen->physical_buffer, g_BackBuffer, g_vbe_screen->height * g_vbe_screen->pitch);
 }
 
 void graphics_clear_buffer(uint32_t color) {
@@ -59,7 +59,7 @@ void graphics_clear_buffer(uint32_t color) {
     if (g_DoubleBufferEnabled && g_BackBuffer) {
         target = g_BackBuffer;
     } else {
-        target = (uint32_t*)g_vbe_screen->physical_buffer;
+        target = (uint32_t*)(uintptr_t)g_vbe_screen->physical_buffer;
     }
     
     // Optimization for black
@@ -94,7 +94,7 @@ void draw_pixel(int x, int y, uint32_t color)
     if (g_DoubleBufferEnabled && g_BackBuffer) {
         framebuffer = g_BackBuffer;
     } else {
-        framebuffer = (uint32_t*)g_vbe_screen->physical_buffer;
+        framebuffer = (uint32_t*)(uintptr_t)g_vbe_screen->physical_buffer;
     }
 
     uint32_t pitch_in_dwords = g_vbe_screen->pitch / 4;

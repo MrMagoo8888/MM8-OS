@@ -1,6 +1,6 @@
 #pragma once
-#include <stdint.h>
-#include "arch/i686/screen_defs.h"
+#include "stdint.h"
+#include "arch/x86_64/screen_defs.h"
 
 void console_initialize();
 void console_set_font_scale(int scale);
@@ -23,3 +23,5 @@ void view_scrollback_down();
 
 int sprintf(char* str, const char* format, ...);
 int sscanf(const char* str, const char* format, ...);
+
+void gets(char* buffer, int size);

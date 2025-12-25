@@ -3,11 +3,12 @@
 #include "../vbe.h"
 #include "../stdio.h"
 #include "../memory.h"
-#include <arch/i686/io.h>
-#include <arch/i686/keyboard.h>
+#include <arch/x86_64/io.h>
+#include <arch/x86_64/keyboard.h>
 #include "../heap.h"
 #include "../font.h"
 #include "../string.h"
+#include "stdint.h"
 
 // --- 3D Math Helpers ---
 
@@ -139,10 +140,10 @@ static void draw_triangle(int x0, int y0, int z0, int x1, int y1, int z1, int x2
 
 static void wait_for_vsync() {
     // Wait for the current retrace to finish (if we are in one)
-    while (i686_inb(0x3DA) & 8);
+    while (x86_64_inb(0x3DA) & 8);
     
     // Wait for the next retrace to start
-    while (!(i686_inb(0x3DA) & 8));
+    while (!(x86_64_inb(0x3DA) & 8));
 }
 
 // --- Text Drawing Helpers ---
@@ -321,7 +322,7 @@ void cube_test() {
     }
 
     // Mask IRQ 1 (Keyboard) to prevent the OS ISR from stealing the keypress
-    i686_outb(0x21, i686_inb(0x21) | 0x02);
+    x86_64_outb(0x21, x86_64_inb(0x21) | 0x02);
 
     // FPS counter variables
     int frame_count = 0;
@@ -389,8 +390,8 @@ void cube_test() {
         angleZ = (angleZ + 1) % 64;
 
         // Handle keyboard input for camera movement
-        if (i686_inb(0x64) & 0x01) {
-            uint8_t scancode = i686_inb(0x60);
+        if (x86_64_inb(0x64) & 0x01) {
+            uint8_t scancode = x86_64_inb(0x60);
             if ((scancode & 0x80) == 0) { // Key Press (Make code)
                 int move_speed = 10;
                 switch (scancode) {
@@ -420,7 +421,7 @@ void cube_test() {
     }
 end_loop:;
     // Restore IRQ 1 (Unmask Keyboard)
-    i686_outb(0x21, i686_inb(0x21) & ~0x02);
+    x86_64_outb(0x21, x86_64_inb(0x21) & ~0x02);
 
     // Free dynamic memory
     free(projected);

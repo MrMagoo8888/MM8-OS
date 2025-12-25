@@ -4,7 +4,7 @@
 #include "heap.h"
 //#include "../src/kernel/libs/cjson/cJSON.h"
 #include <libs/cJSON/cJSON.h>
-#include <arch/i686/keyboard.h>
+#include <arch/x86_64/keyboard.h>
 
 void handle_json_test() {
     printf("Running cJSON test...\n");

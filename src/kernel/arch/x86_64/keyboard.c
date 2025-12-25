@@ -91,28 +91,28 @@ static void redraw_input_line() {
 }
 
 void keyboard_irq_handler(Registers* regs) {
-    uint8_t scancode = i686_inb(KEYBOARD_DATA_PORT);
+    uint8_t scancode = x86_64_inb(KEYBOARD_DATA_PORT);
 
     // Handle shift press/release
     if (scancode == 0x2A || scancode == 0x36) { // Left or Right Shift pressed
         g_ShiftPressed = true;
-        i686_PIC_SendEndOfInterrupt(1);
+        x86_64_PIC_SendEndOfInterrupt(1);
         return; // Return after sending EOI
     } else if (scancode == 0xAA || scancode == 0xB6) { // Left or Right Shift released
         g_ShiftPressed = false;
-        i686_PIC_SendEndOfInterrupt(1);
+        x86_64_PIC_SendEndOfInterrupt(1);
         return; // Return after sending EOI
     } else if (scancode == 0x1D) { // Ctrl pressed
         g_CtrlPressed = true;
-        i686_PIC_SendEndOfInterrupt(1);
+        x86_64_PIC_SendEndOfInterrupt(1);
         return; // Return after sending EOI
     } else if (scancode == 0x9D) { // Ctrl released
         g_CtrlPressed = false;
-        i686_PIC_SendEndOfInterrupt(1);
+        x86_64_PIC_SendEndOfInterrupt(1);
         return; // Return after sending EOI
     } else if (scancode == 0xE0) {
         extended = 1;
-        i686_PIC_SendEndOfInterrupt(1);
+        x86_64_PIC_SendEndOfInterrupt(1);
         return; // Return after sending EOI
     }
 
@@ -162,7 +162,7 @@ void keyboard_irq_handler(Registers* regs) {
                 g_CharBuffer = KEY_DELETE; g_CharReady = true;
         }
         extended = 0;
-        i686_PIC_SendEndOfInterrupt(1);
+        x86_64_PIC_SendEndOfInterrupt(1);
         return; // Return after sending EOI
     }
 
@@ -221,15 +221,15 @@ void keyboard_irq_handler(Registers* regs) {
         }
     }
 
-    i686_PIC_SendEndOfInterrupt(1); // test**
+    x86_64_PIC_SendEndOfInterrupt(1); // test**
 }
 
-void i686_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, int* history_index, int history_size) {
+void x86_64_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, int* history_index, int history_size) {
     g_HistoryBuffer = history_buffer;
     g_HistoryCount = history_count;
     g_HistoryIndexPtr = history_index;
     g_HistorySize = history_size;
-    i686_IRQ_RegisterHandler(1, keyboard_irq_handler);
+    x86_64_IRQ_RegisterHandler(1, keyboard_irq_handler);
 }
 
 void gets(char* buffer, int size) {
