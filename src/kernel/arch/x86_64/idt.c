@@ -1,5 +1,5 @@
 #include "idt.h"
-#include <stdint.h>
+#include "../../stdint.h"
 #include "../../util/binary.h"
 
 typedef struct

@@ -1,40 +1,36 @@
 
-global i686_outb
-i686_outb:
-    [bits 32]
-    mov dx, [esp + 4]
-    mov al, [esp + 8]
+[bits 64]
+
+global x86_64_outb
+x86_64_outb:
+    mov dx, di    ; port
+    mov al, sil   ; value
     out dx, al
     ret
 
-global i686_inb
-i686_inb:
-    [bits 32]
-    mov dx, [esp + 4]
-    xor eax, eax
+global x86_64_inb
+x86_64_inb:
+    mov dx, di    ; port
+    xor rax, rax
     in al, dx
     ret
 
-global i686_Panic
-i686_Panic:
+global x86_64_Panic
+x86_64_Panic:
     cli
     hlt
 
-global i686_EnableInterrupts
-i686_EnableInterrupts:
+global x86_64_EnableInterrupts
+x86_64_EnableInterrupts:
     sti
     ret
 
-global i686_DisableInterrupts
-i686_DisableInterrupts:
+global x86_64_DisableInterrupts
+x86_64_DisableInterrupts:
     cli
     ret
 
 global crash_me
 crash_me:
-    ; div by 0
-    ; mov ecx, 0x1337
-    ; mov eax, 0
-    ; div eax
     int 0x80
     ret
