@@ -18,7 +18,7 @@ entry:
     ; setup stack
     mov ax, ds
     mov ss, ax
-    mov sp, 0xFFF0
+    mov sp, 0xFFFFF ;0xFFF0
     mov bp, sp
 
     ; set a VBE graphics mode (e.g., 1024x768x32bpp)
