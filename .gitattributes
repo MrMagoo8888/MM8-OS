@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.iso filter=lfs diff=lfs merge=lfs -text
+build/*.iso filter=lfs diff=lfs merge=lfs -text
+build/*.img filter=lfs diff=lfs merge=lfs -text

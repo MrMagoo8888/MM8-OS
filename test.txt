@@ -5,3 +5,9 @@ test lol
 ; time = 1min
 
 /home/mm8/Documents/watcom
+
+./create_iso.sh
+
+qemu-system-i386 -cdrom build/mm8os.iso -m 4096
+
+sudo dd if=build/mm8os.iso of=/dev/**DRIVE** bs=4M status=progress && sync

@@ -5,4 +5,5 @@ bx_enh_dbg.ini
 *.tar.gz
 .vscode/*.log
 .sconsign.dblite
-__pycache__/
+__pycache__/build/mm8os.iso
+build/mm8os_usb.img
