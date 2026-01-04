@@ -24,7 +24,7 @@ entry:
     ; set a VBE graphics mode (e.g., 1024x768x32bpp)
     mov ax, 1920    ; width
     mov bx, 1080    ; height
-    mov cl, 32      ; `bpp
+    mov cl, 32      ; bpp
     call vbe_set_mode
     ; jc .vbe_error ; uncomment to handle VBE errors
 
