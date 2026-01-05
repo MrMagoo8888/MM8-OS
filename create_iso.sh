@@ -83,6 +83,10 @@ if [ -f "$HDD_IMG" ]; then
     cp "$HDD_IMG" "$ISO_DIR/"
 fi
 
+# Ensure floppy image is exactly 1.44MB (1474560 bytes) for Memdisk
+# This prevents Memdisk from treating it as a hard disk if it's too small.
+truncate -s 1474560 "$ISO_DIR/$(basename "$FLOPPY_IMG")"
+
 # Build ISO
 if [ -n "$ISOLINUX_BIN" ] && [ -n "$MEMDISK" ]; then
     echo "Building Hybrid ISO using ISOLINUX..."
@@ -97,11 +101,13 @@ if [ -n "$ISOLINUX_BIN" ] && [ -n "$MEMDISK" ]; then
 
     # Create ISOLINUX config
     cat > "$ISO_DIR/isolinux/isolinux.cfg" <<EOF
+PROMPT 0
+TIMEOUT 30
 DEFAULT mm8os
 LABEL mm8os
     SAY Booting MM8-OS...
     KERNEL memdisk
-    APPEND initrd=/$(basename "$FLOPPY_IMG")
+    APPEND initrd=/$(basename "$FLOPPY_IMG") floppy
 EOF
 
     # Create ISO with ISOLINUX bootloader

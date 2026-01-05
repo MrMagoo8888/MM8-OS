@@ -30,7 +30,7 @@ ebr_drive_number:           db 0                    ; 0x00 floppy, 0x80 hdd, use
                             db 0                    ; reserved
 ebr_signature:              db 29h
 ebr_volume_id:              db 12h, 34h, 56h, 78h   ; serial number, value doesn't matter
-ebr_volume_label:           db 'NANOBYTE OS'        ; 11 bytes, padded with spaces
+ebr_volume_label:           db 'MRMAGOO8888'        ; 11 bytes, padded with spaces
 ebr_system_id:              db 'FAT12   '           ; 8 bytes
 
 ;
@@ -38,14 +38,21 @@ ebr_system_id:              db 'FAT12   '           ; 8 bytes
 ;
 
 start:
+    cli                         ; Disable interrupts
     ; setup data segments
-    mov ax, 0           ; can't set ds/es directly
+    ;mov ax, 0           ; can't set ds/es directly
+    ;mov ds, ax
+    ;mov es, ax
+    
+    mov ax, 0
     mov ds, ax
     mov es, ax
-    
+    mov ss, ax
+    mov sp, 0x7c00   
     ; setup stack
     mov ss, ax
-    mov sp, 0x7C00              ; stack grows downwards from where we are loaded in memory
+    mov sp, 0x7c00              ; stack grows downwards from where we are loaded in memory
+    sti                         ; Enable interrupts
 
     ; some BIOSes might start us at 07C0:0000 instead of 0000:7C00, make sure we are in the
     ; expected location

@@ -32,6 +32,9 @@ entry:
     call EnableA20          ; 2 - Enable A20 gate
     call LoadGDT            ; 3 - Load GDT
 
+    xor ax, ax              ; Set AX to 0
+    mov ds, ax              ; Force DS to 0 so LGDT reads from the right place
+
     ; 4 - set protection enable flag in CR0
     mov eax, cr0
     or al, 1
