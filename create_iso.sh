@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # This script creates a bootable ISO image from the floppy and HDD images.
-# It uses El Torito floppy emulation to boot the floppy image.
-# The HDD image is included as a file on the ISO.
+# It uses ISOLINUX and MEMDISK to create a "Hybrid ISO" that can be
+# burned to CD/DVD OR written directly to a USB stick.
 
 set -e
 
@@ -22,6 +22,40 @@ else
     exit 1
 fi
 
+# Check for isohybrid (required for USB booting)
+if ! command -v isohybrid >/dev/null 2>&1; then
+    echo "Error: 'isohybrid' not found. This is required for USB booting."
+    echo "Please install 'syslinux-utils' (Debian/Ubuntu) or 'syslinux' (Fedora/Arch)."
+    exit 1
+fi
+
+# Helper to find system files
+find_file() {
+    local name=$1
+    shift
+    for path in "$@"; do
+        if [ -f "$path" ]; then echo "$path"; return 0; fi
+    done
+    return 1
+}
+
+# Locate Syslinux/ISOLINUX files (Paths vary by distro)
+ISOLINUX_BIN=$(find_file "isolinux.bin" \
+    "/usr/lib/ISOLINUX/isolinux.bin" \
+    "/usr/lib/syslinux/isolinux.bin" \
+    "/usr/lib/syslinux/bios/isolinux.bin" \
+    "/usr/share/syslinux/isolinux.bin")
+
+MEMDISK=$(find_file "memdisk" \
+    "/usr/lib/syslinux/memdisk" \
+    "/usr/lib/syslinux/bios/memdisk" \
+    "/usr/share/syslinux/memdisk")
+
+LDLINUX=$(find_file "ldlinux.c32" \
+    "/usr/lib/syslinux/modules/bios/ldlinux.c32" \
+    "/usr/lib/syslinux/ldlinux.c32" \
+    "/usr/share/syslinux/ldlinux.c32")
+
 # Prepare staging directory
 rm -rf "$ISO_DIR"
 mkdir -p "$ISO_DIR"
@@ -34,25 +68,46 @@ fi
 
 echo "Copying images..."
 cp "$FLOPPY_IMG" "$ISO_DIR/"
-
 if [ -f "$HDD_IMG" ]; then
     echo "Including HDD image as a file on the ISO..."
     cp "$HDD_IMG" "$ISO_DIR/"
 fi
 
-# Create ISO
-echo "Generating ISO..."
-# -b: Boot image (relative to ISO root)
-# -c: Boot catalog (created by mkisofs)
-# -J: Joliet (Windows compat)
-# -R: Rock Ridge (Unix permissions)
-$MKISOFS -J -R -b $(basename "$FLOPPY_IMG") \
-    -c boot.catalog \
-    -o "$OUTPUT_ISO" \
-    "$ISO_DIR"
+# Build ISO
+if [ -n "$ISOLINUX_BIN" ] && [ -n "$MEMDISK" ]; then
+    echo "Building Hybrid ISO using ISOLINUX..."
+    mkdir -p "$ISO_DIR/isolinux"
+    
+    cp "$ISOLINUX_BIN" "$ISO_DIR/isolinux/"
+    cp "$MEMDISK" "$ISO_DIR/isolinux/"
+    # ldlinux.c32 is required for Syslinux 6+, but not 4. Copy if found.
+    if [ -n "$LDLINUX" ]; then cp "$LDLINUX" "$ISO_DIR/isolinux/"; fi
 
-# Note: 'isohybrid' is not compatible with El Torito floppy emulation.
-# The resulting ISO is bootable on CD/DVD and VirtualBox/QEMU.
-# To boot from a USB stick on real hardware, it is often easier to write
-# the 'main_floppy.img' directly to the USB stick (e.g. using dd or Rufus).
+    # Create ISOLINUX config
+    cat > "$ISO_DIR/isolinux/isolinux.cfg" <<EOF
+DEFAULT mm8os
+LABEL mm8os
+    SAY Booting MM8-OS...
+    KERNEL memdisk
+    INITRD /$(basename "$FLOPPY_IMG")
+EOF
+
+    # Create ISO with ISOLINUX bootloader
+    $MKISOFS -J -R -l \
+        -b isolinux/isolinux.bin \
+        -c isolinux/boot.cat \
+        -no-emul-boot -boot-load-size 4 -boot-info-table \
+        -o "$OUTPUT_ISO" \
+        "$ISO_DIR"
+
+    # Apply isohybrid to make it USB-bootable
+    echo "Applying isohybrid..."
+    isohybrid "$OUTPUT_ISO"
+else
+    echo "Error: ISOLINUX files (isolinux.bin, memdisk) not found."
+    echo "Please install 'syslinux', 'isolinux', and 'syslinux-common' packages."
+    exit 1
+fi
+
 echo "Success! ISO created at $OUTPUT_ISO"
+echo "To boot from USB: sudo dd if=$OUTPUT_ISO of=/dev/sdX bs=4M status=progress"
