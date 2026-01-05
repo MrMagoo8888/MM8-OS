@@ -56,6 +56,16 @@ LDLINUX=$(find_file "ldlinux.c32" \
     "/usr/lib/syslinux/ldlinux.c32" \
     "/usr/share/syslinux/ldlinux.c32")
 
+LIBCOM32=$(find_file "libcom32.c32" \
+    "/usr/lib/syslinux/modules/bios/libcom32.c32" \
+    "/usr/lib/syslinux/libcom32.c32" \
+    "/usr/share/syslinux/libcom32.c32")
+
+LIBUTIL=$(find_file "libutil.c32" \
+    "/usr/lib/syslinux/modules/bios/libutil.c32" \
+    "/usr/lib/syslinux/libutil.c32" \
+    "/usr/share/syslinux/libutil.c32")
+
 # Prepare staging directory
 rm -rf "$ISO_DIR"
 mkdir -p "$ISO_DIR"
@@ -82,6 +92,8 @@ if [ -n "$ISOLINUX_BIN" ] && [ -n "$MEMDISK" ]; then
     cp "$MEMDISK" "$ISO_DIR/isolinux/"
     # ldlinux.c32 is required for Syslinux 6+, but not 4. Copy if found.
     if [ -n "$LDLINUX" ]; then cp "$LDLINUX" "$ISO_DIR/isolinux/"; fi
+    if [ -n "$LIBCOM32" ]; then cp "$LIBCOM32" "$ISO_DIR/isolinux/"; fi
+    if [ -n "$LIBUTIL" ]; then cp "$LIBUTIL" "$ISO_DIR/isolinux/"; fi
 
     # Create ISOLINUX config
     cat > "$ISO_DIR/isolinux/isolinux.cfg" <<EOF
@@ -89,7 +101,7 @@ DEFAULT mm8os
 LABEL mm8os
     SAY Booting MM8-OS...
     KERNEL memdisk
-    INITRD /$(basename "$FLOPPY_IMG")
+    APPEND initrd=/$(basename "$FLOPPY_IMG")
 EOF
 
     # Create ISO with ISOLINUX bootloader
