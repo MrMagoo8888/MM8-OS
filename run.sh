@@ -2,7 +2,7 @@
 
 # Usage: ./run.sh [--iso | --usb | --iso-usb] [--gdb]
 
-QEMU_FLAGS="-d guest_errors,cpu_reset -D qemu.log -m 4096 -no-reboot -no-shutdown -monitor stdio"
+QEMU_FLAGS="-d int,guest_errors,cpu_reset -D qemu.log -m 4096 -no-reboot -no-shutdown -monitor stdio"
 
 if [ "$2" == "--gdb" ]; then
     echo "GDB Debugging Enabled. QEMU will pause at start."

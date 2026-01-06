@@ -29,85 +29,85 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
                 0x00000500                        phys = 0x500
                 0x00000500                        . = phys
 
-.entry          0x00000500      0x194
+.entry          0x00000500      0x166
                 0x00000500                        __entry_start = .
  *(.entry)
- .entry         0x00000500      0x194 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
+ .entry         0x00000500      0x166 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
                 0x00000500                entry
 
-.text           0x000006a0     0x1ca6
-                0x000006a0                        __text_start = .
+.text           0x00000670     0x1ca6
+                0x00000670                        __text_start = .
  *(.text)
- .text          0x000006a0      0x1a5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/x86.obj
-                0x000006a0                x86_outb
-                0x000006ab                x86_inb
-                0x000006b4                x86_Disk_GetDriveParams
-                0x00000777                x86_Disk_Reset
-                0x000007c7                x86_Disk_Read
- .text          0x00000845       0x52 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
-                0x00000845                islower
-                0x0000086b                toupper
- .text          0x00000897      0x196 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
-                0x00000897                DISK_Initialize
-                0x00000904                DISK_LBA2CHS
-                0x00000991                DISK_ReadSectors
- .text          0x00000a2d      0xa26 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
-                0x00000a2d                FAT_ReadBootSector
-                0x00000a4a                FAT_ReadFat
-                0x00000a7e                FAT_Initialize
-                0x00000ca9                FAT_ClusterToLba
-                0x00000cca                FAT_OpenEntry
-                0x00000e8e                FAT_NextCluster
-                0x00000edb                FAT_Read
-                0x00001126                FAT_ReadEntry
-                0x00001147                FAT_Close
-                0x000011a1                FAT_FindFile
-                0x00001306                FAT_Open
- .text          0x00001453       0x7b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
-                0x00001453                draw_pixel
- .text          0x000014ce      0x1b5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
-                0x000014ce                start
- .text          0x00001683       0xf5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
-                0x00001683                memcpy
-                0x000016d5                memset
-                0x00001718                memcmp
- .text          0x00001778      0x87f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
-                0x00001778                putchr
-                0x000017a7                putcolor
-                0x000017d9                getchr
-                0x000017fb                getcolor
-                0x00001820                setcursor
-                0x00001891                clrscr
-                0x0000191f                scrollback
-                0x00001a0d                putc
-                0x00001b1d                puts
-                0x00001b4c                printf_unsigned
-                0x00001bf0                printf_signed
-                0x00001c4d                printf
-                0x00001f5e                print_buffer
- .text          0x00001ff7       0xb6 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
-                0x00001ff7                strchr
-                0x00002035                strcpy
-                0x00002087                strlen
- .text          0x000020ad       0x37 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
-                0x000020ad                align
- *fill*         0x000020e4        0xc 
- .text          0x000020f0      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
-                0x000020f0                __udivdi3
- *fill*         0x0000220a        0x6 
- .text          0x00002210      0x136 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
-                0x00002210                __umoddi3
+ .text          0x00000670      0x1a5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/x86.obj
+                0x00000670                x86_outb
+                0x0000067b                x86_inb
+                0x00000684                x86_Disk_GetDriveParams
+                0x00000747                x86_Disk_Reset
+                0x00000797                x86_Disk_Read
+ .text          0x00000815       0x52 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
+                0x00000815                islower
+                0x0000083b                toupper
+ .text          0x00000867      0x196 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
+                0x00000867                DISK_Initialize
+                0x000008d4                DISK_LBA2CHS
+                0x00000961                DISK_ReadSectors
+ .text          0x000009fd      0xa26 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
+                0x000009fd                FAT_ReadBootSector
+                0x00000a1a                FAT_ReadFat
+                0x00000a4e                FAT_Initialize
+                0x00000c79                FAT_ClusterToLba
+                0x00000c9a                FAT_OpenEntry
+                0x00000e5e                FAT_NextCluster
+                0x00000eab                FAT_Read
+                0x000010f6                FAT_ReadEntry
+                0x00001117                FAT_Close
+                0x00001171                FAT_FindFile
+                0x000012d6                FAT_Open
+ .text          0x00001423       0x7b /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
+                0x00001423                draw_pixel
+ .text          0x0000149e      0x1b5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
+                0x0000149e                start
+ .text          0x00001653       0xf5 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/memory.obj
+                0x00001653                memcpy
+                0x000016a5                memset
+                0x000016e8                memcmp
+ .text          0x00001748      0x87f /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/stdio.obj
+                0x00001748                putchr
+                0x00001777                putcolor
+                0x000017a9                getchr
+                0x000017cb                getcolor
+                0x000017f0                setcursor
+                0x00001861                clrscr
+                0x000018ef                scrollback
+                0x000019dd                putc
+                0x00001aed                puts
+                0x00001b1c                printf_unsigned
+                0x00001bc0                printf_signed
+                0x00001c1d                printf
+                0x00001f2e                print_buffer
+ .text          0x00001fc7       0xb6 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/string.obj
+                0x00001fc7                strchr
+                0x00002005                strcpy
+                0x00002057                strlen
+ .text          0x0000207d       0x37 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/utility.obj
+                0x0000207d                align
+ *fill*         0x000020b4        0xc 
+ .text          0x000020c0      0x11a /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_udivdi3.o)
+                0x000020c0                __udivdi3
+ *fill*         0x000021da        0x6 
+ .text          0x000021e0      0x136 /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.0/libgcc.a(_umoddi3.o)
+                0x000021e0                __umoddi3
 
-.data           0x00002348       0x18
-                0x00002348                        __data_start = .
+.data           0x00002318       0x48
+                0x00002318                        __data_start = .
  *(.data)
- .data          0x00002348        0xb /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
-                0x00002348                vbe_screen
- .data          0x00002353        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
- .data          0x00002353        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
- .data          0x00002353        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
- .data          0x00002353        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
- *fill*         0x00002353        0x1 
+ .data          0x00002318       0x39 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/asm/entry.obj
+                0x00002318                vbe_screen
+ .data          0x00002351        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/ctype.obj
+ .data          0x00002351        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/disk.obj
+ .data          0x00002351        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/fat.obj
+ .data          0x00002351        0x0 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/graphics.obj
+ *fill*         0x00002351        0x3 
  .data          0x00002354        0x8 /home/mm8/Documents/OS/MM8/MM8-OS/build/stage2/c/main.obj
                 0x00002354                KernelLoadBuffer
                 0x00002358                Kernel

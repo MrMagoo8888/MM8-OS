@@ -49,9 +49,6 @@ start:
     mov es, ax
     mov ss, ax
     mov sp, 0x7c00   
-    ; setup stack
-    mov ss, ax
-    mov sp, 0x7c00              ; stack grows downwards from where we are loaded in memory
     sti                         ; Enable interrupts
 
     ; some BIOSes might start us at 07C0:0000 instead of 0000:7C00, make sure we are in the

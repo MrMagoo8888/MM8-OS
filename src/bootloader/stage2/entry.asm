@@ -18,7 +18,7 @@ entry:
     ; setup stack
     mov ax, ds
     mov ss, ax
-    mov sp, 0xFFFFF ;0xFFF0
+    mov sp, 0xFFFF  ; Top of the segment (stack grows down)
     mov bp, sp
 
     ; set a VBE graphics mode (e.g., 1024x768x32bpp)
@@ -30,10 +30,10 @@ entry:
 
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
-    call LoadGDT            ; 3 - Load GDT
-
     xor ax, ax              ; Set AX to 0
     mov ds, ax              ; Force DS to 0 so LGDT reads from the right place
+
+    call LoadGDT            ; 3 - Load GDT
 
     ; 4 - set protection enable flag in CR0
     mov eax, cr0
@@ -151,45 +151,6 @@ KbdControllerReadCtrlOutputPort     equ 0xD0
 KbdControllerWriteCtrlOutputPort    equ 0xD1
 
 ScreenBuffer                        equ 0xB8000
-
-g_GDT:      ; NULL descriptor
-            dq 0
-
-            ; 32-bit code segment
-            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
-            dw 0                        ; base (bits 0-15) = 0x0
-            db 0                        ; base (bits 16-23)
-            db 10011010b                ; access (present, ring 0, code segment, executable, direction 0, readable)
-            db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
-            db 0                        ; base high
-
-            ; 32-bit data segment
-            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
-            dw 0                        ; base (bits 0-15) = 0x0
-            db 0                        ; base (bits 16-23)
-            db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
-            db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
-            db 0                        ; base high
-
-            ; 16-bit code segment
-            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
-            dw 0                        ; base (bits 0-15) = 0x0
-            db 0                        ; base (bits 16-23)
-            db 10011010b                ; access (present, ring 0, code segment, executable, direction 0, readable)
-            db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
-            db 0                        ; base high
-
-            ; 16-bit data segment
-            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
-            dw 0                        ; base (bits 0-15) = 0x0
-            db 0                        ; base (bits 16-23)
-            db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
-            db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
-            db 0                        ; base high
-
-g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
-            dd g_GDT                    ; address of GDT
-
 g_BootDrive: db 0
 
 ; --- VBE ---
@@ -356,3 +317,41 @@ vbe_screen:
     .pitch            dw 0
     .bpp              db 0
     .physical_buffer  dd 0
+
+g_GDT:      ; NULL descriptor
+            dq 0
+
+            ; 32-bit code segment
+            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
+            dw 0                        ; base (bits 0-15) = 0x0
+            db 0                        ; base (bits 16-23)
+            db 10011010b                ; access (present, ring 0, code segment, executable, direction 0, readable)
+            db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
+            db 0                        ; base high
+
+            ; 32-bit data segment
+            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF for full 32-bit range
+            dw 0                        ; base (bits 0-15) = 0x0
+            db 0                        ; base (bits 16-23)
+            db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
+            db 11001111b                ; granularity (4k pages, 32-bit pmode) + limit (bits 16-19)
+            db 0                        ; base high
+
+            ; 16-bit code segment
+            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
+            dw 0                        ; base (bits 0-15) = 0x0
+            db 0                        ; base (bits 16-23)
+            db 10011010b                ; access (present, ring 0, code segment, executable, direction 0, readable)
+            db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
+            db 0                        ; base high
+
+            ; 16-bit data segment
+            dw 0FFFFh                   ; limit (bits 0-15) = 0xFFFFF
+            dw 0                        ; base (bits 0-15) = 0x0
+            db 0                        ; base (bits 16-23)
+            db 10010010b                ; access (present, ring 0, data segment, executable, direction 0, writable)
+            db 00001111b                ; granularity (1b pages, 16-bit pmode) + limit (bits 16-19)
+            db 0                        ; base high
+
+g_GDTDesc:  dw g_GDTDesc - g_GDT - 1    ; limit = size of GDT
+            dd g_GDT                    ; address of GDT
