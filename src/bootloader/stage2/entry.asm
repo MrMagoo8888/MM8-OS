@@ -18,7 +18,7 @@ entry:
     ; setup stack
     mov ax, ds
     mov ss, ax
-    mov sp, 0xFFFFF ;0xFFF0
+    mov sp, 0xFFF0
     mov bp, sp
 
     ; set a VBE graphics mode (e.g., 1024x768x32bpp)
@@ -27,6 +27,12 @@ entry:
     mov cl, 32      ; bpp
     call vbe_set_mode
     ; jc .vbe_error ; uncomment to handle VBE errors
+
+    ; --- LOAD KERNEL / FILESYSTEM HERE ---
+    ; Since we are booting from a flash drive, we rely on BIOS Int 13h.
+    ; You MUST load your kernel binary from the filesystem into memory HERE,
+    ; while still in Real Mode. Once we switch to Protected Mode below,
+    ; BIOS disk functions are no longer available.
 
     ; switch to protected mode
     call EnableA20          ; 2 - Enable A20 gate
@@ -82,6 +88,11 @@ entry:
 
 EnableA20:
     [bits 16]
+    ; Try BIOS Int 15h first (Faster and safer for USB boot)
+    mov ax, 0x2401
+    int 0x15
+    jnc .done
+
     ; disable keyboard
     call A20WaitInput
     mov al, KbdControllerDisableKeyboard
@@ -111,6 +122,8 @@ EnableA20:
     mov al, KbdControllerEnableKeyboard
     out KbdControllerCommandPort, al
 
+    ; A20 enabled
+.done:
     call A20WaitInput
     ret
 
