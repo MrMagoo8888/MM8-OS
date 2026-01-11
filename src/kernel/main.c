@@ -15,6 +15,7 @@
 #include <apps/calc/calc.h> // Include for handle_calc
 #include "vbe.h"
 #include "graphics.h"
+#include <apps/imageview/bmp.h>
 #include "gdt.h"
 
 
