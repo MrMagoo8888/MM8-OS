@@ -47,6 +47,8 @@ mount "$LOOP_DEV" "$MOUNT_POINT"
 
 echo "Copying test files to the disk image..."
 cp "$TEST_FILE" "$MOUNT_POINT/test.txt"
+cp "blank.bmp" "$MOUNT_POINT/blank.bmp"
+cp "bblack.bmp" "$MOUNT_POINT/bblack.bmp"
 
 cat > "$MOUNT_POINT/test.json" << EOL
 {
