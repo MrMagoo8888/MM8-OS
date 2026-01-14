@@ -15,6 +15,8 @@
 #include "commands/color.h"
 #include "heap.h"
 
+#include <apps/imageview/bmp.h>
+
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
 
@@ -118,6 +120,8 @@ void command_dispatch(const char* input) {
         handle_fontsize(input);
     } else if (strcmp(input, "cube") == 0) {
         cube_test();
+    } else if (memcmp(input, "bmp ", 4) == 0) {     // works, loads most of file then crashes, likely a memory or FAT issue as the big one (5mb) 
+        bmp_view(input + 4);                        // insta-crashes but smaller ones work a bit. Ill look tommorow, review at coding club
     } else if (strcmp(input, "memory") == 0) {
         handle_memory();
     } else {
