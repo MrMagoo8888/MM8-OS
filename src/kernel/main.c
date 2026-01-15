@@ -59,13 +59,15 @@ void add_to_history(const char* command) {
 void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
 {
     // Crash the system to verify we've reached the kernel.
-    //__asm__ volatile ("int $0x3"); It does reach kernel!!
+    // __asm__ volatile ("int $0x3"); // Ensure this is commented out!
     
     // Clear BSS first. This must happen before we copy data into static variables.
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
 
     // Copy the VBE info from the bootloader to a safe location in the kernel's memory.
-    memcpy(&s_vbe_screen, vbe_info, sizeof(VbeScreenInfo));
+    if (vbe_info) {
+        memcpy(&s_vbe_screen, vbe_info, sizeof(VbeScreenInfo));
+    }
 
     // Now that BSS is clear, we can safely initialize our global variables.
     g_vbe_screen = &s_vbe_screen;
