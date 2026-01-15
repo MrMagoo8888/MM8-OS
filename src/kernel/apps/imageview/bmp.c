@@ -9,7 +9,8 @@
 #include "heap.h"
 #include <arch/i686/keyboard.h>
 
-// works, loads most of file then crashes, likely a memory or FAT issue as the big one (5mb) insta-crashes but smaller ones work a bit. Ill look tommorow, review at coding club
+// works, loads most of file then crashes, likely a memory or FAT issue as the big one (5mb) insta-crashes but smaller ones work a bit.
+// Ill look tommorow, review at coding club IT DOESNT CRASH, STILL WEIRD THO
 
 // BMP File Header (14 bytes)
 #pragma pack(push, 1)
