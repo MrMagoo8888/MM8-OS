@@ -49,6 +49,8 @@ echo "Copying test files to the disk image..."
 cp "$TEST_FILE" "$MOUNT_POINT/test.txt"
 cp "blank.bmp" "$MOUNT_POINT/blank.bmp"
 cp "bblack.bmp" "$MOUNT_POINT/bblack.bmp"
+#cp "test.bmp" "$MOUNT_POINT/test.bmp" # Uncomment if me
+#cp "evelyn.bmp" "$MOUNT_POINT/evelyn.bmp" # Uncomment if me
 
 cat > "$MOUNT_POINT/test.json" << EOL
 {
