@@ -5,7 +5,8 @@
 #include <arch/i686/irq.h>
 #include <arch/i686/io.h>
 #include <arch/i686/keyboard.h> // This include is already present, but good to confirm
-#include "fat.h"
+#include "disk.h"
+#include "ff.h"
 #include <arch/i686/keyboard.h>
 #include "string.h"
 #include "heap.h"
@@ -17,9 +18,12 @@
 #include "graphics.h"
 #include <apps/imageview/bmp.h>
 #include "gdt.h"
+#include "vfs.h"
+#include "fat.h"
 
 
 DISK g_Disk;
+FATFS g_fs;
 
 // Add a global tick counter, updated by the timer IRQ
 volatile uint32_t g_ticks = 0;
@@ -98,13 +102,17 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     printf("\n\nType 'help' for a list of commands.\n\n");
 
-    // Initialize disk and FAT filesystem
-    // We are booting from floppy, but we want to use the first hard disk (0x80) for our root filesystem.
-    if (!DISK_Initialize(&g_Disk, 0x80)) {
-        printf("Hard disk initialization failed.\n");
-    } else if (!FAT_Initialize(&g_Disk)) {
-        printf("FAT initialization failed on hard disk.\n");
+    // Initialize FatFs
+    FRESULT res = f_mount(&g_fs, "0:", 1);
+    if (res != FR_OK) {
+        printf("FatFs mount failed with error code: %d\n", res);
+    } else {
+        printf("FatFs mounted successfully.\n");
     }
+    
+    // Initialize VFS and mount FatFs driver to root
+    VFS_Initialize();
+    VFS_Mount("/", &g_FatFsDriver);
 
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
