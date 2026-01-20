@@ -48,8 +48,8 @@
 #include "ext4_crc32.h"
 #include "ext4_journal.h"
 
-#include <string.h>
-#include <stdlib.h>
+#include "string.h"
+#include "stdlib.h"
 
 /**@brief  Revoke entry during journal replay.*/
 struct revoke_entry {

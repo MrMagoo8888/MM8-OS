@@ -44,8 +44,8 @@
 #include "ext4_fs.h"
 #include "ext4_journal.h"
 
-#include <string.h>
-#include <stdlib.h>
+#include "string.h"
+#include "stdlib.h"
 
 static void ext4_bdif_lock(struct ext4_blockdev *bdev)
 {

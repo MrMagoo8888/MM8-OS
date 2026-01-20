@@ -67,7 +67,7 @@
 #include "ext4_errno.h"
 #include "ext4_debug.h"
 
-#include <string.h>
+#include "string.h"
 
 /* F, G, and H are MD4 functions */
 #define F(x, y, z) (((x) & (y)) | ((~x) & (z)))

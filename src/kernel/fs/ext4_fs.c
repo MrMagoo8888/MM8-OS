@@ -56,7 +56,7 @@
 #include "ext4_ialloc.h"
 #include "ext4_extent.h"
 
-#include <string.h>
+#include "string.h"
 
 int ext4_fs_init(struct ext4_fs *fs, struct ext4_blockdev *bdev,
 		 bool read_only)

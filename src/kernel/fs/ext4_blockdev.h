@@ -43,8 +43,8 @@ extern "C" {
 #include "ext4_config.h"
 #include "ext4_bcache.h"
 
-#include <stdbool.h>
-#include <stdint.h>
+#include "stdbool.h"
+#include "stdint.h"
 
 struct ext4_blockdev_iface {
 	/**@brief   Open device function

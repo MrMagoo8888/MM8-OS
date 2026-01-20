@@ -50,8 +50,8 @@ extern "C" {
 #include "ext4_types.h"
 #include "ext4_misc.h"
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "stdint.h"
+#include "stdbool.h"
 
 struct ext4_fs {
 	bool read_only;

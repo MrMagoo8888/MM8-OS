@@ -41,9 +41,9 @@
 extern "C" {
 #endif
 
-#include <ext4_config.h>
+#include "ext4_config.h"
 
-#include <stdint.h>
+#include "stdint.h"
 
 struct ext4_hash_info {
 	uint32_t hash;

@@ -43,8 +43,8 @@ extern "C" {
 
 #include "ext4_config.h"
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "stdint.h"
+#include "stdbool.h"
 #include "misc/tree.h"
 #include "misc/queue.h"
 
