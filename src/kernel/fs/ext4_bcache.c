@@ -41,8 +41,8 @@
 #include "ext4_debug.h"
 #include "ext4_errno.h"
 
-#include <string.h>
-#include <stdlib.h>
+#include "string.h"
+#include "stdlib.h"
 
 static int ext4_bcache_lba_compare(struct ext4_buf *a, struct ext4_buf *b)
 {

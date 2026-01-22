@@ -6,7 +6,6 @@
 #include <arch/i686/io.h>
 #include <arch/i686/keyboard.h> // This include is already present, but good to confirm
 #include "disk.h"
-#include "ff.h"
 #include <arch/i686/keyboard.h>
 #include "string.h"
 #include "heap.h"
@@ -19,11 +18,12 @@
 #include <apps/imageview/bmp.h>
 #include "gdt.h"
 #include "vfs.h"
-#include "fat.h"
 
 
 DISK g_Disk;
-FATFS g_fs;
+
+extern VFS_Driver g_Ext4Driver;
+int init_ext2_filesystem(void);
 
 // Add a global tick counter, updated by the timer IRQ
 volatile uint32_t g_ticks = 0;
@@ -102,17 +102,17 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     printf("\n\nType 'help' for a list of commands.\n\n");
 
-    // Initialize FatFs
-    FRESULT res = f_mount(&g_fs, "0:", 1);
-    if (res != FR_OK) {
-        printf("FatFs mount failed with error code: %d\n", res);
+    // Initialize Ext4
+    int res = init_ext2_filesystem();
+    if (res != 0) {
+        printf("Ext4 mount failed with error code: %d\n", res);
     } else {
-        printf("FatFs mounted successfully.\n");
+        printf("Ext4 mounted successfully.\n");
     }
     
-    // Initialize VFS and mount FatFs driver to root
+    // Initialize VFS and mount Ext4 driver to root
     VFS_Initialize();
-    VFS_Mount("/", &g_FatFsDriver);
+    VFS_Mount("/", &g_Ext4Driver);
 
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);

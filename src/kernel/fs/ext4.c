@@ -54,8 +54,8 @@
 #include "ext4_journal.h"
 
 
-#include <stdlib.h>
-#include <string.h>
+#include "stdlib.h"
+#include "string.h"
 
 /**@brief   Mount point OS dependent lock*/
 #define EXT4_MP_LOCK(_m)                                                       \

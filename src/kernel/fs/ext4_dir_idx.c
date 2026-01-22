@@ -50,8 +50,8 @@
 #include "ext4_crc32.h"
 #include "ext4_hash.h"
 
-#include <string.h>
-#include <stdlib.h>
+#include "string.h"
+#include "stdlib.h"
 
 /**@brief Get hash version used in directory index.
  * @param ri Pointer to root info structure of index

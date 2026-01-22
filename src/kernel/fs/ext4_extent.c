@@ -22,10 +22,10 @@
 #include "ext4_balloc.h"
 #include "ext4_extent.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-#include <stddef.h>
+#include "stdlib.h"
+#include "string.h"
+#include "inttypes.h"
+#include "stddef.h"
 
 #if CONFIG_EXTENTS_ENABLE
 /*

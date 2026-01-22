@@ -52,8 +52,8 @@ extern "C" {
 #include "ext4_fs.h"
 #include "ext4_dir.h"
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "stdint.h"
+#include "stdbool.h"
 
 struct ext4_dir_idx_block {
 	struct ext4_block b;

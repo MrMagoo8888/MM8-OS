@@ -7,13 +7,16 @@
 #include <stdbool.h>
 #include "fs/ext4.h"       /* lwext4 main header */
 #include "fs/ext4_errno.h"
-#include "diskio.h"     /* Your existing low-level disk driver */
+#include "disk.h"     /* Your existing low-level disk driver */
+#include "globals.h"
+#include "vfs.h"
+#include "heap.h"
 
 /* 
  * Configuration for the block device.
- * Assuming Physical Drive 0 for this example.
+ * Assuming Physical Drive 0x80 (Primary Master) for this example.
  */
-#define EXT2_PDRV_NUM  0
+#define EXT2_DRIVE_NUM  0x80
 #define SECTOR_SIZE    512
 
 /*
@@ -21,8 +24,7 @@
  */
 static int mm8_bd_open(struct ext4_blockdev *bdev)
 {
-    DSTATUS status = disk_initialize(EXT2_PDRV_NUM);
-    if (status & STA_NOINIT) {
+    if (!DISK_Initialize(&g_Disk, EXT2_DRIVE_NUM)) {
         return EIO;
     }
     return EOK;
@@ -33,12 +35,8 @@ static int mm8_bd_open(struct ext4_blockdev *bdev)
  */
 static int mm8_bd_bread(struct ext4_blockdev *bdev, void *buf, uint64_t blk_id, uint32_t blk_cnt)
 {
-    DRESULT res;
-    
-    /* disk_read takes: pdrv, buffer, sector, count */
-    res = disk_read(EXT2_PDRV_NUM, (BYTE*)buf, (LBA_t)blk_id, (UINT)blk_cnt);
-    
-    if (res != RES_OK) {
+    /* disk_read takes: disk, lba, count, buffer */
+    if (!DISK_ReadSectors(&g_Disk, (uint32_t)blk_id, (uint8_t)blk_cnt, buf)) {
         return EIO;
     }
     return EOK;
@@ -49,12 +47,8 @@ static int mm8_bd_bread(struct ext4_blockdev *bdev, void *buf, uint64_t blk_id, 
  */
 static int mm8_bd_bwrite(struct ext4_blockdev *bdev, const void *buf, uint64_t blk_id, uint32_t blk_cnt)
 {
-    DRESULT res;
-    
-    /* disk_write takes: pdrv, buffer, sector, count */
-    res = disk_write(EXT2_PDRV_NUM, (const BYTE*)buf, (LBA_t)blk_id, (UINT)blk_cnt);
-    
-    if (res != RES_OK) {
+    /* disk_write takes: disk, lba, count, buffer */
+    if (!DISK_WriteSectors(&g_Disk, (uint32_t)blk_id, (uint8_t)blk_cnt, buf)) {
         return EIO;
     }
     return EOK;
@@ -116,3 +110,66 @@ int init_ext2_filesystem(void)
 
     return 0; // Success
 }
+
+/*
+ * VFS Adapter for lwext4
+ */
+
+static VFS_File* Ext4_Open(const char* path, const char* mode) {
+    ext4_file* fp = (ext4_file*)malloc(sizeof(ext4_file));
+    if (!fp) return NULL;
+
+    if (ext4_fopen(fp, path, mode) != EOK) {
+        free(fp);
+        return NULL;
+    }
+
+    VFS_File* file = (VFS_File*)malloc(sizeof(VFS_File));
+    if (!file) {
+        ext4_fclose(fp);
+        free(fp);
+        return NULL;
+    }
+    
+    file->InternalData = fp;
+    return file;
+}
+
+static void Ext4_Close(VFS_File* file) {
+    if (file && file->InternalData) {
+        ext4_file* fp = (ext4_file*)file->InternalData;
+        ext4_fclose(fp);
+        free(fp);
+    }
+}
+
+static uint32_t Ext4_Read(VFS_File* file, uint32_t size, void* buffer) {
+    if (!file || !file->InternalData) return 0;
+    ext4_file* fp = (ext4_file*)file->InternalData;
+    size_t br;
+    if (ext4_fread(fp, buffer, size, &br) != EOK) return 0;
+    return (uint32_t)br;
+}
+
+static uint32_t Ext4_Write(VFS_File* file, uint32_t size, const void* buffer) {
+    if (!file || !file->InternalData) return 0;
+    ext4_file* fp = (ext4_file*)file->InternalData;
+    size_t bw;
+    if (ext4_fwrite(fp, buffer, size, &bw) != EOK) return 0;
+    return (uint32_t)bw;
+}
+
+static bool Ext4_Seek(VFS_File* file, uint32_t offset) {
+    if (!file || !file->InternalData) return false;
+    ext4_file* fp = (ext4_file*)file->InternalData;
+    return ext4_fseek(fp, offset, SEEK_SET) == EOK;
+}
+
+VFS_Driver g_Ext4Driver = {
+    .Name = "EXT4",
+    .Open = Ext4_Open,
+    .Read = Ext4_Read,
+    .Write = Ext4_Write,
+    .Seek = Ext4_Seek,
+    .Close = Ext4_Close
+};

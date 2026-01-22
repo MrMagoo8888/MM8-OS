@@ -32,8 +32,8 @@
 #include "ext4_trans.h"
 #include "ext4_xattr.h"
 
-#include <stdlib.h>
-#include <string.h>
+#include "stdlib.h"
+#include "string.h"
 
 #if CONFIG_XATTR_ENABLE
 

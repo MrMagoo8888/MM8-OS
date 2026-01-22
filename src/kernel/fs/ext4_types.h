@@ -50,8 +50,8 @@ extern "C" {
 #include "ext4_blockdev.h"
 #include "misc/tree.h"
 
-#include <stddef.h>
-#include <stdint.h>
+#include "stddef.h"
+#include "stdint.h"
 
 /*
  * Types of blocks.

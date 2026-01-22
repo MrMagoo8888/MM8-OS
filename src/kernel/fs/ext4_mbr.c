@@ -42,7 +42,7 @@
 
 #include "ext4_mbr.h"
 
-#include <inttypes.h>
+#include "inttypes.h"
 #include "string.h"
 
 #define MBR_SIGNATURE 0xAA55

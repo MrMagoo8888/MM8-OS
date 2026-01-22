@@ -52,7 +52,7 @@
 #include "ext4_inode.h"
 #include "ext4_fs.h"
 
-#include <string.h>
+#include "string.h"
 
 /****************************************************************************/
 

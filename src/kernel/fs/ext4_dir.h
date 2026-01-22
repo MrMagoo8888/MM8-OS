@@ -52,7 +52,7 @@ extern "C" {
 #include "ext4_blockdev.h"
 #include "ext4_super.h"
 
-#include <stdint.h>
+#include "stdint.h"
 
 struct ext4_dir_iter {
 	struct ext4_inode_ref *inode_ref;
