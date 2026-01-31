@@ -2,7 +2,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "memory.h"
-#include "fat.h"
+#include "vfs.h"
 #include <arch/i686/keyboard.h>
 #include "globals.h"
 
@@ -40,16 +40,17 @@ void editor_handle_command(const char* input) {
     }
     const char* path = input + 5;
 
-    FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_CREATE);
+    VFS_File* file = VFS_Open(path, "r");   // open for read (or "r+" if you want read/write)
     if (!file) {
         printf("Could not open or create file: %s\n", path);
         return;
     }
 
     // Read entire file into buffer
-    uint32_t file_size = FAT_Read(&g_Disk, file, EDITOR_BUFFER_SIZE - 1, g_EditorBuffer);
+    uint32_t file_size = VFS_Read(file, EDITOR_BUFFER_SIZE - 1, g_EditorBuffer);
     g_EditorBuffer[file_size] = '\0';
-    FAT_Close(&g_Disk, file);
+    VFS_Close(file);
+    
 
     int cursor_pos = file_size;
     redraw_editor(g_EditorBuffer, cursor_pos);
@@ -58,12 +59,11 @@ void editor_handle_command(const char* input) {
         int key = getch();
 
         if (key == ('s' & 0x1F)) { // Ctrl+S
-            file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_WRITE);
+            file = VFS_Open(path, "w");
             if (file) {
                 // Overwrite the file with the buffer content
-                FAT_Write(&g_Disk, file, strlen(g_EditorBuffer), g_EditorBuffer);
-                FAT_Close(&g_Disk, file);
-                clrscr();
+                VFS_Write(file, (uint32_t)strlen(g_EditorBuffer), g_EditorBuffer);
+                VFS_Close(file);
                 printf("File saved.\n");
             } else {
                 clrscr();

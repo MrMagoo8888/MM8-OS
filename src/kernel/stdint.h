@@ -3,12 +3,6 @@
 #ifndef MY_STDINT_H
 #define MY_STDINT_H
 
-/*
- * Portable stdint.h for a hypothetical standalone OS.
- * This is a simplified example; a real version needs
- * to be more comprehensive and handle different platform variations.
- */
-
 // Basic integer types based on platform assumptions
 #if defined(__x86_64__) || defined(_WIN64)
   typedef char int8_t;

@@ -1,6 +1,6 @@
 #include "json.h"
 #include "stdio.h"
-#include "fat.h"
+#include "vfs.h"
 #include "heap.h"
 //#include "../src/kernel/libs/cjson/cJSON.h"
 #include <libs/cJSON/cJSON.h>
@@ -9,34 +9,49 @@
 void handle_json_test() {
     printf("Running cJSON test...\n");
 
-    FAT_File* file = FAT_Open(&g_Disk, "/test.json", FAT_OPEN_MODE_READ);
+    VFS_File* file = VFS_Open("/test.json", "r");
     if (!file) {
         printf("Failed to open /test.json\n");
         return;
     }
 
-    // Allocate a buffer on the heap to hold the file content
-    char* file_buffer = (char*)malloc(file->Size + 1);
-    if (!file_buffer) {
+    /* Read file into a dynamically grown buffer (don't rely on file->Size) */
+    const size_t CHUNK = 512;
+    size_t cap = CHUNK;
+    size_t len = 0;
+    char *buf = (char*)malloc(cap + 1);
+    if (!buf) {
         printf("malloc failed for file buffer!\n");
-        FAT_Close(&g_Disk, file);
-        getch();
+        VFS_Close(file);
         return;
     }
 
-    // Read the entire file into the buffer
-    uint32_t bytes_read = FAT_Read(&g_Disk, file, file->Size, file_buffer);
-    file_buffer[bytes_read] = '\0'; // Null-terminate the string
+    while (true) {
+        uint32_t n = VFS_Read(file, CHUNK, buf + len);
+        if (n == 0) break;
+        len += n;
+        if (len + 1 >= cap) {
+            size_t newcap = cap * 2;
+            char *nb = (char*)realloc(buf, newcap + 1);
+            if (!nb) {
+                printf("realloc failed\n");
+                free(buf);
+                VFS_Close(file);
+                return;
+            }
+            buf = nb;
+            cap = newcap;
+        }
+    }
+    buf[len] = '\0';
+    VFS_Close(file);
 
-    FAT_Close(&g_Disk, file);
-
-    printf("Read %u bytes from /test.json\n", bytes_read);
+    printf("Read %u bytes from /test.json\n", (unsigned)len);
 
     // --- cJSON Parsing ---
-    cJSON* root = cJSON_Parse(file_buffer);
+    cJSON* root = cJSON_Parse(buf);
 
-    // Free the file buffer now that cJSON has parsed it
-    free(file_buffer);
+    free(buf);
 
     if (!root) {
         printf("cJSON_Parse failed. Error near: %s\n", cJSON_GetErrorPtr());
@@ -45,7 +60,6 @@ void handle_json_test() {
 
     printf("Successfully parsed JSON!\n");
 
-    // --- Extracting values ---
     cJSON* message = cJSON_GetObjectItem(root, "message");
     if (cJSON_IsString(message)) {
         printf("  Message: %s\n", message->valuestring);
@@ -71,11 +85,12 @@ void handle_json_test() {
         printf("  Features:\n");
         cJSON* feature = NULL;
         cJSON_ArrayForEach(feature, features) {
-            printf("    - %s\n", feature->valuestring);
+            if (cJSON_IsString(feature)) {
+                printf("    - %s\n", feature->valuestring);
+            }
         }
     }
 
-    // --- Cleanup ---
-    cJSON_Delete(root); // This will test your free() implementation!
+    cJSON_Delete(root);
     printf("cJSON test complete. Memory freed.\n");
 }

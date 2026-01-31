@@ -1,13 +1,14 @@
 #pragma once
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "stdint.h"
+#include "stdbool.h"
 
 typedef struct VFS_Driver VFS_Driver;
 
 typedef struct VFS_File {
     void* InternalData;
     VFS_Driver* Driver;
+    uint32_t Size;
 } VFS_File;
 
 struct VFS_Driver {

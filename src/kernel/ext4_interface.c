@@ -3,8 +3,8 @@
  * Interface between MM8-OS diskio and lwext4 library
  */
 
-#include <stdint.h>
-#include <stdbool.h>
+#include "stdint.h"
+#include "stdbool.h"
 #include "fs/ext4.h"       /* lwext4 main header */
 #include "fs/ext4_errno.h"
 #include "disk.h"     /* Your existing low-level disk driver */
@@ -35,9 +35,22 @@ static int mm8_bd_open(struct ext4_blockdev *bdev)
  */
 static int mm8_bd_bread(struct ext4_blockdev *bdev, void *buf, uint64_t blk_id, uint32_t blk_cnt)
 {
-    /* disk_read takes: disk, lba, count, buffer */
-    if (!DISK_ReadSectors(&g_Disk, (uint32_t)blk_id, (uint8_t)blk_cnt, buf)) {
-        return EIO;
+    uint8_t* data_ptr = (uint8_t*)buf;
+    uint32_t current_lba = (uint32_t)blk_id;
+
+    while (blk_cnt > 0) {
+        // The ATA sector count is 8-bit. A count of 0 means 256 sectors.
+        // We limit to 128 to avoid issues with 0 representing 256 in some driver implementations
+        uint32_t sectors_this_call = (blk_cnt >= 128) ? 128 : blk_cnt;
+        uint8_t ata_count = (uint8_t)sectors_this_call;
+
+        if (!DISK_ReadSectors(&g_Disk, current_lba, ata_count, data_ptr)) {
+            return EIO;
+        }
+
+        current_lba += sectors_this_call;
+        data_ptr += sectors_this_call * SECTOR_SIZE;
+        blk_cnt -= sectors_this_call;
     }
     return EOK;
 }
@@ -47,9 +60,22 @@ static int mm8_bd_bread(struct ext4_blockdev *bdev, void *buf, uint64_t blk_id, 
  */
 static int mm8_bd_bwrite(struct ext4_blockdev *bdev, const void *buf, uint64_t blk_id, uint32_t blk_cnt)
 {
-    /* disk_write takes: disk, lba, count, buffer */
-    if (!DISK_WriteSectors(&g_Disk, (uint32_t)blk_id, (uint8_t)blk_cnt, buf)) {
-        return EIO;
+    const uint8_t* data_ptr = (const uint8_t*)buf;
+    uint32_t current_lba = (uint32_t)blk_id;
+
+    while (blk_cnt > 0) {
+        // The ATA sector count is 8-bit. A count of 0 means 256 sectors.
+        // We limit to 128 to avoid issues with 0 representing 256 in some driver implementations
+        uint32_t sectors_this_call = (blk_cnt >= 128) ? 128 : blk_cnt;
+        uint8_t ata_count = (uint8_t)sectors_this_call;
+
+        if (!DISK_WriteSectors(&g_Disk, current_lba, ata_count, data_ptr)) {
+            return EIO;
+        }
+
+        current_lba += sectors_this_call;
+        data_ptr += sectors_this_call * SECTOR_SIZE;
+        blk_cnt -= sectors_this_call;
     }
     return EOK;
 }
@@ -132,6 +158,9 @@ static VFS_File* Ext4_Open(const char* path, const char* mode) {
     }
     
     file->InternalData = fp;
+    ext4_fseek(fp, 0, SEEK_END);
+    file->Size = (uint32_t)ext4_ftell(fp);
+    ext4_fseek(fp, 0, SEEK_SET);
     return file;
 }
 

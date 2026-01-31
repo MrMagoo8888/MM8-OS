@@ -1,7 +1,7 @@
 #include "command.h"
 #include "stdio.h"
 #include "string.h"
-#include "fat.h"
+#include "vfs.h"
 #include <apps/editor/editor.h>
 #include "memory.h"
 #include "globals.h"
@@ -54,7 +54,7 @@ static void handle_read(const char* input) {
         return;
     }
     const char* path = input + 5;
-    FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_READ);
+    VFS_File* file = VFS_Open(path, "r");
     if (!file) {
         printf("Could not open file: %s\n", path);
         return;
@@ -62,12 +62,12 @@ static void handle_read(const char* input) {
 
     char buffer[513]; // Read 512 bytes at a time
     uint32_t bytes_read;
-    while ((bytes_read = FAT_Read(&g_Disk, file, 512, buffer)) > 0) {
+    while ((bytes_read = VFS_Read(file, 512, buffer)) > 0) {
         buffer[bytes_read] = '\0';
         printf("%s", buffer);
     }
     printf("\n");
-    FAT_Close(&g_Disk, file);
+    VFS_Close(file);
 }
 
 static void handle_fontsize(const char* input) {

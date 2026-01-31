@@ -2,7 +2,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
-#include "fat.h"
+#include "vfs.h"
 #include "graphics.h"
 #include "vbe.h"
 #include "globals.h"
@@ -42,42 +42,42 @@ typedef struct {
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
 void bmp_view(const char* filename) {
-    FAT_File* fd = FAT_Open(&g_Disk, filename, FAT_OPEN_MODE_READ);
+    VFS_File* fd = VFS_Open(filename, "r");
     if (!fd) {
         printf("BMP: Could not open file '%s'\n", filename);
         return;
     }
 
     BMPFileHeader fileHeader;
-    if (FAT_Read(&g_Disk, fd, sizeof(BMPFileHeader), &fileHeader) != sizeof(BMPFileHeader)) {
+    if (VFS_Read(fd, sizeof(BMPFileHeader), &fileHeader) != sizeof(BMPFileHeader)) {
         printf("BMP: Error reading file header.\n");
-        FAT_Close(&g_Disk, fd);
+        VFS_Close(fd);
         return;
     }
 
     if (fileHeader.bfType != 0x4D42) { // 'B' 'M' in little endian
         printf("BMP: Not a valid BMP file (Magic: %x)\n", fileHeader.bfType);
-        FAT_Close(&g_Disk, fd);
+        VFS_Close(fd);
         return;
     }
 
     BMPInfoHeader infoHeader;
-    if (FAT_Read(&g_Disk, fd, sizeof(BMPInfoHeader), &infoHeader) != sizeof(BMPInfoHeader)) {
+    if (VFS_Read(fd, sizeof(BMPInfoHeader), &infoHeader) != sizeof(BMPInfoHeader)) {
         printf("BMP: Error reading info header.\n");
-        FAT_Close(&g_Disk, fd);
+        VFS_Close(fd);
         return;
     }
 
     if (infoHeader.biBitCount != 24 && infoHeader.biBitCount != 32) {
         printf("BMP: Unsupported bit depth %d. Only 24 and 32 bpp supported.\n", infoHeader.biBitCount);
-        FAT_Close(&g_Disk, fd);
+        VFS_Close(fd);
         return;
     }
 
     // Seek to the start of pixel data
-    if (!FAT_Seek(&g_Disk, fd, fileHeader.bfOffBits)) {
+    if (!VFS_Seek(fd, fileHeader.bfOffBits)) {
         printf("BMP: Failed to seek to pixel data.\n");
-        FAT_Close(&g_Disk, fd);
+        VFS_Close(fd);
         return;
     }
 
@@ -92,7 +92,7 @@ void bmp_view(const char* filename) {
     uint8_t* rowBuffer = (uint8_t*)malloc(rowSize);
     if (!rowBuffer) {
         printf("BMP: Out of memory (row buffer).\n");
-        FAT_Close(&g_Disk, fd);
+        VFS_Close(fd);
         return;
     }
 
@@ -105,7 +105,7 @@ void bmp_view(const char* filename) {
 
     // Read and draw row by row
     for (int i = 0; i < absHeight; i++) {
-        FAT_Read(&g_Disk, fd, rowSize, rowBuffer);
+        VFS_Read(fd, rowSize, rowBuffer);
 
         // BMPs are usually stored bottom-up (positive height)
         // If height is negative, it's top-down.
@@ -128,7 +128,7 @@ void bmp_view(const char* filename) {
     }
 
     free(rowBuffer);
-    FAT_Close(&g_Disk, fd);
+    VFS_Close(fd);
 
     // Wait for user input to exit
     getch();

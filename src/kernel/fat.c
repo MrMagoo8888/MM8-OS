@@ -1,4 +1,4 @@
-#include "fat.h"
+/*#include "fat.h"
 #include "ff.h"
 #include "vfs.h"
 #include "heap.h"
@@ -124,3 +124,4 @@ void FAT_Close(DISK* disk, FAT_File* file) {
         free(file);
     }
 }
+*/

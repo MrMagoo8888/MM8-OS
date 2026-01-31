@@ -6,7 +6,6 @@
 #include <arch/i686/io.h>
 #include <arch/i686/keyboard.h> // This include is already present, but good to confirm
 #include "disk.h"
-#include <arch/i686/keyboard.h>
 #include "string.h"
 #include "heap.h"
 #include <commands/command.h>
@@ -76,11 +75,11 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     // Now that BSS is clear, we can safely initialize our global variables.
     g_vbe_screen = &s_vbe_screen;
 
-    gdt_initialize();
-    HAL_Initialize();
+    //gdt_initialize();
+    //HAL_Initialize();
 
-    heap_initialize();
-    console_initialize();
+    //heap_initialize();
+    //console_initialize();
     
     clrscr();
     
@@ -134,6 +133,6 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
         command_dispatch(input_buffer); // invokes commands like help, cls, echo, read, edit
     
     }
-
-    for (;;);
+    for (;;); 
 }
+    

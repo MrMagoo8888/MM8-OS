@@ -34,10 +34,11 @@ if [ -z "$LOOP_DEV" ]; then
     exit 1
 fi
 
-echo "Creating FAT32 filesystem on $LOOP_DEV..."
-# We use --mbr=y to write a Master Boot Record (MBR) to the disk image.
-# This creates a partition table and the 0xAA55 boot signature, which is required for the disk to be recognized as a valid, formatted drive.
-mkfs.fat -F 32 --mbr=y "$LOOP_DEV"
+echo "Wiping MBR and creating ext2 filesystem on $LOOP_DEV..."
+# Wipe the first sector to remove any previous MBR/partition table
+dd if=/dev/zero of="$LOOP_DEV" bs=512 count=1 conv=notrunc status=none
+# Create ext2 on the whole device (superfloppy)
+mkfs.ext2 -F "$LOOP_DEV"
 
 echo "Creating mount point $MOUNT_POINT..."
 mkdir -p "$MOUNT_POINT"
@@ -59,7 +60,7 @@ cat > "$MOUNT_POINT/test.json" << EOL
     "year": 2025,
     "is_awesome": true,
     "features": [
-        "FAT32", "malloc", "cJSON"
+        "Ext2", "malloc", "cJSON"
     ]
 }
 EOL

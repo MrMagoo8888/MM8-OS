@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -23,3 +23,4 @@ uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut)
 uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* dataIn);
 bool FAT_Seek(DISK* disk, FAT_File* file, uint32_t offset);
 void FAT_Close(DISK* disk, FAT_File* file);
+*/
