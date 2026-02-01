@@ -1,4 +1,4 @@
-#!/bin/bash
+    #!/bin/bash
 
 # This script formats the hard disk image and copies a test file to it.
 # It requires sudo privileges to run.
@@ -27,6 +27,11 @@ if [ ! -f "$HDD_IMAGE" ]; then
     dd if=/dev/zero of="$HDD_IMAGE" bs=1M count=64
 fi
 
+# Create partition table (MBR)
+echo "Creating partition table on $HDD_IMAGE..."
+dd if=/dev/zero of="$HDD_IMAGE" bs=512 count=1 conv=notrunc status=none
+printf "n\np\n1\n2048\n\nw\n" | fdisk "$HDD_IMAGE"
+
 echo "Setting up loopback device for $HDD_IMAGE..."
 LOOP_DEV=$(losetup -fP --show "$HDD_IMAGE")
 if [ -z "$LOOP_DEV" ]; then
@@ -34,17 +39,17 @@ if [ -z "$LOOP_DEV" ]; then
     exit 1
 fi
 
-echo "Wiping MBR and creating ext2 filesystem on $LOOP_DEV..."
-# Wipe the first sector to remove any previous MBR/partition table
-dd if=/dev/zero of="$LOOP_DEV" bs=512 count=1 conv=notrunc status=none
-# Create ext2 on the whole device (superfloppy)
-mkfs.ext2 -F "$LOOP_DEV"
+echo "Creating ext2 filesystem on ${LOOP_DEV}p1..."
+PART_DEV="${LOOP_DEV}p1"
+
+# Create ext2 on the partition
+mkfs.ext2 -F "$PART_DEV"
 
 echo "Creating mount point $MOUNT_POINT..."
 mkdir -p "$MOUNT_POINT"
 
 echo "Mounting $LOOP_DEV to $MOUNT_POINT..."
-mount "$LOOP_DEV" "$MOUNT_POINT"
+mount "$PART_DEV" "$MOUNT_POINT"
 
 echo "Copying test files to the disk image..."
 cp "$TEST_FILE" "$MOUNT_POINT/test.txt"
