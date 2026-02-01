@@ -194,8 +194,8 @@ static bool Ext4_Seek(VFS_File* file, uint32_t offset) {
     return ext4_fseek(fp, offset, SEEK_SET) == EOK;
 }
 
-VFS_Driver g_Ext4Driver = {
-    .Name = "EXT4",
+VFS_Driver g_Ext2Driver = {
+    .Name = "EXT2",
     .Open = Ext4_Open,
     .Read = Ext4_Read,
     .Write = Ext4_Write,

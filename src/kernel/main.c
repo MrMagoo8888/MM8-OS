@@ -21,7 +21,7 @@
 
 DISK g_Disk;
 
-extern VFS_Driver g_Ext4Driver;
+extern VFS_Driver g_Ext2Driver;
 int init_ext2_filesystem(void);
 
 // Add a global tick counter, updated by the timer IRQ
@@ -59,7 +59,7 @@ void add_to_history(const char* command) {
     }
 }
 
-void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
+void start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
 {
     // Crash the system to verify we've reached the kernel.
     // __asm__ volatile ("int $0x3"); // Ensure this is commented out!
@@ -101,17 +101,17 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     printf("\n\nType 'help' for a list of commands.\n\n");
 
-    // Initialize Ext4
+    // Initialize Ext2
     int res = init_ext2_filesystem();
     if (res != 0) {
-        printf("Ext4 mount failed with error code: %d\n", res);
+        printf("Ext2 mount failed with error code: %d\n", res);
     } else {
-        printf("Ext4 mounted successfully.\n");
+        printf("Ext2 mounted successfully.\n");
     }
     
-    // Initialize VFS and mount Ext4 driver to root
+    // Initialize VFS and mount Ext2 driver to root
     VFS_Initialize();
-    VFS_Mount("/", &g_Ext4Driver);
+    VFS_Mount("/", &g_Ext2Driver);
 
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);

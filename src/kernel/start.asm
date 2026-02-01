@@ -1,5 +1,5 @@
 bits 32
-section .text
+section .entry
 
 ; Linker needs this to resolve the C function call
 extern start

@@ -74,17 +74,18 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     printf("  Physical Buffer: 0x%x\r\n", vbe_screen.physical_buffer);
     KernelStart kernelStart = (KernelStart)Kernel; // Kernel's entry point
     __asm__ volatile (
-        "push %0\n\t"
-        "push %1\n\t"
-        "call *%2\n\t"
-        "add $8, %%esp"
+        "call *%2"
         : /* no outputs */
-        : "r"((uint32_t)bootDrive), "r"(&vbe_screen), "r"(kernelStart)
+        : "b"((uint32_t)bootDrive), "a"(&vbe_screen), "r"(kernelStart)
         : "memory"
     );
 
+    draw_pixel(600, 600, 0x00FF2277); // Draw a light-green pixel
+    
 end:
     for (;;);
 }
+
+
 
 // testing
