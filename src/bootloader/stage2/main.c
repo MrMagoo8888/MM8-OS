@@ -73,14 +73,43 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     printf("  BPP: %u\r\n", vbe_screen.bpp);
     printf("  Physical Buffer: 0x%x\r\n", vbe_screen.physical_buffer);
     KernelStart kernelStart = (KernelStart)Kernel; // Kernel's entry point
-    __asm__ volatile (
-        "call *%2"
-        : /* no outputs */
-        : "b"((uint32_t)bootDrive), "a"(&vbe_screen), "r"(kernelStart)
-        : "memory"
-    );
 
-    draw_pixel(600, 600, 0x00FF2277); // Draw a light-green pixel
+    // DEBUG: Dump the first 16 bytes of the loaded kernel to text (check emulator logs/memory)
+    printf("Kernel @ 0x%x: ", (uint32_t)kernelStart);
+    uint8_t* kPtr = (uint8_t*)kernelStart;
+    for(int i = 0; i < 16; i++) printf("%x ", kPtr[i]);
+    printf("\r\n");
+
+    // DEBUG: Visual Checks
+    // If WHITE pixel appears below the pink one: You have an ELF file, not a flat binary.
+    if (Kernel[0] == 0x7F && Kernel[1] == 'E' && Kernel[2] == 'L' && Kernel[3] == 'F') {
+        draw_pixel(600, 620, 0xFFFFFFFF); 
+        // Read entry point from ELF header (offset 24 for 32-bit ELF)
+        kernelStart = (KernelStart)(*(uint32_t*)(Kernel + 24));
+    }
+    
+    // If GREY pixel appears: The kernel memory is empty (load failed or wrong address).
+    if (Kernel[0] == 0x00 && Kernel[1] == 0x00) {
+        draw_pixel(620, 620, 0xFF888888); 
+    }
+
+    draw_pixel(600, 600, 0x00FF00FF); // Draw a light-magenta pixel
+      __asm__ volatile (
+        "push %%ebx\n\t"
+        "push %%ecx\n\t"
+        "call *%%eax\n\t"
+        "add $8, %%esp"
+        : /* no outputs */
+        : "b"((uint32_t)bootDrive), "c"(&vbe_screen), "a"(kernelStart)
+        : "memory", "cc"
+    );
+    
+
+    draw_pixel(650, 650, 0x00FF0000); // Draw a bright red pixel
+
+
+    // crash for testing
+    // __asm__ volatile ("int $0x13");
     
 end:
     for (;;);
