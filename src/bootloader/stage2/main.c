@@ -73,34 +73,25 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     printf("  BPP: %u\r\n", vbe_screen.bpp);
     printf("  Physical Buffer: 0x%x\r\n", vbe_screen.physical_buffer);
     KernelStart kernelStart = (KernelStart)Kernel; // Kernel's entry point
-
-    // DEBUG: Dump the first 16 bytes of the loaded kernel to text (check emulator logs/memory)
-    printf("Kernel @ 0x%x: ", (uint32_t)kernelStart);
-    uint8_t* kPtr = (uint8_t*)kernelStart;
-    for(int i = 0; i < 16; i++) printf("%x ", kPtr[i]);
-    printf("\r\n");
-
-    // DEBUG: Visual Checks
-    // If WHITE pixel appears below the pink one: You have an ELF file, not a flat binary.
-    if (Kernel[0] == 0x7F && Kernel[1] == 'E' && Kernel[2] == 'L' && Kernel[3] == 'F') {
-        draw_pixel(600, 620, 0xFFFFFFFF); 
-        // Read entry point from ELF header (offset 24 for 32-bit ELF)
-        kernelStart = (KernelStart)(*(uint32_t*)(Kernel + 24));
-    }
     
-    // If GREY pixel appears: The kernel memory is empty (load failed or wrong address).
-    if (Kernel[0] == 0x00 && Kernel[1] == 0x00) {
-        draw_pixel(620, 620, 0xFF888888); 
-    }
+    // Draw a final pixel to indicate we are about to jump
+    draw_pixel(600, 600, 0x00FF00FF); 
 
-    draw_pixel(600, 600, 0x00FF00FF); // Draw a light-magenta pixel
-      __asm__ volatile (
-        "push %%ebx\n\t"
-        "push %%ecx\n\t"
-        "call *%%eax\n\t"
-        "add $8, %%esp"
+    // Mask all interrupts on the legacy PIC to prevent IRQs from crashing the kernel
+    // even if the kernel enables interrupts (STI) before remapping the PIC.
+    x86_outb(0x21, 0xFF);
+    x86_outb(0xA1, 0xFF);
+
+    // Jump to Kernel
+    // We disable interrupts (CLI) because the kernel has no IDT set up yet.
+    __asm__ volatile (
+        "cli\n\t"             
+        "push %%ebx\n\t"      // Arg2: bootDrive
+        "push %%ecx\n\t"      // Arg1: &vbe_screen
+        "call *%%eax\n\t"     // Jump to kernel
+        "add $8, %%esp"       // Clean stack (if kernel returns)
         : /* no outputs */
-        : "b"((uint32_t)bootDrive), "c"(&vbe_screen), "a"(kernelStart)
+        : "a"(kernelStart), "b"((uint32_t)bootDrive), "c"(&vbe_screen)
         : "memory", "cc"
     );
     

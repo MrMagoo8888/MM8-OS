@@ -723,15 +723,6 @@ Servicing hardware INT=0x0e
 Servicing hardware INT=0x0e
 Servicing hardware INT=0x0e
 Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
-Servicing hardware INT=0x0e
 Servicing hardware INT=0x08
 Servicing hardware INT=0x0e
 Servicing hardware INT=0x0e
@@ -891,10 +882,19 @@ Servicing hardware INT=0x0e
 Servicing hardware INT=0x0e
 Servicing hardware INT=0x0e
 Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
+Servicing hardware INT=0x0e
 Servicing hardware INT=0x08
-     0: v=08 e=0000 i=0 cpl=0 IP=0008:0010206d pc=0010206d SP=0010:0009fec7 env->regs[R_EAX]=000000b8
-EAX=000000b8 EBX=00000000 ECX=00000001 EDX=00000021
-ESI=0000294e EDI=00132c23 EBP=0009ffef ESP=0009fec7
+     0: v=08 e=0000 i=0 cpl=0 IP=0008:0010206d pc=0010206d SP=0010:0009fec7 env->regs[R_EAX]=000000fc
+EAX=000000fc EBX=00000000 ECX=00000001 EDX=00000021
+ESI=00002876 EDI=00132c23 EBP=0009ffef ESP=0009fec7
 EIP=0010206d EFL=00000202 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
 ES =0000 00000000 0000ffff 00009300 DPL=0 DS16 [-WA]
 CS =0008 00000000 ffffffff 00cf9a00 DPL=0 CS32 [-R-]
@@ -912,9 +912,9 @@ DR6=ffff0ff0 DR7=00000400
 CCS=00000010 CCD=0009fec7 CCO=ADDL
 EFER=0000000000000000
 check_exception old: 0xffffffff new 0xd
-     1: v=0d e=0042 i=0 cpl=0 IP=0008:0010206d pc=0010206d SP=0010:0009fec7 env->regs[R_EAX]=000000b8
-EAX=000000b8 EBX=00000000 ECX=00000001 EDX=00000021
-ESI=0000294e EDI=00132c23 EBP=0009ffef ESP=0009fec7
+     1: v=0d e=0042 i=0 cpl=0 IP=0008:0010206d pc=0010206d SP=0010:0009fec7 env->regs[R_EAX]=000000fc
+EAX=000000fc EBX=00000000 ECX=00000001 EDX=00000021
+ESI=00002876 EDI=00132c23 EBP=0009ffef ESP=0009fec7
 EIP=0010206d EFL=00000202 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
 ES =0000 00000000 0000ffff 00009300 DPL=0 DS16 [-WA]
 CS =0008 00000000 ffffffff 00cf9a00 DPL=0 CS32 [-R-]
@@ -932,9 +932,9 @@ DR6=ffff0ff0 DR7=00000400
 CCS=00000010 CCD=0009fec7 CCO=ADDL
 EFER=0000000000000000
 check_exception old: 0xd new 0xd
-     2: v=08 e=0000 i=0 cpl=0 IP=0008:0010206d pc=0010206d SP=0010:0009fec7 env->regs[R_EAX]=000000b8
-EAX=000000b8 EBX=00000000 ECX=00000001 EDX=00000021
-ESI=0000294e EDI=00132c23 EBP=0009ffef ESP=0009fec7
+     2: v=08 e=0000 i=0 cpl=0 IP=0008:0010206d pc=0010206d SP=0010:0009fec7 env->regs[R_EAX]=000000fc
+EAX=000000fc EBX=00000000 ECX=00000001 EDX=00000021
+ESI=00002876 EDI=00132c23 EBP=0009ffef ESP=0009fec7
 EIP=0010206d EFL=00000202 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
 ES =0000 00000000 0000ffff 00009300 DPL=0 DS16 [-WA]
 CS =0008 00000000 ffffffff 00cf9a00 DPL=0 CS32 [-R-]
