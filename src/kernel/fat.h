@@ -117,7 +117,7 @@ enum FAT_Attributes
     FAT_ATTRIBUTE_LFN = FAT_ATTRIBUTE_READ_ONLY | FAT_ATTRIBUTE_HIDDEN | FAT_ATTRIBUTE_SYSTEM | FAT_ATTRIBUTE_VOLUME_ID
 };
 
-bool FAT_Initialize(DISK* disk);
+bool FAT_Initialize(DISK* disk); // This should already be correct based on your context
 FAT_File* FAT_Open(DISK* disk, const char* path, FAT_OpenMode mode);
 uint32_t FAT_Read(DISK* disk, FAT_File* file, uint32_t byteCount, void* dataOut);
 uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* dataIn);

@@ -92,10 +92,10 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
                 0x00100000                        phys = 0x100000
                 0x00100000                        . = phys
 
-.entry          0x00100000      0x18a
+.entry          0x00100000      0x190
                 0x00100000                        __entry_start = .
  *(.entry)
- .entry         0x00100000      0x18a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ .entry         0x00100000      0x190 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
                 0x00100000                start
 
 .text           0x00100190     0xd3f6
@@ -659,8 +659,8 @@ LOAD /home/mm8/Documents/OS/MM8/MM8-OS/toolchain/i686-elf/lib/gcc/i686-elf/13.3.
  *fill*         0x0010dc83        0x1 
  .rodata        0x0010dc84       0x36 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/graphics.obj
  *fill*         0x0010dcba        0x2 
- .rodata        0x0010dcbc      0x2e0 /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
- *fill*         0x0010df9c        0x4 
+ .rodata        0x0010dcbc      0x2cc /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/main.obj
+ *fill*         0x0010df88       0x18 
  .rodata        0x0010dfa0      0x48a /home/mm8/Documents/OS/MM8/MM8-OS/build/kernel/c/stdio.obj
                 0x0010e37c                g_HexChars
  *fill*         0x0010e42a        0x2 
