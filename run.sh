@@ -1,3 +1,4 @@
-# The first line is commented out as it causes a "write lock" error.
-# We will use the second line, which boots from a floppy and uses a separate hard disk image.
-qemu-system-i386 -boot order=a -drive file=build/main_floppy.img,format=raw,if=floppy -drive file=build/main_hdd.img,format=raw,if=ide,index=0,media=disk -d int,cpu_reset -D qemu.log -m 4096 -no-reboot
+# This script now boots from a single, combined hard disk image.
+# Use 'sudo ./package.sh' to create 'build/packaged.img' before running this.
+
+qemu-system-i386 -boot order=c -drive file=build/packaged.img,format=raw,if=ide,index=0,media=disk -display sdl -d int,cpu_reset,guest_errors -D qemu.log -m 4096 -no-reboot
