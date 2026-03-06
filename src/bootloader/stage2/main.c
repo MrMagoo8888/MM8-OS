@@ -25,13 +25,17 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     {
         printf("Disk init error\r\n");
         goto end;
+        draw_pixel(100, 800, 0x00FF0000); // Draw a RED pixel
     }
+    draw_pixel(200, 200, 0x00FF6699); // Draw a PINK pixel
 
     if (!FAT_Initialize(&disk))
     {
         printf("FAT init error\r\n");
         goto end;
+        draw_pixel(200, 800, 0x00123456); // Draw a deep sea blue pixel
     }
+    draw_pixel(250, 250, 0x00FFFF00); // Draw a YELLOW pixel
 
     // load kernel
     FAT_File* fd = FAT_Open(&disk, "/kernel.bin");
@@ -43,6 +47,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
         kernelBuffer += read;
     }
     FAT_Close(fd);
+    draw_pixel(300, 300, 0x00FF00FF); // Draw a MAGENTA pixel
 
     // Prepare to execute the kernel
     // We will pass a pointer to the vbe_screen info structure in the EAX register
@@ -54,6 +59,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
     printf("  Pitch: %u\r\n", vbe_screen.pitch);
     printf("  BPP: %u\r\n", vbe_screen.bpp);
     printf("  Physical Buffer: 0x%x\r\n", vbe_screen.physical_buffer);
+    draw_pixel(350, 350, 0x0000FFFF); // Draw a CYAN pixel
     KernelStart kernelStart = (KernelStart)Kernel; // Kernel's entry point
     __asm__ volatile (
         "push %0\n\t"
@@ -65,6 +71,7 @@ void __attribute__((cdecl)) start(uint16_t bootDrive)
         : "memory"
     );
 
+    draw_pixel(300, 800, 0x0000FFFF); // Draw a CYAN pixel
 end:
     for (;;);
 }
