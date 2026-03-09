@@ -8,3 +8,7 @@ bx_enh_dbg.ini
 __pycache__/
 evelyn.bmp
 test.bmp
+build/
+qemu.log
+build/main_floppy.img
+build/main_hdd.img
