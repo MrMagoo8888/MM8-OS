@@ -5,8 +5,7 @@
 #include <arch/i686/irq.h>
 #include <arch/i686/io.h>
 #include <arch/i686/keyboard.h> // This include is already present, but good to confirm
-#include "disk.h"
-#include "ff.h"
+#include "fat.h"
 #include <arch/i686/keyboard.h>
 #include "string.h"
 #include "heap.h"
@@ -18,12 +17,9 @@
 #include "graphics.h"
 #include <apps/imageview/bmp.h>
 #include "gdt.h"
-#include "vfs.h"
-#include "fat.h"
 
 
 DISK g_Disk;
-FATFS g_fs;
 
 // Add a global tick counter, updated by the timer IRQ
 volatile uint32_t g_ticks = 0;
@@ -63,15 +59,13 @@ void add_to_history(const char* command) {
 void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
 {
     // Crash the system to verify we've reached the kernel.
-    // __asm__ volatile ("int $0x3"); // Ensure this is commented out!
+    //__asm__ volatile ("int $0x3"); It does reach kernel!!
     
     // Clear BSS first. This must happen before we copy data into static variables.
     memset(&__bss_start, 0, (&__end) - (&__bss_start));
 
     // Copy the VBE info from the bootloader to a safe location in the kernel's memory.
-    if (vbe_info) {
-        memcpy(&s_vbe_screen, vbe_info, sizeof(VbeScreenInfo));
-    }
+    memcpy(&s_vbe_screen, vbe_info, sizeof(VbeScreenInfo));
 
     // Now that BSS is clear, we can safely initialize our global variables.
     g_vbe_screen = &s_vbe_screen;
@@ -102,17 +96,13 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     printf("\n\nType 'help' for a list of commands.\n\n");
 
-    // Initialize FatFs
-    FRESULT res = f_mount(&g_fs, "0:", 1);
-    if (res != FR_OK) {
-        printf("FatFs mount failed with error code: %d\n", res);
-    } else {
-        printf("FatFs mounted successfully.\n");
+    // Initialize disk and FAT filesystem
+    // We are booting from floppy, but we want to use the first hard disk (0x80) for our root filesystem.
+    if (!DISK_Initialize(&g_Disk, 0x80)) {
+        printf("Hard disk initialization failed.\n");
+    } else if (!FAT_Initialize(&g_Disk)) {
+        printf("FAT initialization failed on hard disk.\n");
     }
-    
-    // Initialize VFS and mount FatFs driver to root
-    VFS_Initialize();
-    VFS_Mount("/", &g_FatFsDriver);
 
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
