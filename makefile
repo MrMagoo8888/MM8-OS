@@ -68,3 +68,12 @@ clean:
 	@$(MAKE) -C src/bootloader/stage2 BUILD_DIR=$(abspath $(BUILD_DIR)) clean
 	@$(MAKE) -C src/kernel BUILD_DIR=$(abspath $(BUILD_DIR)) clean
 	@rm -rf $(BUILD_DIR)/*
+
+#
+# Run Fresh (Clean, All, Format, Run)
+#
+un: clean all
+	@echo "--> Formatting HDD (Root privileges required)..."
+	sudo ./format_hdd.sh
+	@echo "--> Starting Emulator..."
+	./run.sh
