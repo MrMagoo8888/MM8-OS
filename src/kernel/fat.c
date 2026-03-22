@@ -5,6 +5,7 @@
 #include "ctype.h"
 #include "../bootloader/stage2/memdefs.h"
 #include "stddef.h"
+#include "heap.h"
 
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
@@ -36,7 +37,7 @@ typedef enum {
 
 static FAT_Type g_FatType = FAT_TYPE_UNKNOWN;
 static FAT_Data* g_Data;
-static uint8_t g_Fat[SECTOR_SIZE * 16]; // Max FAT size of 16 sectors (8KB)
+static uint8_t* g_Fat = NULL;
 static uint32_t g_DataSectionLba;
 
 // This will hold the starting LBA of our FAT partition
@@ -49,9 +50,21 @@ bool FAT_ReadBootSector(DISK* disk)
 
 bool FAT_ReadFat(DISK* disk)
 {
-    // Read only as many sectors as we have space for in our buffer.
-    uint32_t sectorsToRead = min(g_Data->BS.BootSector.SectorsPerFat, sizeof(g_Fat) / SECTOR_SIZE);
-    return DISK_ReadSectors(disk, g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors, sectorsToRead, g_Fat);
+    uint32_t sectorsRemaining = g_Data->BS.BootSector.SectorsPerFat;
+    uint32_t lba = g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors;
+    uint8_t* buffer = g_Fat;
+
+    // Loop because DISK_ReadSectors uses uint8_t for count (max 255)
+    while (sectorsRemaining > 0) {
+        uint8_t count = (sectorsRemaining > 128) ? 128 : (uint8_t)sectorsRemaining;
+        if (!DISK_ReadSectors(disk, lba, count, buffer))
+            return false;
+        
+        lba += count;
+        buffer += count * SECTOR_SIZE;
+        sectorsRemaining -= count;
+    }
+    return true;
 }
 
 uint32_t FAT_ClusterToLba(uint32_t cluster)
@@ -65,8 +78,17 @@ uint32_t FAT_ClusterToLba(uint32_t cluster)
 
 bool FAT_Initialize(DISK* disk)
 {
+    // Allocate memory for the FAT_Data structure first
+    g_Data = (FAT_Data*)malloc(sizeof(FAT_Data));
+    if (!g_Data) {
+        printf("FAT: Failed to allocate FAT data structure\n");
+        return false;
+    }
+    memset(g_Data, 0, sizeof(FAT_Data));
+
     // --- Read MBR to find the partition ---
-    uint8_t mbr_buffer[SECTOR_SIZE];
+    // Use the boot sector buffer to save stack space (1KB stack usage caused crashes)
+    uint8_t* mbr_buffer = g_Data->BS.BootSectorBytes;
     if (!DISK_ReadSectors(disk, 0, 1, mbr_buffer)) {
         printf("FAT: Failed to read MBR.\n");
         return false;
@@ -80,12 +102,39 @@ bool FAT_Initialize(DISK* disk)
 
     // Get the first partition entry
     MBR_PartitionEntry* partition = (MBR_PartitionEntry*)(mbr_buffer + 0x1BE);
-    g_PartitionOffset = partition->start_lba;
-    printf("FAT: Found partition starting at LBA %u\n", g_PartitionOffset);
+    
+    // Validate the partition entry. 
+    // If we are booting a raw floppy image or the packaged image (floppy + data),
+    // Sector 0 is a Boot Sector (VBR), not an MBR. The bytes at 0x1BE are likely code.
+    // We check for valid bootable flags (0x00 or 0x80) and known FAT System IDs.
+    bool isValidMbr = (partition->bootable == 0x00 || partition->bootable == 0x80) &&
+                      (partition->system_id == 0x01 || partition->system_id == 0x04 || 
+                       partition->system_id == 0x06 || partition->system_id == 0x0B || 
+                       partition->system_id == 0x0C || partition->system_id == 0x0E);
 
-    // Allocate memory for the FAT_Data structure
-    g_Data = (FAT_Data*)MEMORY_FAT_ADDR;
+    if (isValidMbr) {
+        g_PartitionOffset = partition->start_lba;
+        printf("FAT: Found partition starting at LBA %u\n", g_PartitionOffset);
+    } else {
+        printf("FAT: No valid MBR partition found. Checking for packaged image...\n");
+        
+        // Fallback for packaged images (floppy + data partition).
+        // Standard 1.44MB floppy size is 1474560 bytes = 2880 sectors.
+        uint32_t fallbackOffset = 2880;
 
+        // Check if there is a valid boot signature at the expected offset
+        // Reuse mbr_buffer to save stack
+        if (DISK_ReadSectors(disk, fallbackOffset, 1, mbr_buffer) && 
+            *(uint16_t*)(mbr_buffer + 0x1FE) == 0xAA55) {
+            printf("FAT: Found filesystem at offset %u\n", fallbackOffset);
+            g_PartitionOffset = fallbackOffset;
+        } else {
+            // Final fallback: Assume the whole disk is the filesystem (Superfloppy)
+            printf("FAT: No filesystem found at offset %u. Assuming superfloppy (offset 0).\n", fallbackOffset);
+            g_PartitionOffset = 0;
+        }
+    }
+    
     // read boot sector
     if (!FAT_ReadBootSector(disk))
     {
@@ -156,6 +205,15 @@ bool FAT_Initialize(DISK* disk)
         }
     } else {
         printf("FAT: Detected FAT16 or unsupported filesystem\n");
+        return false;
+    }
+
+    // Allocate FAT buffer
+    uint32_t fatBytes = g_Data->BS.BootSector.SectorsPerFat * g_Data->BS.BootSector.BytesPerSector;
+    if (g_Fat) free(g_Fat);
+    g_Fat = (uint8_t*)malloc(fatBytes);
+    if (!g_Fat) {
+        printf("FAT: Failed to allocate FAT buffer (%u bytes)\n", fatBytes);
         return false;
     }
 
