@@ -51,7 +51,7 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     i686_iowait();
 
     // Wait for the drive to finish the reset.
-    int timeout = 0x0FFFFFFF; // Increased timeout significantly
+    int timeout = 0x0F; // Increased timeout significantly // Was 0x0FFFFFFF
     while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
     if (timeout == 0) {
         printf("DISK: Controller reset timeout.\n");
