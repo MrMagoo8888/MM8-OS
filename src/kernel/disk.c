@@ -51,7 +51,7 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     i686_iowait();
 
     // Wait for the drive to finish the reset.
-    int timeout = 0x0F; // Increased timeout significantly // Was 0x0FFFFFFF
+    int timeout = 100000; 
     while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
     if (timeout == 0) {
         printf("DISK: Controller reset timeout.\n");
@@ -79,10 +79,10 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     }
 
     // Poll for BSY to clear and DRQ or ERR to be set
-    timeout = 0x0FFFFFFF;
+    timeout = 100000;
     while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
 
-    timeout = 0x0FFFFFFF;
+    timeout = 100000;
     while (!(i686_inb(ATA_PRIMARY_STATUS) & (ATA_STATUS_DATA_REQUEST | ATA_STATUS_ERROR)) && --timeout);
 
     if (timeout == 0) return false;

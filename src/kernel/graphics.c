@@ -70,8 +70,10 @@ void graphics_clear_buffer(uint32_t color) {
 
     // Fill manually (assuming 32bpp)
     size_t pixels = (g_vbe_screen->height * g_vbe_screen->pitch) / 4;
-    for (size_t i = 0; i < pixels; i++) {
-        target[i] = color;
+    // Use a faster fill if possible, but at least minimize calculations
+    uint32_t *ptr = target;
+    while(pixels--) {
+        *ptr++ = color;
     }
 }
 

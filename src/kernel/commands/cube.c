@@ -138,11 +138,13 @@ static void draw_triangle(int x0, int y0, int z0, int x1, int y1, int z1, int x2
 }
 
 static void wait_for_vsync() {
+    int timeout = 1000000;
     // Wait for the current retrace to finish (if we are in one)
-    while (i686_inb(0x3DA) & 8);
+    while ((i686_inb(0x3DA) & 8) && --timeout);
     
+    timeout = 1000000;
     // Wait for the next retrace to start
-    while (!(i686_inb(0x3DA) & 8));
+    while (!(i686_inb(0x3DA) & 8) && --timeout);
 }
 
 // --- Text Drawing Helpers ---
