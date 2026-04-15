@@ -8,6 +8,8 @@
 #include "string.h"
 #include "pic.h"
 #include "stddef.h"
+#include "graphics.h"
+#include <misc/noCrash.h>
 
 #include "screen_defs.h"
 
@@ -236,6 +238,13 @@ void gets(char* buffer, int size) {
     g_CurrentInputMode = INPUT_MODE_GETS;
 
     while (!g_InputLineReady) {
+        pixelLoop();             // Keep the animation running while waiting
+        
+        // If double buffering is on, we must swap to see the pixelLoop updates
+        if (g_DoubleBufferEnabled) {
+            graphics_swap_buffer();
+        }
+
         __asm__ volatile("hlt"); // Wait for an interrupt
     }
 

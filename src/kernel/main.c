@@ -74,12 +74,17 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     g_vbe_screen = &s_vbe_screen;
 
     HAL_Initialize();
-
     heap_initialize();
-    init_tests(); // Initialize noCrash tests
     console_initialize();
+    time_initialize();
     
-    time_initialize(); // Initialize the time module
+    // Set up core interrupts before running tests or shell
+    i686_IRQ_RegisterHandler(0, timer);
+    i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
+    i686_EnableInterrupts();
+
+    init_tests(); 
+
     clrscr();
     
     printf("    ==================================================================\n");
@@ -107,12 +112,6 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     } else if (!FAT_Initialize(&g_Disk)) {
         printf("FAT initialization failed on hard disk.\n");
     }
-
-    i686_IRQ_RegisterHandler(0, timer);
-    i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
-
-    // Enable interrupts now that all handlers are set up
-    i686_EnableInterrupts();
 
     char input_buffer[256];
 
