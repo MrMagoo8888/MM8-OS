@@ -17,7 +17,6 @@
 #include "graphics.h"
 #include <apps/imageview/bmp.h>
 #include "time.h" // Include the new time.h header
-#include "gdt.h"
 #include <misc/noCrash.h>
 
 
@@ -74,7 +73,6 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     // Now that BSS is clear, we can safely initialize our global variables.
     g_vbe_screen = &s_vbe_screen;
 
-    gdt_initialize();
     HAL_Initialize();
 
     heap_initialize();

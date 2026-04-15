@@ -22,6 +22,15 @@ void time_initialize() {
 }
 
 /**
+ * @brief Returns the system uptime in milliseconds.
+ */
+uint32_t get_uptime_ms() {
+    // Use uint64_t to prevent overflow during multiplication (happens after ~11 hours at 100Hz)
+    if (TIMER_FREQUENCY_HZ == 0) return 0;
+    return (uint32_t)(((uint64_t)g_ticks * 1000) / TIMER_FREQUENCY_HZ);
+}
+
+/**
  * @brief Returns the system uptime in seconds.
  * @return The number of seconds since the system started.
  */
@@ -31,6 +40,21 @@ uint32_t get_uptime_seconds() {
         return 0;
     }
     return g_ticks / TIMER_FREQUENCY_HZ;
+}
+
+/**
+ * @brief Non-blocking check for periodic tasks.
+ * @param last_ms Pointer to a variable storing the last execution time.
+ * @param interval_ms The desired interval in milliseconds.
+ * @return true if the interval has passed, false otherwise.
+ */
+bool time_is_periodic(uint32_t* last_ms, uint32_t interval_ms) {
+    uint32_t current = get_uptime_ms();
+    if (current - *last_ms >= interval_ms) {
+        *last_ms = current;
+        return true;
+    }
+    return false;
 }
 
 /**

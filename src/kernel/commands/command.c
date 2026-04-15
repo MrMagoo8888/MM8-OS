@@ -15,6 +15,8 @@
 #include "commands/color.h"
 #include "heap.h"
 
+#include "time.h"
+
 #include <apps/imageview/bmp.h>
 
 // Command handler functions (made static as they are internal to this file)
@@ -37,6 +39,8 @@ static void handle_help() {
     printf(" - json_test: Runs a test of the cJSON library and heap.\n");
     printf(" - cube: Runs a 3D rotating cube test.\n");
     printf(" - memory: Show heap memory usage statistics.\n");
+    printf(" - bmp [file]: View a BMP image file. Example: bmp /image.bmp (Work in Progress)\n");
+    printf(" - uptime: Show the system uptime.\n");
 }
 
 static void handle_echo(const char* input) {
@@ -93,6 +97,17 @@ static void handle_memory() {
     printf("  Overhead:   %u bytes\n", total - used - free_mem);
 }
 
+void handleUptime() {
+    uint32_t ms = get_uptime_ms();
+    uint32_t seconds = ms / 1000;
+    uint32_t minutes = seconds / 60;
+    uint32_t hours = minutes / 60;
+    uint32_t days = hours / 24;
+    printf("System Uptime Statistics:\n");
+    printf("  Total: %lu ms\n", ms);
+    printf("  Clock: %lu days, %02lu:%02lu:%02lu\n", days, hours % 24, minutes % 60, seconds % 60);
+}
+
 void command_dispatch(const char* input) {
     if (strcmp(input, "help") == 0) {
         handle_help();
@@ -106,6 +121,10 @@ void command_dispatch(const char* input) {
         editor_handle_command(input);
     } else if (strcmp(input, "afk") == 0) {
         afk();
+    } else if (strcmp(input, "uptime") == 0) {
+        handleUptime();
+    } else if (strcmp(input, "json_test") == 0) {
+        handle_json_test();
     } else if (memcmp(input, "color ", 6) == 0) {
         handle_color(input);
     } else if (input[0] == '\0') {
