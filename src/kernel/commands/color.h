@@ -11,4 +11,6 @@ void handle_color(const char* input);
 // you can also keep this in screendefs.h as planned)
 extern unsigned char default_screen_color;
 
+extern unsigned char BACKGROUND_COLOR;
+
 #endif // COLOR_H

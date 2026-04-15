@@ -17,6 +17,7 @@
 #include "graphics.h"
 #include <apps/imageview/bmp.h>
 #include "gdt.h"
+#include <misc/noCrash.h>
 
 
 DISK g_Disk;
@@ -76,6 +77,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     HAL_Initialize();
 
     heap_initialize();
+    init_tests(); // Initialize noCrash tests
     console_initialize();
     
     clrscr();
