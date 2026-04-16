@@ -78,10 +78,20 @@ bool FAT_Initialize(DISK* disk)
         return false;
     }
 
-    // Get the first partition entry
-    MBR_PartitionEntry* partition = (MBR_PartitionEntry*)(mbr_buffer + 0x1BE);
-    g_PartitionOffset = partition->start_lba;
-    printf("FAT: Found partition starting at LBA %u\n", g_PartitionOffset);
+    // Check if sector 0 is a Boot Sector (Superfloppy) or an MBR
+    // FAT boot sectors usually start with 0xEB or 0xE9
+    if (mbr_buffer[0] == 0xEB || mbr_buffer[0] == 0xE9) {
+        g_PartitionOffset = 0;
+        printf("FAT: No partition table found, assuming Superfloppy (LBA 0)\n");
+    } else {
+        // Get the first partition entry from MBR
+        MBR_PartitionEntry* partition = (MBR_PartitionEntry*)(mbr_buffer + 0x1BE);
+        g_PartitionOffset = partition->start_lba;
+        if (g_PartitionOffset == 0) {
+             printf("FAT: Warning: Partition offset is 0 in MBR.\n");
+        }
+        printf("FAT: Found partition starting at LBA %u\n", g_PartitionOffset);
+    }
 
     // Allocate memory for the FAT_Data structure
     g_Data = (FAT_Data*)MEMORY_FAT_ADDR;
