@@ -36,7 +36,7 @@ SOURCES_ASM = $(wildcard *.asm) \
 
 OBJECTS_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM))
 
-.PHONY: all kernel clean always
+.PHONY: all kernel clean always fin
 
 all: kernel
 
@@ -61,3 +61,7 @@ arch/i686/isrs_gen.c arch/i686/isrs_gen.inc:
 
 clean:
 	rm -f $(BUILD_DIR)/kernel.bin
+
+fin: clean all
+	sudo ../../package.sh
+	../../run.sh

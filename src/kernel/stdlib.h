@@ -1,6 +1,16 @@
 #pragma once
 
-#include "heap.h"
+#include "stdint.h"
+#include "stddef.h"
 
-// This file provides standard library function declarations for our kernel.
-// When a library includes <stdlib.h>, the compiler will find this file.
+/**
+ * @brief The maximum value returned by rand().
+ */
+#define RAND_MAX 0x7FFFFFFF
+
+void srand(uint32_t seed);
+int rand();
+
+void* malloc(size_t size);
+void free(void* ptr);
+void* realloc(void* ptr, size_t new_size);

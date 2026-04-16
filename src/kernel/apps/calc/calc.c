@@ -4,6 +4,7 @@
 #include "stdlib.h" // For gets
 #include "ctype.h" // For isdigit, to skip non-digit characters
 #include "stdbool.h" // For bool type
+#include "arch/i686/keyboard.h"
 
 // Simple atoi implementation (since strtod is a stub and we need integer parsing)
 // This version does NOT skip leading whitespace; that's handled by skip_whitespace.

@@ -1,5 +1,5 @@
 TARGET_ASMFLAGS += -f elf
-TARGET_CFLAGS += -ffreestanding -nostdlib -I. -I./libs/cjson
+TARGET_CFLAGS += -ffreestanding -nostdlib -I. -I./libs/cJSON
 TARGET_LIBS += -lgcc
 TARGET_LINKFLAGS += -T linker.ld -nostdlib
 
@@ -12,7 +12,7 @@ SOURCES_C = $(wildcard *.c) \
 			$(wildcard */*.c) \
 			$(wildcard */*/*.c) \
 			./math.c \
-			./libs/cjson/cJSON.c \
+			./libs/cJSON/cJSON.c \
 			$(wildcard */*/*/*.c) \
 			arch/i686/isrs_gen.c
 
@@ -38,7 +38,7 @@ SOURCES_ASM = $(wildcard *.asm) \
 
 OBJECTS_ASM = $(patsubst %.asm, $(BUILD_DIR)/kernel/asm/%.obj, $(SOURCES_ASM))
 
-.PHONY: all kernel clean always
+.PHONY: all kernel clean always fin
 
 all: kernel
 
@@ -63,3 +63,7 @@ arch/i686/isrs_gen.c arch/i686/isrs_gen.inc:
 
 clean:
 	rm -f $(BUILD_DIR)/kernel.bin
+
+fin: clean all
+	sudo ../../package.sh
+	../../run.sh

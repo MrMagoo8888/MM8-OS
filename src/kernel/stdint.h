@@ -11,29 +11,20 @@
 
 // Basic integer types based on platform assumptions
 #if defined(__x86_64__) || defined(_WIN64)
-  typedef char int8_t;
-  typedef unsigned char uint8_t;
-  typedef short int16_t;
-  typedef unsigned short uint16_t;
-  typedef int int32_t;
-  typedef unsigned int uint32_t;
-  typedef long long int64_t;
-  typedef unsigned long long uint64_t;
-
   typedef signed char int8_t;
   typedef unsigned char uint8_t;
   typedef signed short int16_t;
   typedef unsigned short uint16_t;
-  typedef signed long int int32_t;
-  typedef unsigned long int uint32_t;
-  typedef signed long long int int64_t;
-  typedef unsigned long long int uint64_t;
+  typedef signed int int32_t;
+  typedef unsigned int uint32_t;
+  typedef signed long long int64_t;
+  typedef unsigned long long uint64_t;
 #elif defined(__i386__) || defined(_WIN32)
-  typedef char int8_t;
+  typedef signed char int8_t;
   typedef unsigned char uint8_t;
-  typedef short int16_t;
+  typedef signed short int16_t;
   typedef unsigned short uint16_t;
-  typedef int int32_t;
+  typedef signed int int32_t;
   typedef unsigned int uint32_t;
   typedef long long int64_t; // May depend on the platform's long long size
   typedef unsigned long long uint64_t;

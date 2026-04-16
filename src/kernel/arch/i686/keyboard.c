@@ -184,7 +184,7 @@ void keyboard_irq_handler(Registers* regs) {
     else
         c = scancode_ascii[scancode];
 
-    if (g_CurrentInputMode == INPUT_MODE_GETCH) {
+    if (g_CurrentInputMode == INPUT_MODE_GETCH || g_CurrentInputMode == INPUT_MODE_NONE) {
         if (c != 0 || g_CharBuffer != -1) { // Pass through printable chars or special keys
             if (!g_CharReady) {
                 if (c != 0) g_CharBuffer = c; // Prioritize special keys set earlier
@@ -283,4 +283,8 @@ int getch() {
     __asm__ volatile("sti"); // Re-enable interrupts
 
     return c;
+}
+
+int kbhit() {
+    return g_CharReady;
 }

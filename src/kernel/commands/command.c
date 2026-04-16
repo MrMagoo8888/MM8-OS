@@ -15,6 +15,8 @@
 #include "commands/color.h"
 #include "heap.h"
 
+#include "threeD/rand1.h"
+
 #include "time.h"
 
 #include <apps/imageview/bmp.h>
@@ -131,6 +133,12 @@ void command_dispatch(const char* input) {
         // Empty input, do nothing
     } else if (strcmp(input, "credits") == 0) {
         credits();
+    } else if (strcmp(input, "mm8Splash") == 0) {
+        mm8Splash();
+    } else if (strcmp(input, "rand1") == 0) {
+        handle_rand1();
+    } else if (strcmp(input, "rand2") == 0) {
+        handle_rand2();
     } else if (memcmp(input, "json_test", 9) == 0) {
         handle_json_test();
     } else if (memcmp(input, "calc", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
