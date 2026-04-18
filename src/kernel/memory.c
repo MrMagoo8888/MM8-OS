@@ -24,10 +24,27 @@ void* memcpy(void* dst, const void* src, size_t num)
 
 void * memset(void * ptr, int value, size_t num)
 {
-    uint8_t* u8Ptr = (uint8_t *)ptr;
+    uint8_t* u8Ptr = (uint8_t*)ptr;
 
-    for (size_t i = 0; i < num; i++)
-        u8Ptr[i] = (uint8_t)value;
+    // Optimization: Fill 4 bytes at a time if possible
+    if (num >= 4 && ((uintptr_t)ptr % 4 == 0)) {
+        uint32_t v32 = (uint8_t)value;
+        v32 |= (v32 << 8);
+        v32 |= (v32 << 16);
+
+        uint32_t* u32Ptr = (uint32_t*)ptr;
+        size_t n32 = num / 4;
+        for (size_t i = 0; i < n32; i++) {
+            u32Ptr[i] = v32;
+        }
+
+        u8Ptr += n32 * 4;
+        num %= 4;
+    }
+
+    while (num--) {
+        *u8Ptr++ = (uint8_t)value;
+    }
 
     return ptr;
 }

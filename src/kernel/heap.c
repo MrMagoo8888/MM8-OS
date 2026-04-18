@@ -69,19 +69,24 @@ void* malloc(size_t size) {
 }
 
 void* malloc_aligned(size_t size, size_t alignment) {
-    if (size == 0 || alignment == 0) return NULL;
+    if (size == 0) return NULL;
+    if (alignment == 0) return malloc(size);
 
-    // Allocate extra space to allow for alignment adjustment
-    // and store the original pointer so we can free it later.
+    // Ensure alignment is a power of two
+    if (alignment & (alignment - 1)) return NULL;
+
+    // Total size: requested + alignment padding + space for pointer storage
     size_t total_size = size + alignment + sizeof(void*);
     void* raw_ptr = malloc(total_size);
     if (!raw_ptr) return NULL;
 
-    // Calculate the aligned address
-    uintptr_t addr = (uintptr_t)raw_ptr + sizeof(void*);
-    uintptr_t aligned_addr = (addr + (alignment - 1)) & ~(alignment - 1);
+    // Calculate the aligned address. 
+    // We leave space for the pointer by adding sizeof(void*)
+    uintptr_t raw_addr = (uintptr_t)raw_ptr;
+    uintptr_t aligned_addr = (raw_addr + sizeof(void*) + (alignment - 1)) & ~(alignment - 1);
 
-    // Store the original pointer right before the aligned address
+    // Store the original 'raw' pointer immediately before the aligned address.
+    // This allows free_aligned() to find the original block to free.
     ((void**)aligned_addr)[-1] = raw_ptr;
 
     return (void*)aligned_addr;

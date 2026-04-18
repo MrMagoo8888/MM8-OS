@@ -37,9 +37,6 @@ static void ehci_setup_qtd_buffer(EHCI_qTD* qtd, void* buffer, uint32_t len) {
     }
 }
 
-// Forward declarations for aligned allocation
-extern void* malloc_aligned(size_t size, size_t alignment);
-
 // Helper to wait for a transfer to complete
 static bool ehci_wait_qtd(volatile EHCI_qTD* qtd) {
     uint32_t timeout = 1000000;
