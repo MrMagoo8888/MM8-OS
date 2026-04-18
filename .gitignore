@@ -8,3 +8,8 @@ bx_enh_dbg.ini
 __pycache__/
 evelyn.bmp
 qemu.log
+
+# MM8-OS Build Artifacts
+build/
+*.img
+*.bin
