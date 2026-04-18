@@ -124,3 +124,6 @@ uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* d
 void FAT_Close(DISK* disk, FAT_File* file);
 bool FAT_Seek(DISK* disk, FAT_File* file, uint32_t offset);
 bool FAT_FindFile(DISK* disk, FAT_File* file, const char* name, FAT_DirectoryEntry* entryOut);
+bool FAT_ReadEntry(DISK* disk, FAT_File* file, FAT_DirectoryEntry* dirEntry);
+
+extern FAT_Data* g_Data;

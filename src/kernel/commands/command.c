@@ -30,6 +30,7 @@ static void handle_help() {
 
     printf("Available commands:\n\n");
     printf(" - help: Show this message\n");
+    printf(" - ls: List files in the root directory\n");
     printf(" - echo [text]: Print back the given text\n");
     printf(" - cls: Clear the screen\n");
     printf(" - afk: Activate AFK mode with a screensaver\n");
@@ -43,6 +44,39 @@ static void handle_help() {
     printf(" - memory: Show heap memory usage statistics.\n");
     printf(" - bmp [file]: View a BMP image file. Example: bmp /image.bmp (Work in Progress)\n");
     printf(" - uptime: Show the system uptime.\n");
+}
+
+static void handle_ls() {
+    FAT_File* root = &g_Data->RootDirectory.Public;
+    if (!FAT_Seek(&g_Disk, root, 0)) {
+        printf("ls: Failed to seek root directory\n");
+        return;
+    }
+
+    FAT_DirectoryEntry entry;
+    printf("Directory of /\n\n");
+    
+    while (FAT_ReadEntry(&g_Disk, root, &entry)) {
+        if (entry.Name[0] == 0x00) break;   // End of directory
+        if (entry.Name[0] == 0xE5) continue; // Deleted entry
+        if (entry.Attributes & FAT_ATTRIBUTE_VOLUME_ID) continue;
+
+        // Simple 8.3 name formatting
+        char name[13];
+        int pos = 0;
+        for (int i = 0; i < 8 && entry.Name[i] != ' '; i++) name[pos++] = entry.Name[i];
+        if (entry.Name[8] != ' ') {
+            name[pos++] = '.';
+            for (int i = 8; i < 11 && entry.Name[i] != ' '; i++) name[pos++] = entry.Name[i];
+        }
+        name[pos] = '\0';
+
+        if (entry.Attributes & FAT_ATTRIBUTE_DIRECTORY) {
+            printf("  [DIR] %s\n", name);
+        } else {
+            printf("  %8u  %s\n", entry.Size, name);
+        }
+    }
 }
 
 static void handle_echo(const char* input) {
@@ -113,6 +147,8 @@ void handleUptime() {
 void command_dispatch(const char* input) {
     if (strcmp(input, "help") == 0) {
         handle_help();
+    } else if (strcmp(input, "ls") == 0) {
+        handle_ls();
     } else if (strcmp(input, "cls") == 0) {
         clrscr();
     } else if (memcmp(input, "echo ", 5) == 0) {
@@ -143,16 +179,20 @@ void command_dispatch(const char* input) {
         handle_rand3();
     } else if (strcmp(input, "rand4") == 0) {
         handle_rand4();
-    } else if (memcmp(input, "json_test", 9) == 0) {
-        handle_json_test();
     } else if (memcmp(input, "calc", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
         handle_calc(input);
     } else if (memcmp(input, "fontsize ", 9) == 0) {
         handle_fontsize(input);
     } else if (strcmp(input, "cube") == 0) {
         cube_test();
-    } else if (memcmp(input, "bmp ", 4) == 0) {     // works, loads most of file then crashes, likely a memory or FAT issue as the big one (5mb) 
-        bmp_view(input + 4);                        // insta-crashes but smaller ones work a bit. Ill look tommorow, review at coding club
+    } else if (memcmp(input, "bmp", 3) == 0 && (input[3] == ' ' || input[3] == '\0')) {
+        const char* arg = input + 3;
+        while (*arg == ' ') arg++; // Skip extra spaces
+        if (*arg == '\0') {
+            printf("Usage: bmp [file]\n");
+        } else {
+            bmp_view(arg);
+        }
     } else if (strcmp(input, "memory") == 0) {
         handle_memory();
     } else {
