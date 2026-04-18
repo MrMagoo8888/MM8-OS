@@ -15,3 +15,7 @@ int tolower(int c) {
 int isdigit(int c) {
     return c >= '0' && c <= '9';
 }
+
+int isprint(int c) {
+    return (c >= 0x20 && c <= 0x7E);
+}

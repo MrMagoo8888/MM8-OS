@@ -30,6 +30,16 @@
 // This is a placeholder for a real ATA PIO driver.
 // For now, it does nothing but provides the interface for the FAT driver.
 
+// The ATA spec requires a 400ns delay after certain operations.
+// Reading the Alternate Status register 4 times is the standard way to achieve this.
+static void ATA_Wait400ns(void) {
+    // Reading the Alternate Status register is safer than Status
+    // because it doesn't affect the interrupt state.
+    for (int i = 0; i < 4; i++) {
+        i686_inb(ATA_PRIMARY_CONTROL);
+    }
+}
+
 bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     if (driveNumber < 0x80) {
         printf("DISK: Cannot initialize floppy drive %d with ATA driver.\n", driveNumber);
@@ -38,21 +48,26 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
 
     // Translate BIOS drive number (e.g., 0x80 for hda) to ATA drive ID (0 for master)
     disk->id = driveNumber - 0x80;
+    disk->type = DISK_TYPE_ATA; // Default to ATA for now
+
+    // TODO: If PCI discovery finds a USB drive, set type to DISK_TYPE_USB
 
     // --- Stage 1: Software Reset ---
     // Select the master drive
     i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xA0);
-    i686_iowait();
+    ATA_Wait400ns();
 
     // Perform a software reset
     i686_outb(ATA_PRIMARY_CONTROL, 0x04); // Set SRST (Software Reset)
-    i686_iowait();
+    ATA_Wait400ns();
     i686_outb(ATA_PRIMARY_CONTROL, 0x00); // Clear SRST
-    i686_iowait();
+    ATA_Wait400ns();
 
     // Wait for the drive to finish the reset.
-    int timeout = 100000; 
-    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
+    // Real hardware can take a long time to clear BSY after reset.
+    uint32_t timeout = 1000000; 
+    while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
+
     if (timeout == 0) {
         printf("DISK: Controller reset timeout.\n");
         return false;
@@ -60,30 +75,36 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
 
     // --- Stage 2: IDENTIFY command ---
     // Select the master drive again
-    i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xA0);
+    i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xA0 | (disk->id << 4));
+    ATA_Wait400ns();
 
     // Zero out registers
     i686_outb(ATA_PRIMARY_SECTOR_COUNT, 0);
     i686_outb(ATA_PRIMARY_LBA_LOW, 0);
     i686_outb(ATA_PRIMARY_LBA_MID, 0);
     i686_outb(ATA_PRIMARY_LBA_HIGH, 0);
+    ATA_Wait400ns();
 
     // Send IDENTIFY DEVICE command
     i686_outb(ATA_PRIMARY_COMMAND, ATA_CMD_IDENTIFY_DEVICE);
-    i686_iowait();
+    ATA_Wait400ns();
+
+    // Check status: 0xFF means floating bus (no controller/drive)
+    uint8_t status = i686_inb(ATA_PRIMARY_CONTROL);
 
     // Check for drive presence
-    if (i686_inb(ATA_PRIMARY_STATUS) == 0) {
-        printf("DISK: No drive found on primary master.\n");
+    if (status == 0 || status == 0xFF) {
+        // Don't print an error here, it might just be an empty IDE channel
         return false;
     }
 
     // Poll for BSY to clear and DRQ or ERR to be set
-    timeout = 100000;
-    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
+    timeout = 1000000;
+    while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
 
-    timeout = 100000;
-    while (!(i686_inb(ATA_PRIMARY_STATUS) & (ATA_STATUS_DATA_REQUEST | ATA_STATUS_ERROR)) && --timeout);
+    // Wait for DRQ (Data Request) to indicate the drive is ready to send identity data
+    timeout = 1000000;
+    while (!(i686_inb(ATA_PRIMARY_CONTROL) & (ATA_STATUS_DATA_REQUEST | ATA_STATUS_ERROR)) && --timeout);
 
     if (timeout == 0) return false;
 
@@ -101,13 +122,21 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
 }
 
 bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
+    if (disk->type == DISK_TYPE_USB) {
+        // return USB_ReadSectors(disk, lba, count, buffer);
+        printf("DISK: USB Read not yet implemented in protected mode!\n");
+        return false;
+    }
+
     // Wait until the drive is not busy
-    int timeout = 0x0FFFFFFF;
-    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
+    uint32_t timeout = 0x0FFFFFFF;
+    while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
 
     // Select drive (Master) and send LBA bits 24-27
     // 0xE0 for master drive in LBA mode
     i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xE0 | (disk->id << 4) | ((lba >> 24) & 0x0F));
+    ATA_Wait400ns();
+
     // Send the number of sectors to read
     i686_outb(ATA_PRIMARY_SECTOR_COUNT, count);
 
@@ -115,6 +144,7 @@ bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
     i686_outb(ATA_PRIMARY_LBA_LOW, (uint8_t)lba);
     i686_outb(ATA_PRIMARY_LBA_MID, (uint8_t)(lba >> 8));
     i686_outb(ATA_PRIMARY_LBA_HIGH, (uint8_t)(lba >> 16));
+    ATA_Wait400ns();
 
     // Send the READ SECTORS command
     i686_outb(ATA_PRIMARY_COMMAND, ATA_CMD_READ_SECTORS);
@@ -124,7 +154,7 @@ bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
     for (int i = 0; i < count; i++) {
         // Poll until the drive is ready to transfer data (BSY clear, DRQ set)
         timeout = 0x0FFFFFFF;
-        while (!((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_DATA_REQUEST) || (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR)) && --timeout);
+        while (!((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_DATA_REQUEST) || (i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_ERROR)) && --timeout);
 
         // Check for an error
         if (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR) {
@@ -141,12 +171,14 @@ bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
 
 bool DISK_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buffer) {
     // Wait until the drive is not busy
-    int timeout = 0x0FFFFFFF;
-    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
+    uint32_t timeout = 0x0FFFFFFF;
+    while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
 
     // Select drive (Master) and send LBA bits 24-27
     // 0xE0 for master drive in LBA mode
     i686_outb(ATA_PRIMARY_DRIVE_HEAD, 0xE0 | (disk->id << 4) | ((lba >> 24) & 0x0F));
+    ATA_Wait400ns();
+
     // Send the number of sectors to write
     i686_outb(ATA_PRIMARY_SECTOR_COUNT, count);
 
@@ -154,6 +186,7 @@ bool DISK_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buff
     i686_outb(ATA_PRIMARY_LBA_LOW, (uint8_t)lba);
     i686_outb(ATA_PRIMARY_LBA_MID, (uint8_t)(lba >> 8));
     i686_outb(ATA_PRIMARY_LBA_HIGH, (uint8_t)(lba >> 16));
+    ATA_Wait400ns();
 
     // Send the WRITE SECTORS command
     i686_outb(ATA_PRIMARY_COMMAND, ATA_CMD_WRITE_SECTORS);
@@ -163,7 +196,7 @@ bool DISK_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buff
     for (int i = 0; i < count; i++) {
         // Poll until the drive is ready to receive data (BSY clear, DRQ set)
         timeout = 0x0FFFFFFF;
-        while (!((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_DATA_REQUEST) || (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR)) && --timeout);
+        while (!((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_DATA_REQUEST) || (i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_ERROR)) && --timeout);
 
         // Check for an error
         if (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR) {
@@ -179,7 +212,7 @@ bool DISK_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buff
     // Flush the cache to ensure data is written to the disk platter
     i686_outb(ATA_PRIMARY_COMMAND, ATA_CMD_CACHE_FLUSH);
     timeout = 0x0FFFFFFF;
-    while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
+    while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
 
     return true;
 }

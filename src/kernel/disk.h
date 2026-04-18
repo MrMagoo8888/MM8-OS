@@ -3,8 +3,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+typedef enum {
+    DISK_TYPE_ATA,
+    DISK_TYPE_USB
+} DISK_TYPE;
+
 typedef struct {
     uint8_t id;
+    DISK_TYPE type;
+    void* driver_data; // Pointer to controller-specific info
 } DISK;
 
 bool DISK_Initialize(DISK* disk, uint8_t driveNumber);

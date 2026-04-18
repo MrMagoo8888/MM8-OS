@@ -67,11 +67,17 @@ bool FAT_Initialize(DISK* disk)
 {
     // Allocate memory for the FAT_Data structure early
     g_Data = (FAT_Data*)MEMORY_FAT_ADDR;
+    memset(g_Data, 0, sizeof(FAT_Data));
 
     // --- 1. Check for the "Packaged" offset first ---
     // package.sh puts the data partition at LBA 2880.
     g_PartitionOffset = 2880;
-    if (FAT_ReadBootSector(disk) && g_Data->BS.BootSector.BytesPerSector != 0 && g_Data->BS.BootSector.SectorsPerFat == 0) {
+    if (FAT_ReadBootSector(disk) && 
+        g_Data->BS.BootSector.BytesPerSector == 512 && 
+        g_Data->BS.BootSector.SectorsPerFat == 0 &&
+        g_Data->BS.BootSector.FatCount > 0 &&
+        memcmp(g_Data->BS.BootSector.Ebr.fat32.SystemId, "FAT32   ", 8) == 0) 
+    {
         printf("FAT: Found FAT32 filesystem at packaged offset (LBA 2880)\n");
     } else {
     // --- Read MBR to find the partition ---
@@ -267,7 +273,7 @@ uint32_t FAT_NextCluster(DISK* disk, uint32_t currentCluster)
     }
 }
 
-static void FAT_SetClusterValue(uint32_t cluster, uint32_t value) {
+static void FAT_SetClusterValue(DISK* disk, uint32_t cluster, uint32_t value) {
     switch (g_FatType) {
         case FAT_TYPE_FAT12:
         {
@@ -281,10 +287,22 @@ static void FAT_SetClusterValue(uint32_t cluster, uint32_t value) {
         }
         case FAT_TYPE_FAT32:
         {
-            uint32_t* fat_table = (uint32_t*)g_Fat;
-            fat_table[cluster] = (fat_table[cluster] & 0xF0000000) | (value & 0x0FFFFFFF);
-            break;
+            uint32_t fat_sector_offset = (cluster * 4) / SECTOR_SIZE;
+            uint32_t entry_offset = (cluster * 4) % SECTOR_SIZE;
+            uint8_t buffer[SECTOR_SIZE];
+
+            uint32_t lba = g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors + fat_sector_offset;
+
+            // Read-Modify-Write the FAT sector
+            if (DISK_ReadSectors(disk, lba, 1, buffer)) {
+                uint32_t* entry = (uint32_t*)(buffer + entry_offset);
+                *entry = (*entry & 0xF0000000) | (value & 0x0FFFFFFF);
+                DISK_WriteSectors(disk, lba, 1, buffer);
+            }
+            return;
         }
+        default:
+            break;
     }
 }
 
@@ -296,15 +314,10 @@ static uint32_t FAT_FindAndAllocateFreeCluster(DISK* disk) {
         if (FAT_NextCluster(disk, i) == 0x000) { // 0x000 indicates a free cluster
             // Mark cluster as end of chain
             if (g_FatType == FAT_TYPE_FAT32) {
-                FAT_SetClusterValue(i, 0x0FFFFFFF);
+                FAT_SetClusterValue(disk, i, 0x0FFFFFFF);
             } else {
-                FAT_SetClusterValue(i, 0xFFF);
+                FAT_SetClusterValue(disk, i, 0xFFF);
             }
-
-            // Write the modified FAT sector back to disk
-            uint32_t fat_offset = (g_FatType == FAT_TYPE_FAT12) ? (i * 3 / 2) : (i * 4);
-            uint32_t fat_sector = fat_offset / SECTOR_SIZE;
-            DISK_WriteSectors(disk, g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + (fat_sector * SECTOR_SIZE));
             return i;
         }
     }
@@ -371,11 +384,7 @@ uint32_t FAT_Write(DISK* disk, FAT_File* file, uint32_t byteCount, const void* d
                         return u8DataIn - (const uint8_t*)dataIn;
                     }
 
-                    FAT_SetClusterValue(fd->CurrentCluster, newCluster);
-                    uint32_t fat_offset = (g_FatType == FAT_TYPE_FAT12) ? (fd->CurrentCluster * 3 / 2) : (fd->CurrentCluster * 4);
-                    uint32_t fat_sector = fat_offset / SECTOR_SIZE;
-                    DISK_WriteSectors(disk, g_PartitionOffset + g_Data->BS.BootSector.ReservedSectors + fat_sector, 1, g_Fat + (fat_sector * SECTOR_SIZE));
-
+                    FAT_SetClusterValue(disk, fd->CurrentCluster, newCluster);
                     nextCluster = newCluster;
                 }
                 fd->CurrentCluster = nextCluster;
@@ -520,14 +529,13 @@ void FAT_Close(DISK* disk, FAT_File* file)
 
                         // Calculate the exact position of the entry on disk
                         uint32_t entryAbsPosition = g_Data->RootDirectory.Public.Position - sizeof(FAT_DirectoryEntry);
-                        uint32_t entrySector = entryAbsPosition / SECTOR_SIZE;
-                        uint32_t entryOffsetInSector = entryAbsPosition % SECTOR_SIZE;
 
                         // Read the correct sector, modify it, and write it back.
+                        uint32_t lba = FAT_ClusterToLba(g_Data->RootDirectory.FirstCluster) + (entryAbsPosition / SECTOR_SIZE);
                         uint8_t sectorBuffer[SECTOR_SIZE];
-                        DISK_ReadSectors(disk, FAT_ClusterToLba(g_Data->RootDirectory.FirstCluster) + entrySector, 1, sectorBuffer);
-                        memcpy(sectorBuffer + entryOffsetInSector, &entry, sizeof(FAT_DirectoryEntry));
-                        DISK_WriteSectors(disk, FAT_ClusterToLba(g_Data->RootDirectory.FirstCluster) + entrySector, 1, sectorBuffer);
+                        DISK_ReadSectors(disk, lba, 1, sectorBuffer);
+                        memcpy(sectorBuffer + (entryAbsPosition % SECTOR_SIZE), &entry, sizeof(FAT_DirectoryEntry));
+                        DISK_WriteSectors(disk, lba, 1, sectorBuffer);
                         break;
                     }
                 }

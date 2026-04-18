@@ -9,6 +9,7 @@
 #include "afk.h"
 #include <apps/calc/calc.h>
 #include "mm8Splash.h"
+#include "ctype.h"
 
 #include "commands/credits.h"
 #include "commands/cube.h"
@@ -59,15 +60,29 @@ static void handle_ls() {
     while (FAT_ReadEntry(&g_Disk, root, &entry)) {
         if (entry.Name[0] == 0x00) break;   // End of directory
         if (entry.Name[0] == 0xE5) continue; // Deleted entry
-        if (entry.Attributes & FAT_ATTRIBUTE_VOLUME_ID) continue;
+
+        // Filter out Long File Name (LFN) entries and Volume Labels
+        // LFN entries have attributes 0x0F (Read Only | Hidden | System | Volume ID)
+        if ((entry.Attributes & FAT_ATTRIBUTE_VOLUME_ID) || entry.Attributes == FAT_ATTRIBUTE_LFN) 
+            continue;
+
+        if (entry.Attributes & (FAT_ATTRIBUTE_HIDDEN | FAT_ATTRIBUTE_SYSTEM))
+            continue;
 
         // Simple 8.3 name formatting
         char name[13];
         int pos = 0;
-        for (int i = 0; i < 8 && entry.Name[i] != ' '; i++) name[pos++] = entry.Name[i];
+        for (int i = 0; i < 8 && entry.Name[i] != ' ' && entry.Name[i] != '\0'; i++) {
+            if (isprint(entry.Name[i]))
+                name[pos++] = entry.Name[i];
+        }
+
         if (entry.Name[8] != ' ') {
             name[pos++] = '.';
-            for (int i = 8; i < 11 && entry.Name[i] != ' '; i++) name[pos++] = entry.Name[i];
+            for (int i = 8; i < 11 && entry.Name[i] != ' ' && entry.Name[i] != '\0'; i++) {
+                if (isprint(entry.Name[i]))
+                    name[pos++] = entry.Name[i];
+            }
         }
         name[pos] = '\0';
 
