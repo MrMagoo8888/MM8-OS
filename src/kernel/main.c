@@ -22,6 +22,8 @@
 
 DISK g_Disk;
 
+void pci_enumerate();
+
 // Add a global tick counter, updated by the timer IRQ
 volatile uint32_t g_ticks = 0;
 
@@ -75,6 +77,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     HAL_Initialize();
     heap_initialize();
+    init_tests(); 
     console_initialize();
     time_initialize();
     
@@ -83,7 +86,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
     i686_EnableInterrupts();
 
-    init_tests(); 
+    //init_tests(); 
 
     clrscr();
     
@@ -105,10 +108,10 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     printf("\n\nType 'help' for a list of commands.\n\n");
 
-    // Initialize disk and FAT filesystem
-    // We are booting from floppy, but we want to use the first hard disk (0x80) for our root filesystem.
+    pci_enumerate();
+
     if (!DISK_Initialize(&g_Disk, 0x80)) {
-        printf("Hard disk initialization failed.\n");
+        printf("Hard disk (USB) initialization failed.\n");
     } else if (!FAT_Initialize(&g_Disk)) {
         printf("FAT initialization failed on hard disk.\n");
     }

@@ -1,6 +1,7 @@
 #include "disk.h"
 #include "arch/i686/io.h"
 #include "stdio.h"
+#include "ehci.h"
 
 // ATA PIO port definitions
 #define ATA_PRIMARY_DATA         0x1F0
@@ -46,11 +47,23 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
         return false;
     }
 
-    // Translate BIOS drive number (e.g., 0x80 for hda) to ATA drive ID (0 for master)
+    // On real hardware, BIOS maps the boot USB to 0x80.
+    // We need to decide if we use ATA or USB.
+    
+    // For now, we try to detect if an ATA drive actually responds.
+    // If not, and we have USB controllers, we should switch type.
     disk->id = driveNumber - 0x80;
-    disk->type = DISK_TYPE_ATA; // Default to ATA for now
+    
+    if (driveNumber == 0x80 && g_EhciController.bar != 0)
+        disk->type = DISK_TYPE_USB;
+    else
+        disk->type = DISK_TYPE_ATA;
 
-    // TODO: If PCI discovery finds a USB drive, set type to DISK_TYPE_USB
+    // If identified as USB, skip the legacy ATA initialization sequence
+    if (disk->type == DISK_TYPE_USB) {
+        printf("DISK: Booting from USB (EHCI found). Skipping ATA init.\n");
+        return true; 
+    }
 
     // --- Stage 1: Software Reset ---
     // Select the master drive
@@ -65,12 +78,16 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
 
     // Wait for the drive to finish the reset.
     // Real hardware can take a long time to clear BSY after reset.
-    // 10,000,000 iterations provides a more reliable window for physical disks.
-    uint32_t timeout = 10000000; 
-    while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
+    uint32_t timeout = 1000000; 
+    while (--timeout) {
+        uint8_t status = i686_inb(ATA_PRIMARY_CONTROL);
+        if (status == 0xFF) return false; // Floating bus, no drive
+        if (!(status & ATA_STATUS_BUSY)) break;
+    }
 
     if (timeout == 0) {
-        printf("DISK: Controller reset timeout.\n");
+        // If it timed out without seeing 0xFF, there might be a dead controller
+        // but we'll return false to skip the wait.
         return false;
     }
 
@@ -100,11 +117,15 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     }
 
     // Poll for BSY to clear and DRQ or ERR to be set
-    timeout = 10000000;
-    while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
+    timeout = 1000000;
+    while (--timeout) {
+        uint8_t status = i686_inb(ATA_PRIMARY_CONTROL);
+        if (status == 0xFF) return false;
+        if (!(status & ATA_STATUS_BUSY)) break;
+    }
 
     // Wait for DRQ (Data Request) to indicate the drive is ready to send identity data
-    timeout = 10000000;
+    timeout = 1000000;
     while (!(i686_inb(ATA_PRIMARY_CONTROL) & (ATA_STATUS_DATA_REQUEST | ATA_STATUS_ERROR)) && --timeout);
 
     if (timeout == 0) return false;
@@ -124,14 +145,18 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
 
 bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
     if (disk->type == DISK_TYPE_USB) {
-        // return USB_ReadSectors(disk, lba, count, buffer);
-        printf("DISK: USB Read not yet implemented in protected mode!\n");
-        return false;
+        return ehci_read_sectors(lba, count, buffer);
     }
 
     // Wait until the drive is not busy
-    uint32_t timeout = 0x0FFFFFFF;
-    while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
+    uint32_t timeout = 100000;
+    while (--timeout) {
+        uint8_t status = i686_inb(ATA_PRIMARY_CONTROL);
+        if (status == 0xFF) return false; // Fail fast on missing hardware
+        if (!(status & ATA_STATUS_BUSY)) break;
+    }
+
+    if (timeout == 0) return false;
 
     // Select drive (Master) and send LBA bits 24-27
     // 0xE0 for master drive in LBA mode

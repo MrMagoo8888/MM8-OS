@@ -35,6 +35,9 @@
 // Define size_t for 32-bit architecture
 typedef uint32_t size_t;
 
+// Define uintptr_t for pointer arithmetic
+typedef uint32_t uintptr_t;
+
 // Add integer types for minimum/maximum sizes and pointer-related types
 // ... (e.g., INT8_MIN, INT8_MAX, UINTPTR_MAX, etc.)
 

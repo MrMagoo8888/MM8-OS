@@ -1,6 +1,7 @@
 #include "heap.h"
 #include "memory.h"
 #include "stdbool.h"
+#include "stdint.h"
 
 // A simple linked-list based memory allocator
 
@@ -65,6 +66,32 @@ void* malloc(size_t size) {
 
     // No suitable block found
     return NULL;
+}
+
+void* malloc_aligned(size_t size, size_t alignment) {
+    if (size == 0 || alignment == 0) return NULL;
+
+    // Allocate extra space to allow for alignment adjustment
+    // and store the original pointer so we can free it later.
+    size_t total_size = size + alignment + sizeof(void*);
+    void* raw_ptr = malloc(total_size);
+    if (!raw_ptr) return NULL;
+
+    // Calculate the aligned address
+    uintptr_t addr = (uintptr_t)raw_ptr + sizeof(void*);
+    uintptr_t aligned_addr = (addr + (alignment - 1)) & ~(alignment - 1);
+
+    // Store the original pointer right before the aligned address
+    ((void**)aligned_addr)[-1] = raw_ptr;
+
+    return (void*)aligned_addr;
+}
+
+void free_aligned(void* ptr) {
+    if (!ptr) return;
+    // Retrieve the original pointer stored by malloc_aligned
+    void* raw_ptr = ((void**)ptr)[-1];
+    free(raw_ptr);
 }
 
 void free(void* ptr) {
