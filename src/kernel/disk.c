@@ -65,7 +65,8 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
 
     // Wait for the drive to finish the reset.
     // Real hardware can take a long time to clear BSY after reset.
-    uint32_t timeout = 1000000; 
+    // 10,000,000 iterations provides a more reliable window for physical disks.
+    uint32_t timeout = 10000000; 
     while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
 
     if (timeout == 0) {
@@ -99,11 +100,11 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     }
 
     // Poll for BSY to clear and DRQ or ERR to be set
-    timeout = 1000000;
+    timeout = 10000000;
     while ((i686_inb(ATA_PRIMARY_CONTROL) & ATA_STATUS_BUSY) && --timeout);
 
     // Wait for DRQ (Data Request) to indicate the drive is ready to send identity data
-    timeout = 1000000;
+    timeout = 10000000;
     while (!(i686_inb(ATA_PRIMARY_CONTROL) & (ATA_STATUS_DATA_REQUEST | ATA_STATUS_ERROR)) && --timeout);
 
     if (timeout == 0) return false;
