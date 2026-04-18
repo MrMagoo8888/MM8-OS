@@ -52,12 +52,11 @@ mkdir -p "$MOUNT_POINT"
 mount "$DATA_PART_IMG" "$MOUNT_POINT"
 
 echo "Copying files..."
-cp "test.txt" "$MOUNT_POINT/test.txt"
-cp "bliss.bmp" "$MOUNT_POINT/bliss.bmp"
-cp "blank.bmp" "$MOUNT_POINT/blank.bmp"
-cp "bblack.bmp" "$MOUNT_POINT/bblack.bmp"
-cp "portFor.bmp" "$MOUNT_POINT/portFor.bmp"
+if [ -f "test.txt" ]; then
+    cp "test.txt" "$MOUNT_POINT/test.txt"
+fi
 
+cp zBMPs/* "$MOUNT_POINT/"
 
 
 cat > "$MOUNT_POINT/test.json" << EOL

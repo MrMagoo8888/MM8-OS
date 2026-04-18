@@ -96,19 +96,24 @@ static void handle_ls() {
 
 static void handle_echo(const char* input) {
     // Print everything after "echo "
-    if (input[4] == ' ') {
-        printf("%s\n", input + 5);
+    const char* arg = input + 4;
+    while (*arg == ' ') arg++;
+    if (*arg != '\0') {
+        printf("%s\n", arg);
     } else {
         printf("Usage: echo [text]\n");
     }
 }
 
 static void handle_read(const char* input) {
-    if (input[4] != ' ') {
+    const char* path = input + 4;
+    while (*path == ' ') path++;
+    
+    if (*path == '\0') {
         printf("Usage: read [file]\n");
         return;
     }
-    const char* path = input + 5;
+
     FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_READ);
     if (!file) {
         printf("Could not open file: %s\n", path);
@@ -166,11 +171,11 @@ void command_dispatch(const char* input) {
         handle_ls();
     } else if (strcmp(input, "cls") == 0) {
         clrscr();
-    } else if (memcmp(input, "echo ", 5) == 0) {
+    } else if (memcmp(input, "echo", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
         handle_echo(input);
-    } else if (memcmp(input, "read ", 5) == 0) {
+    } else if (memcmp(input, "read", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
         handle_read(input);
-    } else if (memcmp(input, "edit ", 5) == 0) {
+    } else if (memcmp(input, "edit", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
         editor_handle_command(input);
     } else if (strcmp(input, "afk") == 0) {
         afk();
