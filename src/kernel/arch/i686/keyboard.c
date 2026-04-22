@@ -138,28 +138,12 @@ void keyboard_irq_handler(Registers* regs) {
             case 0x4D: // Right Arrow
                 g_CharBuffer = KEY_RIGHT; g_CharReady = true;
                 break;
-            case 0x49: { // PageUp (now for command history)
-                // For now, we'll let the editor handle this.
-                // In the future, this could be used for scrolling.
+            case 0x49: // Page Up
+                g_CharBuffer = KEY_PAGE_UP; g_CharReady = true;
                 break;
-            }
-            case 0x51: { // PageDown (now for command history)
-                if (g_HistoryNavIndex != -1) {
-                    if (g_HistoryNavIndex > 0) {
-                        g_HistoryNavIndex--;
-                        // Correctly calculate the index in the circular buffer
-                        int actual_index = (*g_HistoryIndexPtr - 1 - g_HistoryNavIndex + g_HistorySize) % g_HistorySize;
-                        strcpy(g_InputBuffer, g_HistoryBuffer[actual_index]);
-                    } else {
-                        // Reached the end of history, clear the line
-                        g_HistoryNavIndex = -1;
-                        g_InputBuffer[0] = '\0';
-                    }
-                    g_InputBufferIndex = strlen(g_InputBuffer);
-                    redraw_input_line();
-                }
+            case 0x51: // Page Down
+                g_CharBuffer = KEY_PAGE_DOWN; g_CharReady = true;
                 break;
-            }
             case 0x53: // Delete
                 g_CharBuffer = KEY_DELETE; g_CharReady = true;
         }

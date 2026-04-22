@@ -16,6 +16,7 @@ uint8_t getcolor(int x, int y);
 void setcursor(int x, int y);
 void scrollback(int lines);
 void scrollforward(int lines);
+void console_refresh();
 void refresh_screen_color();
 
 void view_scrollback_up();

@@ -252,6 +252,14 @@ void scrollback(int lines)
     g_ScreenY -= lines;
 }
 
+void console_refresh() {
+    for (int y = 0; y < g_ConsoleHeight; y++) {
+        for (int x = 0; x < g_ConsoleWidth; x++) {
+            draw_char_at(x, y, getchr(x, y), getcolor(x, y));
+        }
+    }
+}
+
 void refresh_screen_color()
 {
     for (int y = 0; y < g_ConsoleHeight; y++) {
@@ -304,6 +312,7 @@ void view_scrollback_down() {
         scrollback_view = 0;
         in_scrollback_mode = false;
         memcpy(g_ScreenBuffer, live_screen_backup, g_ConsoleWidth * g_ConsoleHeight * 2);
+        console_refresh();
         setcursor(g_ScreenX, g_ScreenY);
         return;
     }

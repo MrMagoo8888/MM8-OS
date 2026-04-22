@@ -23,6 +23,8 @@ enum {
     KEY_LEFT,
     KEY_RIGHT,
     KEY_DELETE,
+    KEY_PAGE_UP,
+    KEY_PAGE_DOWN,
 };
 
 void i686_Keyboard_Initialize(char (*history_buffer)[256], int* history_count, int* history_index, int history_size);

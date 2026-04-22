@@ -108,6 +108,10 @@ void shell_readline(char* buffer, int buffer_size) {
                 pos = strlen(buffer);
                 puts(buffer);
             }
+        } else if (c == KEY_PAGE_UP) {
+            for (int i = 0; i < 5; i++) view_scrollback_up();
+        } else if (c == KEY_PAGE_DOWN) {
+            for (int i = 0; i < 5; i++) view_scrollback_down();
         } else if (c >= 32 && c <= 126 && pos < buffer_size - 1) {
             buffer[pos++] = (char)c;
             putc((char)c);
@@ -174,8 +178,8 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     char input_buffer[256];
 
     while (1) {
-        // Linux-style but different prompt: user:/> , ready for later user interaction and multi-user support. For now, we just have a single user and the current path.
-        printf("user:%s> ", g_CurrentPath);
+        // Classic Linux-style prompt: mm8@mm8-os:/$ 
+        printf("mm8@mm8-os:%s$ ", g_CurrentPath);
 
         shell_readline(input_buffer, sizeof(input_buffer));
 
