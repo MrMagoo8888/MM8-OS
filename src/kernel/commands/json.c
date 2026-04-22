@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "fat.h"
 #include "heap.h"
+#include "memory.h"
 //#include "../src/kernel/libs/cjson/cJSON.h"
 #include <libs/cJSON/cJSON.h>
 #include <arch/i686/keyboard.h>

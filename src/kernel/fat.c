@@ -82,13 +82,14 @@ bool FAT_Initialize(DISK* disk)
     } else {
     // --- Read MBR to find the partition ---
     uint8_t mbr_buffer[SECTOR_SIZE];
-    if (!DISK_ReadSectors(disk, 0, 1, mbr_buffer)) {
-        printf("FAT: Failed to read MBR.\n");
+    memset(mbr_buffer, 0, SECTOR_SIZE); // Ensure buffer is clean
+    bool mbr_ok = DISK_ReadSectors(disk, 0, 1, mbr_buffer);
+    if (!mbr_ok) {
+        printf("FAT: Failed to read sector 0 (USB/ATA Error).\n");
         return false;
     }
-    
     if (*(uint16_t*)(mbr_buffer + 0x1FE) != 0xAA55) {
-        printf("FAT: Invalid MBR signature.\n");
+        printf("FAT: Invalid MBR signature at LBA 0 (Found: %x).\n", *(uint16_t*)(mbr_buffer + 0x1FE));
         return false;
     }
 

@@ -10,6 +10,8 @@
 #include "font.h"
 #include "heap.h"
 
+static const char g_HexChars[] = "0123456789abcdef";
+
 // VGA Color Palette (0-15) mapped to 32-bit RGB
 static const uint32_t vga_colors[16] = {
     0x00000000, // 0: Black
@@ -363,34 +365,67 @@ void puts(const char* str)
     }
 }
 
-const char g_HexChars[] = "0123456789abcdef";
-
-void printf_unsigned(unsigned long long number, int radix)
+void printf_unsigned(unsigned long long number, int radix, int width, char padding, bool uppercase)
 {
-    char buffer[32];
+    char buffer[64];
     int pos = 0;
+    const char* hexChars = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
 
     // convert number to ASCII
     do 
     {
         unsigned long long rem = number % radix;
         number /= radix;
-        buffer[pos++] = g_HexChars[rem];
+        buffer[pos++] = hexChars[rem];
     } while (number > 0);
+
+    // Print padding
+    while (pos < width)
+    {
+        putc(padding);
+        width--;
+    }
 
     // print number in reverse order
     while (--pos >= 0)
         putc(buffer[pos]);
 }
 
-void printf_signed(long long number, int radix)
+void printf_signed(long long number, int radix, int width, char padding, bool uppercase)
 {
     if (number < 0)
     {
-        putc('-');
-        printf_unsigned(-number, radix);
+        if (padding == '0')
+        {
+            putc('-');
+            printf_unsigned(-number, radix, width > 0 ? width - 1 : 0, padding, uppercase);
+        }
+        else
+        {
+            // For space padding, we need to print spaces before the negative sign
+            char buffer[32];
+            int pos = 0;
+            unsigned long long abs_val = -number;
+            const char* hexChars = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
+            
+            do {
+                buffer[pos++] = hexChars[abs_val % radix];
+                abs_val /= radix;
+            } while (abs_val > 0);
+
+            // padding = width - (digits + sign)
+            while (pos + 1 < width)
+            {
+                putc(padding);
+                width--;
+            }
+
+            putc('-');
+            while (--pos >= 0)
+                putc(buffer[pos]);
+        }
     }
-    else printf_unsigned(number, radix);
+    else printf_unsigned(number, radix, width, padding, uppercase);
 }
 
 #define PRINTF_STATE_NORMAL         0
@@ -398,6 +433,8 @@ void printf_signed(long long number, int radix)
 #define PRINTF_STATE_LENGTH_SHORT   2
 #define PRINTF_STATE_LENGTH_LONG    3
 #define PRINTF_STATE_SPEC           4
+#define PRINTF_STATE_FLAGS          5
+#define PRINTF_STATE_WIDTH          6
 
 #define PRINTF_LENGTH_DEFAULT       0
 #define PRINTF_LENGTH_SHORT_SHORT   1
@@ -415,6 +452,9 @@ void printf(const char* fmt, ...)
     int radix = 10;
     bool sign = false;
     bool number = false;
+    bool uppercase = false;
+    int width = 0;
+    char padding = ' ';
 
     while (*fmt)
     {
@@ -423,23 +463,56 @@ void printf(const char* fmt, ...)
             case PRINTF_STATE_NORMAL:
                 switch (*fmt)
                 {
-                    case '%':   state = PRINTF_STATE_LENGTH;
+                    case '%':   state = PRINTF_STATE_FLAGS;
+                                width = 0;
+                                padding = ' ';
+                                uppercase = false;
                                 break;
                     default:    putc(*fmt);
                                 break;
                 }
                 break;
 
+            case PRINTF_STATE_FLAGS:
+                if (*fmt == '0')
+                {
+                    padding = '0';
+                    state = PRINTF_STATE_WIDTH;
+                }
+                else
+                {
+                    state = PRINTF_STATE_WIDTH;
+                    goto PRINTF_STATE_WIDTH_;
+                }
+                break;
+
+            case PRINTF_STATE_WIDTH:
+            PRINTF_STATE_WIDTH_:
+                if (*fmt >= '0' && *fmt <= '9')
+                {
+                    width = width * 10 + (*fmt - '0');
+                }
+                else
+                {
+                    state = PRINTF_STATE_LENGTH;
+                    goto PRINTF_STATE_LENGTH_;
+                }
+                break;
+
             case PRINTF_STATE_LENGTH:
+            PRINTF_STATE_LENGTH_:
                 switch (*fmt)
                 {
                     case 'h':   length = PRINTF_LENGTH_SHORT;
                                 state = PRINTF_STATE_LENGTH_SHORT;
                                 break;
+
                     case 'l':   length = PRINTF_LENGTH_LONG;
                                 state = PRINTF_STATE_LENGTH_LONG;
                                 break;
-                    default:    goto PRINTF_STATE_SPEC_;
+
+                    default:    state = PRINTF_STATE_SPEC;
+                                goto PRINTF_STATE_SPEC_;
                 }
                 break;
 
@@ -482,7 +555,9 @@ void printf(const char* fmt, ...)
                     case 'u':   radix = 10; sign = false; number = true;
                                 break;
 
-                    case 'X':
+                    case 'X':   radix = 16; sign = false; number = true; uppercase = true;
+                                break;
+
                     case 'x':
                     case 'p':   radix = 16; sign = false; number = true;
                                 break;
@@ -502,13 +577,13 @@ void printf(const char* fmt, ...)
                         {
                         case PRINTF_LENGTH_SHORT_SHORT:
                         case PRINTF_LENGTH_SHORT:
-                        case PRINTF_LENGTH_DEFAULT:     printf_signed(va_arg(args, int), radix);
+                        case PRINTF_LENGTH_DEFAULT:     printf_signed(va_arg(args, int), radix, width, padding, uppercase);
                                                         break;
 
-                        case PRINTF_LENGTH_LONG:        printf_signed(va_arg(args, long), radix);
+                        case PRINTF_LENGTH_LONG:        printf_signed(va_arg(args, long), radix, width, padding, uppercase);
                                                         break;
 
-                        case PRINTF_LENGTH_LONG_LONG:   printf_signed(va_arg(args, long long), radix);
+                        case PRINTF_LENGTH_LONG_LONG:   printf_signed(va_arg(args, long long), radix, width, padding, uppercase);
                                                         break;
                         }
                     }
@@ -518,13 +593,13 @@ void printf(const char* fmt, ...)
                         {
                         case PRINTF_LENGTH_SHORT_SHORT:
                         case PRINTF_LENGTH_SHORT:
-                        case PRINTF_LENGTH_DEFAULT:     printf_unsigned(va_arg(args, unsigned int), radix);
+                        case PRINTF_LENGTH_DEFAULT:     printf_unsigned(va_arg(args, unsigned int), radix, width, padding, uppercase);
                                                         break;
                                                         
-                        case PRINTF_LENGTH_LONG:        printf_unsigned(va_arg(args, unsigned  long), radix);
+                        case PRINTF_LENGTH_LONG:        printf_unsigned(va_arg(args, unsigned  long), radix, width, padding, uppercase);
                                                         break;
 
-                        case PRINTF_LENGTH_LONG_LONG:   printf_unsigned(va_arg(args, unsigned  long long), radix);
+                        case PRINTF_LENGTH_LONG_LONG:   printf_unsigned(va_arg(args, unsigned  long long), radix, width, padding, uppercase);
                                                         break;
                         }
                     }
@@ -536,6 +611,9 @@ void printf(const char* fmt, ...)
                 radix = 10;
                 sign = false;
                 number = false;
+                uppercase = false;
+                width = 0;
+                padding = ' ';
                 break;
         }
 

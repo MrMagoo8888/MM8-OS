@@ -30,6 +30,9 @@ volatile uint32_t g_ticks = 0;
 // Define the global pointer to the VBE info structure.
 VbeScreenInfo* g_vbe_screen;
 
+// Track the current directory path for the shell prompt
+char g_CurrentPath[256] = "/";
+
 // Create a static instance to hold the VBE info passed from the bootloader.
 static VbeScreenInfo s_vbe_screen;
 
@@ -56,6 +59,59 @@ void add_to_history(const char* command) {
     g_HistoryIndex = (g_HistoryIndex + 1) % HISTORY_SIZE;
     if (g_HistoryCount < HISTORY_SIZE) {
         g_HistoryCount++;
+    }
+}
+
+void shell_readline(char* buffer, int buffer_size) {
+    int pos = 0;
+    int history_view_index = -1; // -1 means we are not currently viewing history
+    char current_line_backup[256] = "";
+
+    while (1) {
+        int c = getch();
+
+        if (c == '\n' || c == '\r') {
+            buffer[pos] = '\0';
+            putc('\n');
+            break;
+        } else if (c == '\b') {
+            if (pos > 0) {
+                pos--;
+                putc('\b');
+            }
+        } else if (c == KEY_UP) {
+            if (g_HistoryCount > 0) {
+                if (history_view_index == -1) {
+                    buffer[pos] = '\0';
+                    strcpy(current_line_backup, buffer);
+                    history_view_index = g_HistoryCount - 1;
+                } else if (history_view_index > 0) {
+                    history_view_index--;
+                }
+                while (pos > 0) { putc('\b'); pos--; }
+                int idx = (g_HistoryIndex - g_HistoryCount + history_view_index + HISTORY_SIZE) % HISTORY_SIZE;
+                strcpy(buffer, g_CommandHistory[idx]);
+                pos = strlen(buffer);
+                puts(buffer);
+            }
+        } else if (c == KEY_DOWN) {
+            if (history_view_index != -1) {
+                while (pos > 0) { putc('\b'); pos--; }
+                if (history_view_index < g_HistoryCount - 1) {
+                    history_view_index++;
+                    int idx = (g_HistoryIndex - g_HistoryCount + history_view_index + HISTORY_SIZE) % HISTORY_SIZE;
+                    strcpy(buffer, g_CommandHistory[idx]);
+                } else {
+                    history_view_index = -1;
+                    strcpy(buffer, current_line_backup);
+                }
+                pos = strlen(buffer);
+                puts(buffer);
+            }
+        } else if (c >= 32 && c <= 126 && pos < buffer_size - 1) {
+            buffer[pos++] = (char)c;
+            putc((char)c);
+        }
     }
 }
 
@@ -108,7 +164,6 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     printf("\n\nType 'help' for a list of commands.\n\n");
 
-    pci_enumerate();
 
     if (!DISK_Initialize(&g_Disk, 0x80)) {
         printf("Hard disk (USB) initialization failed.\n");
@@ -119,10 +174,10 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     char input_buffer[256];
 
     while (1) {
-        printf("> ");
+        // Linux-style but different prompt: user:/> , ready for later user interaction and multi-user support. For now, we just have a single user and the current path.
+        printf("user:%s> ", g_CurrentPath);
 
-
-        gets(input_buffer, sizeof(input_buffer));
+        shell_readline(input_buffer, sizeof(input_buffer));
 
         add_to_history(input_buffer);
 
