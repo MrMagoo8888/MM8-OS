@@ -43,14 +43,34 @@ static const char* const g_Exceptions[] = {
 };
 
 void i686_ISR_InitializeGates();
+void __attribute__((cdecl)) i686_ISR128();
+
+static void i686_Syscall_Handler(Registers* regs)
+{
+    // Use EAX as the syscall number
+    switch (regs->eax)
+    {
+        case 1: // Syscall 1: putc(char c)
+            putc((char)regs->ebx);
+            break;
+        case 2: // Syscall 2: puts(const char* s)
+            puts((const char*)regs->ebx);
+            break;
+        default:
+            printf("Syscall: Unknown syscall %d\n", regs->eax);
+            break;
+    }
+}
 
 void i686_ISR_Initialize()
 {
     i686_ISR_InitializeGates();
     for (int i = 0; i < 256; i++)
         i686_IDT_EnableGate(i);
-
-    i686_IDT_DisableGate(0x80);
+    
+    // Override 0x80 gate to allow Ring 3 (User Mode) to trigger it
+    i686_IDT_SetGate(0x80, i686_ISR128, i686_GDT_CODE_SEGMENT, IDT_FLAG_RING3 | IDT_FLAG_GATE_32BIT_INT);
+    i686_ISR_RegisterHandler(0x80, i686_Syscall_Handler);
 }
 
 void __attribute__((cdecl)) i686_ISR_Handler(Registers* regs)
