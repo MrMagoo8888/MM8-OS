@@ -140,6 +140,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     init_tests(); 
     console_initialize();
     time_initialize();
+    pci_enumerate();
     
     // Set up core interrupts before running tests or shell
     i686_IRQ_RegisterHandler(0, timer);
