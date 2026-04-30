@@ -140,16 +140,16 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     init_tests(); 
     console_initialize();
     time_initialize();
-    pci_enumerate();
     
     // Set up core interrupts before running tests or shell
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
     i686_EnableInterrupts();
 
-    //init_tests(); 
-
     clrscr();
+
+    // Now that interrupts are enabled, PCI enumeration (and OHCI sleep) will work
+    pci_enumerate();
     
     printf("    ==================================================================\n");
     printf("\n"
@@ -171,7 +171,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
 
     if (!DISK_Initialize(&g_Disk, 0x80)) {
-        printf("Hard disk (USB) initialization failed.\n");
+        printf("System disk initialization failed (No ATA or USB drive found).\n");
     } else if (!FAT_Initialize(&g_Disk)) {
         printf("FAT initialization failed on hard disk.\n");
     }

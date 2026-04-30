@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "memory.h"
 #include "time.h"
+#include "globals.h"
 
 void ohci_write_reg(ohci_controller_t* hc, uint32_t reg, uint32_t val) {
     *(volatile uint32_t*)(hc->mmio_base + reg) = val;
@@ -19,40 +20,55 @@ void ohci_init(pci_device_t* dev) {
         return;
     }
     
-    ohci_controller_t hc;
-    hc.mmio_base = bar0 & 0xFFFFFFF0;
+    ohci_controller_t* hc = (ohci_controller_t*)malloc(sizeof(ohci_controller_t));
+    if (!hc) return;
+
+    hc->mmio_base = bar0 & 0xFFFFFFF0;
 
     // 1. Enable PCI Bus Mastering and Memory Space
     uint32_t command = pci_read_config(dev->bus, dev->device, dev->function, 0x04);
     pci_write_config(dev->bus, dev->device, dev->function, 0x04, command | 0x06);
 
     // 2. Reset Controller
-    ohci_write_reg(&hc, OHCI_REG_COMMAND_STATUS, OHCI_CMD_STATUS_HCR);
+    ohci_write_reg(hc, OHCI_REG_COMMAND_STATUS, OHCI_CMD_STATUS_HCR);
     sleep_ms(10);
 
     // 3. Setup HCCA (Host Controller Communications Area)
-    hc.hcca = (ohci_hcca_t*)malloc_aligned(sizeof(ohci_hcca_t), 256);
-    memset(hc.hcca, 0, sizeof(ohci_hcca_t));
-    ohci_write_reg(&hc, OHCI_REG_HCCA, (uint32_t)hc.hcca);
+    hc->hcca = (ohci_hcca_t*)malloc_aligned(sizeof(ohci_hcca_t), 256);
+    memset(hc->hcca, 0, sizeof(ohci_hcca_t));
+    ohci_write_reg(hc, OHCI_REG_HCCA, (uint32_t)hc->hcca);
 
     // 4. Initialize List Heads
-    ohci_write_reg(&hc, OHCI_REG_CONTROL_HEAD_ED, 0);
-    ohci_write_reg(&hc, OHCI_REG_BULK_HEAD_ED, 0);
+    ohci_write_reg(hc, OHCI_REG_CONTROL_HEAD_ED, 0);
+    ohci_write_reg(hc, OHCI_REG_BULK_HEAD_ED, 0);
 
     // 5. Set Operational State
-    uint32_t control = ohci_read_reg(&hc, OHCI_REG_CONTROL);
+    uint32_t control = ohci_read_reg(hc, OHCI_REG_CONTROL);
     control &= ~(3 << 6); // Clear HCFS bits
     control |= OHCI_CONTROL_HCFS_OPERATIONAL;
-    ohci_write_reg(&hc, OHCI_REG_CONTROL, control);
+    ohci_write_reg(hc, OHCI_REG_CONTROL, control);
 
     // 6. Get number of ports
-    uint32_t rh_a = ohci_read_reg(&hc, OHCI_REG_RH_DESCRIPTOR_A);
-    hc.num_ports = (uint8_t)(rh_a & 0xFF);
+    uint32_t rh_a = ohci_read_reg(hc, OHCI_REG_RH_DESCRIPTOR_A);
+    hc->num_ports = (uint8_t)(rh_a & 0xFF);
 
-    printf("OHCI: Controller initialized. Ports: %d\n", hc.num_ports);
+    printf("OHCI: Controller initialized. Ports: %d\n", hc->num_ports);
     
     // Power up ports
-    for (int i = 0; i < hc.num_ports; i++) {
-        ohci_write_reg(&hc, OHCI_REG_RH_PORT_STATUS + (i * 4), 0x00000100); // SetPortPower
+    for (int i = 0; i < hc->num_ports; i++) {
+        uint32_t port_reg = OHCI_REG_RH_PORT_STATUS + (i * 4);
+        ohci_write_reg(hc, port_reg, 0x00000100); // SetPortPower
+        sleep_ms(20); // Wait for power to stabilize
+        
+        uint32_t status = ohci_read_reg(hc, port_reg);
+        if (status & 0x01) { // CurrentConnectStatus
+            printf("OHCI: Device detected on port %d\n", i);
+            
+            // Register this as the primary system disk if none found yet
+            if (g_Disk.type == DISK_TYPE_ATA) { // Default state is ATA
+                g_Disk.type = DISK_TYPE_USB;
+                g_Disk.driver_data = hc;
+            }
+        }
     }
 }

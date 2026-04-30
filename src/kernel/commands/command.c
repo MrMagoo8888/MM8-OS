@@ -155,6 +155,9 @@ void handleUptime() {
 }
 
 void command_dispatch(const char* input) {
+    if (input[0] == '\0')
+        return;
+
     if (strcmp(input, "help") == 0) {
         handle_help();
     } else if (strcmp(input, "ls") == 0) {

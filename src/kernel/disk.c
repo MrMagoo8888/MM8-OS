@@ -1,6 +1,7 @@
 #include "disk.h"
 #include "arch/i686/io.h"
 #include "stdio.h"
+#include "stddef.h"
 
 // ATA PIO port definitions
 #define ATA_PRIMARY_DATA         0x1F0
@@ -26,18 +27,9 @@
 #define ATA_CMD_CACHE_FLUSH      0xE7
 #define ATA_CMD_IDENTIFY_DEVICE  0xEC
 
-
-// This is a placeholder for a real ATA PIO driver.
-// For now, it does nothing but provides the interface for the FAT driver.
-
-bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
-    if (driveNumber < 0x80) {
-        printf("DISK: Cannot initialize floppy drive %d with ATA driver.\n", driveNumber);
-        return false;
-    }
-
-    // Translate BIOS drive number (e.g., 0x80 for hda) to ATA drive ID (0 for master)
-    disk->id = driveNumber - 0x80;
+// Internal ATA helper
+static bool ATA_Initialize(DISK* disk, uint8_t driveNumber) {
+    if (driveNumber < 0x80) return false;
 
     // --- Stage 1: Software Reset ---
     // Select the master drive
@@ -88,7 +80,7 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     if (timeout == 0) return false;
 
     if (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR) {
-        printf("DISK: Drive %d not ready.\n", disk->id);
+        printf("DISK: Drive %d (ATA) not ready.\n", driveNumber - 0x80);
         return false;
     }
 
@@ -96,11 +88,41 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     uint16_t identify_data[256];
     i686_insw(ATA_PRIMARY_DATA, identify_data, 256);
 
-    printf("DISK: Initialized drive %d.\n", disk->id);
+    disk->type = DISK_TYPE_ATA;
+    disk->id = driveNumber - 0x80;
+
+    printf("DISK: Initialized drive %d (ATA).\n", disk->id);
     return true;
 }
 
+bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
+    // 1. Check if the USB driver (OHCI) already claimed this disk during PCI enumeration
+    if (disk->type == DISK_TYPE_USB && disk->driver_data != NULL) {
+        printf("DISK: Using USB Mass Storage (OHCI) for drive 0x%x\n", driveNumber);
+        disk->id = driveNumber - 0x80;
+        return true;
+    }
+
+    // 2. Otherwise, try to initialize as an ATA drive
+    if (ATA_Initialize(disk, driveNumber)) {
+        return true;
+    }
+
+    return false;
+}
+
+static bool USB_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
+    // This is where you will implement Bulk-Only Transport (BOT)
+    // For now, we stub it so the system doesn't crash
+    printf("USB: ReadSectors LBA %u not yet implemented in BOT\n", lba);
+    return false;
+}
+
 bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
+    if (disk->type == DISK_TYPE_USB) {
+        return USB_ReadSectors(disk, lba, count, buffer);
+    }
+
     // Wait until the drive is not busy
     int timeout = 0x0FFFFFFF;
     while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
@@ -140,6 +162,10 @@ bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
 }
 
 bool DISK_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buffer) {
+    if (disk->type == DISK_TYPE_USB) {
+        return false; // Implement USB_WriteSectors later
+    }
+
     // Wait until the drive is not busy
     int timeout = 0x0FFFFFFF;
     while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
