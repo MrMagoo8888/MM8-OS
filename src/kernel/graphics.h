@@ -6,6 +6,7 @@
 #define COLOR_RED   0x00FF0000
 
 extern bool g_DoubleBufferEnabled;
+extern uint32_t* g_BackBuffer;
 
 void draw_pixel(int x, int y, uint32_t color);
 void draw_line(int x0, int y0, int x1, int y1, uint32_t color);

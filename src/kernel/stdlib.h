@@ -10,3 +10,4 @@
 
 void srand(uint32_t seed);
 int rand();
+int atoi(const char* str);

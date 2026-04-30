@@ -23,3 +23,26 @@ int rand()
     g_RandState = g_RandState * 1664525 + 1013904223;
     return (int)(g_RandState & RAND_MAX);
 }
+
+/**
+ * @brief Converts a string to an integer.
+ */
+int atoi(const char* str)
+{
+    int res = 0;
+    int sign = 1;
+
+    while (*str == ' ') str++;
+
+    if (*str == '-') {
+        sign = -1;
+        str++;
+    }
+
+    while (*str >= '0' && *str <= '9') {
+        res = res * 10 + (*str - '0');
+        str++;
+    }
+
+    return res * sign;
+}

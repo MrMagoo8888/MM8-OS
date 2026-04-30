@@ -9,6 +9,7 @@
 #include "graphics.h"
 #include "font.h"
 #include "heap.h"
+#include "time.h"
 
 static const char g_HexChars[] = "0123456789abcdef";
 
@@ -31,6 +32,9 @@ static const uint32_t vga_colors[16] = {
     0x00FFFF55, // 14: Yellow
     0x00FFFFFF  // 15: White
 };
+
+bool g_ConsoleAutoSwap = true;
+uint32_t g_ConsoleDelay = 0;
 
 // Shadow buffer for text (since we can't read back from VBE easily)
 // Assuming 80x25 standard text resolution for logic
@@ -80,6 +84,9 @@ void console_initialize() {
     // Clear buffers
     if (g_ShadowBuffer) memset(g_ShadowBuffer, 0, g_ConsoleWidth * g_ConsoleHeight * 2);
     if (scrollback_buffer) memset(scrollback_buffer, 0, SCROLLBACK_LINES * g_ConsoleWidth);
+
+    // Enable double buffering for the console
+    graphics_set_double_buffering(true);
 }
 
 void console_set_font_scale(int scale) {
@@ -191,12 +198,10 @@ void clrscr()
     g_ScreenX = 0;
     g_ScreenY = 0;
     
-    // Clear the VBE screen (fill with black)
+    // Clear the screen using the graphics abstraction (respects double buffering)
     if (g_vbe_screen) {
-        // Calculate total bytes: pitch * height
-        // Note: This assumes the screen is contiguous, which is usually true for VBE.
-        // A safer way is to clear line by line if pitch != width * bpp
-        memset((void*)g_vbe_screen->physical_buffer, 0, g_vbe_screen->height * g_vbe_screen->pitch);
+        graphics_clear_buffer(0x00000000);
+        if (g_DoubleBufferEnabled) graphics_swap_buffer();
     }
 }
 
@@ -234,22 +239,51 @@ void scrollback(int lines)
         size_t total_bytes = g_vbe_screen->height * pitch;
         size_t bytes_to_scroll = pixel_lines * pitch;
         
+        void* target_buffer = (g_DoubleBufferEnabled && g_BackBuffer) 
+            ? (void*)g_BackBuffer 
+            : (void*)g_vbe_screen->physical_buffer;
+
         if (bytes_to_scroll < total_bytes) {
-            memmove((void*)g_vbe_screen->physical_buffer, 
-                    (void*)(g_vbe_screen->physical_buffer + bytes_to_scroll), 
+            memmove(target_buffer, 
+                    (void*)((uintptr_t)target_buffer + bytes_to_scroll), 
                     total_bytes - bytes_to_scroll);
         }
     }
 
-    // Clear the bottom lines
-    for (int y = g_ConsoleHeight - lines; y < g_ConsoleHeight; y++) {
-        for (int x = 0; x < g_ConsoleWidth; x++) {
-            putchr(x, y, '\0');
-            putcolor(x, y, DEFAULT_COLOR);
+    // 3. Fast Clear Shadow Buffer bottom
+    if (g_ScreenBuffer) {
+        for (int y = g_ConsoleHeight - lines; y < g_ConsoleHeight; y++) {
+            for (int x = 0; x < g_ConsoleWidth; x++) {
+                int base = 2 * (y * g_ConsoleWidth + x);
+                g_ScreenBuffer[base] = '\0';
+                g_ScreenBuffer[base + 1] = DEFAULT_COLOR;
+            }
         }
     }
 
+    // 4. Fast Clear VBE Framebuffer bottom (Pixels)
+    if (g_vbe_screen) {
+        int pixel_lines = lines * 8 * g_FontScale;
+        uint32_t bg_color = vga_colors[(DEFAULT_COLOR >> 4) & 0x0F];
+        uint32_t pitch = g_vbe_screen->pitch;
+        
+        uint8_t* base_ptr = (g_DoubleBufferEnabled && g_BackBuffer)
+            ? (uint8_t*)g_BackBuffer
+            : (uint8_t*)g_vbe_screen->physical_buffer;
+
+        for (int y = g_vbe_screen->height - pixel_lines; y < g_vbe_screen->height; y++) {
+            uint32_t* line = (uint32_t*)(base_ptr + y * pitch);
+            if (bg_color == 0) {
+                memset(line, 0, g_vbe_screen->width * 4);
+            } else {
+                for (int x = 0; x < g_vbe_screen->width; x++) {
+                    line[x] = bg_color;
+                }
+            }
+        }
+    }
     g_ScreenY -= lines;
+    if (g_DoubleBufferEnabled) graphics_swap_buffer();
 }
 
 void console_refresh() {
@@ -258,6 +292,7 @@ void console_refresh() {
             draw_char_at(x, y, getchr(x, y), getcolor(x, y));
         }
     }
+    if (g_DoubleBufferEnabled) graphics_swap_buffer();
 }
 
 void refresh_screen_color()
@@ -267,6 +302,7 @@ void refresh_screen_color()
             putcolor(x, y, DEFAULT_COLOR);
         }
     }
+    if (g_DoubleBufferEnabled) graphics_swap_buffer();
 }
 
 static void redraw_from_scrollback() {
@@ -288,6 +324,7 @@ static void redraw_from_scrollback() {
         }
     }
     setcursor(0, g_ConsoleHeight - 1);
+    if (g_DoubleBufferEnabled) graphics_swap_buffer();
 }
 
 void view_scrollback_up() {
@@ -363,15 +400,28 @@ void putc(char c)
         scrollback(1);
 
     setcursor(g_ScreenX, g_ScreenY);
+
+    if (g_ConsoleDelay > 0)
+        sleep_ms(g_ConsoleDelay);
+
+    if (g_ConsoleAutoSwap && g_DoubleBufferEnabled)
+        graphics_swap_buffer();
 }
 
 void puts(const char* str)
 {
+    bool prev = g_ConsoleAutoSwap;
+    if (g_ConsoleDelay == 0) g_ConsoleAutoSwap = false;
+
     while(*str)
     {
         putc(*str);
         str++;
     }
+
+    g_ConsoleAutoSwap = prev;
+    if (g_ConsoleAutoSwap && g_DoubleBufferEnabled)
+        graphics_swap_buffer();
 }
 
 void printf_unsigned(unsigned long long number, int radix, int width, char padding, bool uppercase)
@@ -453,6 +503,9 @@ void printf_signed(long long number, int radix, int width, char padding, bool up
 
 void printf(const char* fmt, ...)
 {
+    bool prev = g_ConsoleAutoSwap;
+    if (g_ConsoleDelay == 0) g_ConsoleAutoSwap = false;
+
     va_list args;
     va_start(args, fmt);
 
@@ -630,6 +683,10 @@ void printf(const char* fmt, ...)
     }
 
     va_end(args);
+
+    g_ConsoleAutoSwap = prev;
+    if (g_ConsoleAutoSwap && g_DoubleBufferEnabled)
+        graphics_swap_buffer();
 }
 
 void print_buffer(const char* msg, const void* buffer, uint32_t count)

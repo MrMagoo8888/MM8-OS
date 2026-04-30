@@ -9,48 +9,18 @@
 #include "afk.h"
 #include <apps/calc/calc.h>
 #include "mm8Splash.h"
-#include <arch/i686/gdt.h>
-#include "ctype.h"
 
 #include "commands/credits.h"
 #include "commands/cube.h"
 #include "commands/color.h"
+#include "stdlib.h"
 #include "heap.h"
-#include "stdbool.h" // Required for 'bool' type
 
 #include "threeD/rand1.h"
 
 #include "time.h"
 
 #include <apps/imageview/bmp.h>
-
-// Simple function to run in Ring 3
-static void user_mode_test() {
-    const char* msg = "Hello from Ring 3 via System Call (0x80)!\n";
-
-    // Trigger syscall: EAX=2 (puts), EBX=ptr
-    __asm__ volatile("mov $2, %%eax\n\t"
-                     "mov %0, %%ebx\n\t"
-                     "int $0x80" 
-                     : : "r"(msg) : "eax", "ebx");
-
-    while (1);
-}
-
-static void handle_usermode() {
-    printf("Switching to User Mode (Ring 3)...\n");
-
-    // 1. Allocate a stack for the user process
-    static uint8_t user_stack[4096];
-    void* user_esp = &user_stack[4096]; 
-
-    // 2. Tell the TSS where our Kernel Stack is.
-    uint32_t kernel_esp;
-    __asm__ volatile("mov %%esp, %0" : "=r"(kernel_esp));
-    i686_TSS_SetStack(i686_GDT_DATA_SEGMENT, kernel_esp);
-
-    i686_EnterUserMode(user_mode_test, user_esp);
-}
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
@@ -75,7 +45,6 @@ static void handle_help() {
     printf(" - memory: Show heap memory usage statistics.\n");
     printf(" - bmp [file]: View a BMP image file. Example: bmp /image.bmp (Work in Progress)\n");
     printf(" - uptime: Show the system uptime.\n");
-    printf(" - usermode: Test switching the CPU to Ring 3 (User Mode)\n");
 }
 
 static void handle_ls() {
@@ -91,29 +60,15 @@ static void handle_ls() {
     while (FAT_ReadEntry(&g_Disk, root, &entry)) {
         if (entry.Name[0] == 0x00) break;   // End of directory
         if (entry.Name[0] == 0xE5) continue; // Deleted entry
-
-        // Filter out Long File Name (LFN) entries and Volume Labels
-        // LFN entries have attributes 0x0F (Read Only | Hidden | System | Volume ID)
-        if ((entry.Attributes & FAT_ATTRIBUTE_VOLUME_ID) || entry.Attributes == FAT_ATTRIBUTE_LFN) 
-            continue;
-
-        if (entry.Attributes & (FAT_ATTRIBUTE_HIDDEN | FAT_ATTRIBUTE_SYSTEM))
-            continue;
+        if (entry.Attributes & FAT_ATTRIBUTE_VOLUME_ID) continue;
 
         // Simple 8.3 name formatting
         char name[13];
         int pos = 0;
-        for (int i = 0; i < 8 && entry.Name[i] != ' ' && entry.Name[i] != '\0'; i++) {
-            if (isprint(entry.Name[i]))
-                name[pos++] = entry.Name[i];
-        }
-
+        for (int i = 0; i < 8 && entry.Name[i] != ' '; i++) name[pos++] = entry.Name[i];
         if (entry.Name[8] != ' ') {
             name[pos++] = '.';
-            for (int i = 8; i < 11 && entry.Name[i] != ' ' && entry.Name[i] != '\0'; i++) {
-                if (isprint(entry.Name[i]))
-                    name[pos++] = entry.Name[i];
-            }
+            for (int i = 8; i < 11 && entry.Name[i] != ' '; i++) name[pos++] = entry.Name[i];
         }
         name[pos] = '\0';
 
@@ -127,24 +82,19 @@ static void handle_ls() {
 
 static void handle_echo(const char* input) {
     // Print everything after "echo "
-    const char* arg = input + 4;
-    while (*arg == ' ') arg++;
-    if (*arg != '\0') {
-        printf("%s\n", arg);
+    if (input[4] == ' ') {
+        printf("%s\n", input + 5);
     } else {
         printf("Usage: echo [text]\n");
     }
 }
 
 static void handle_read(const char* input) {
-    const char* path = input + 4;
-    while (*path == ' ') path++;
-    
-    if (*path == '\0') {
+    if (input[4] != ' ') {
         printf("Usage: read [file]\n");
         return;
     }
-
+    const char* path = input + 5;
     FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_READ);
     if (!file) {
         printf("Could not open file: %s\n", path);
@@ -174,6 +124,15 @@ static void handle_fontsize(const char* input) {
     }
 }
 
+static void handle_typewriter(const char* input) {
+    const char* arg = input + 11;
+    while (*arg == ' ') arg++;
+    
+    uint32_t delay = (uint32_t)atoi(arg);
+    g_ConsoleDelay = delay;
+    printf("Typewriter delay set to %u ms (0 = Fast/Batched)\n", delay);
+}
+
 static void handle_memory() {
     size_t total, used, free_mem;
     heap_get_stats(&total, &used, &free_mem);
@@ -182,39 +141,6 @@ static void handle_memory() {
     printf("  Used:       %u bytes\n", used);
     printf("  Free:       %u bytes\n", free_mem);
     printf("  Overhead:   %u bytes\n", total - used - free_mem);
-}
-
-static bool handle_exec(const char* path) {
-    FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_READ);
-    if (!file) {
-        return false;
-    }
-
-    // 1. Allocate memory for the program and a stack
-    // In a real OS, we'd use paging to map this to a specific user address
-    uint8_t* program_buffer = (uint8_t*)malloc(file->Size);
-    uint8_t* user_stack = (uint8_t*)malloc(4096);
-
-    if (!program_buffer || !user_stack) {
-        printf("Exec: Memory allocation failed\n");
-        if (program_buffer) free(program_buffer);
-        FAT_Close(&g_Disk, file);
-        return false;
-    }
-
-    // 2. Load the binary
-    FAT_Read(&g_Disk, file, file->Size, program_buffer);
-    FAT_Close(&g_Disk, file);
-
-    // 3. Prepare for the jump
-    uint32_t kernel_esp;
-    __asm__ volatile("mov %%esp, %0" : "=r"(kernel_esp));
-    i686_TSS_SetStack(i686_GDT_DATA_SEGMENT, kernel_esp);
-
-    printf("Executing %s in Ring 3...\n", path);
-    i686_EnterUserMode((void(*)())program_buffer, user_stack + 4096);
-
-    return true;
 }
 
 void handleUptime() {
@@ -229,29 +155,17 @@ void handleUptime() {
 }
 
 void command_dispatch(const char* input) {
-    if (input[0] == '\0') {
-        return;
-    }
-
-    // 1. Attempt to execute as a Ring 3 binary from disk
-    char path[64] = "/";
-    strcpy(path + 1, input);
-    if (handle_exec(path)) {
-        return;
-    }
-
-    // 2. Fallback to pre-existing built-in commands
     if (strcmp(input, "help") == 0) {
         handle_help();
     } else if (strcmp(input, "ls") == 0) {
         handle_ls();
     } else if (strcmp(input, "cls") == 0) {
         clrscr();
-    } else if (memcmp(input, "echo", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
+    } else if (memcmp(input, "echo ", 5) == 0) {
         handle_echo(input);
-    } else if (memcmp(input, "read", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
+    } else if (memcmp(input, "read ", 5) == 0) {
         handle_read(input);
-    } else if (memcmp(input, "edit", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
+    } else if (memcmp(input, "edit ", 5) == 0) {
         editor_handle_command(input);
     } else if (strcmp(input, "afk") == 0) {
         afk();
@@ -261,6 +175,8 @@ void command_dispatch(const char* input) {
         handle_json_test();
     } else if (memcmp(input, "color ", 6) == 0) {
         handle_color(input);
+    } else if (input[0] == '\0') {
+        // Empty input, do nothing
     } else if (strcmp(input, "credits") == 0) {
         credits();
     } else if (strcmp(input, "mm8Splash") == 0) {
@@ -275,10 +191,10 @@ void command_dispatch(const char* input) {
         handle_rand4();
     } else if (memcmp(input, "calc", 4) == 0 && (input[4] == ' ' || input[4] == '\0')) {
         handle_calc(input);
-    } else if (strcmp(input, "usermode") == 0) {
-        handle_usermode();
     } else if (memcmp(input, "fontsize ", 9) == 0) {
         handle_fontsize(input);
+    } else if (memcmp(input, "typewriter", 10) == 0) {
+        handle_typewriter(input);
     } else if (strcmp(input, "cube") == 0) {
         cube_test();
     } else if (memcmp(input, "bmp", 3) == 0 && (input[3] == ' ' || input[3] == '\0')) {
@@ -289,10 +205,9 @@ void command_dispatch(const char* input) {
         } else {
             bmp_view(arg);
         }
-    } else if (strcmp(input, "memory") == 0) { // This was in the original, keep it.
+    } else if (strcmp(input, "memory") == 0) {
         handle_memory();
     } else {
-        // 3. If neither Ring 3 nor built-in, then it's truly unknown
         printf("Unknown command: %s\n", input);
     }
 }

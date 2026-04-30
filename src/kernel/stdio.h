@@ -1,6 +1,10 @@
 #pragma once
 #include "stdint.h"
+#include "stdbool.h"
 #include "arch/i686/screen_defs.h"
+
+extern bool g_ConsoleAutoSwap;
+extern uint32_t g_ConsoleDelay;
 
 void console_initialize();
 void console_set_font_scale(int scale);
