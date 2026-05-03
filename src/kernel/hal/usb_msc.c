@@ -115,3 +115,20 @@ int usb_msc_read_sectors(ehci_controller_t* hc, uint32_t lba, uint8_t count, voi
     // In a full driver, you should parse descriptors to get these
     return usb_msc_perform_bot(hc, 1, 2, cmd, 10, buffer, count * 512, 1);
 }
+
+int usb_msc_write_sectors(ehci_controller_t* hc, uint32_t lba, uint8_t count, const void* buffer) {
+    uint8_t cmd[10] = {0};
+    cmd[0] = SCSI_WRITE_10;
+    
+    // LBA (Big Endian)
+    cmd[2] = (lba >> 24) & 0xFF;
+    cmd[3] = (lba >> 16) & 0xFF;
+    cmd[4] = (lba >> 8) & 0xFF;
+    cmd[5] = lba & 0xFF;
+    
+    // Transfer length (Big Endian)
+    cmd[7] = 0; 
+    cmd[8] = count;
+
+    return usb_msc_perform_bot(hc, 1, 2, cmd, 10, (void*)buffer, count * 512, 0);
+}

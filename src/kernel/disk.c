@@ -130,6 +130,19 @@ static bool USB_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffe
     return false;
 }
 
+extern int usb_msc_write_sectors(ehci_controller_t* hc, uint32_t lba, uint8_t count, const void* buffer);
+
+static bool USB_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buffer) {
+    if (!disk->driver_data) return false;
+    ehci_controller_t* hc = (ehci_controller_t*)disk->driver_data;
+
+    for (int i = 0; i < 3; i++) {
+        if (usb_msc_write_sectors(hc, lba, count, buffer) == 0) return true;
+        sleep_ms(100);
+    }
+    return false;
+}
+
 bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
     if (disk->type == DISK_TYPE_USB) {
         return USB_ReadSectors(disk, lba, count, buffer);
@@ -175,7 +188,7 @@ bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
 
 bool DISK_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buffer) {
     if (disk->type == DISK_TYPE_USB) {
-        return false; // Implement USB_WriteSectors later
+        return USB_WriteSectors(disk, lba, count, buffer);
     }
 
     // Wait until the drive is not busy

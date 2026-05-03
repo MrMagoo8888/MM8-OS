@@ -4,6 +4,7 @@
 #include <arch/i686/isr.h>
 #include <arch/i686/irq.h>
 #include <arch/i686/io.h>
+#include <arch/i686/paging.h>
 
 void i686_PIT_Initialize(uint32_t frequency) {
     uint32_t divisor = 1193182 / frequency;
@@ -18,6 +19,8 @@ void HAL_Initialize()
     i686_IDT_Initialize();
     i686_ISR_Initialize();
     i686_IRQ_Initialize();
+
+    i686_Paging_Initialize();
 
     // Set PIT to 100Hz to match TIMER_FREQUENCY_HZ in time.c
     i686_PIT_Initialize(100);
