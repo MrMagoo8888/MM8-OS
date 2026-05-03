@@ -10,10 +10,12 @@
 #include <apps/calc/calc.h>
 #include "mm8Splash.h"
 
+#include "commands/bot.h"
 #include "commands/credits.h"
 #include "commands/cube.h"
 #include "commands/color.h"
 #include "stdlib.h"
+#include "heap.h"
 #include "heap.h"
 
 #include "threeD/rand1.h"
@@ -41,6 +43,7 @@ static void handle_help() {
     printf(" - credits: Shows Credits from our Wonderful contributers and viewers\n");
     printf(" - fontsize [1-9]: Change the font scale.\n");
     printf(" - json_test: Runs a test of the cJSON library and heap.\n");
+    printf(" - bot [query]: Talk to the MM8 Assistant bot.\n");
     printf(" - cube: Runs a 3D rotating cube test.\n");
     printf(" - memory: Show heap memory usage statistics.\n");
     printf(" - bmp [file]: View a BMP image file. Example: bmp /image.bmp (Work in Progress)\n");
@@ -178,6 +181,8 @@ void command_dispatch(const char* input) {
         handle_json_test();
     } else if (memcmp(input, "color ", 6) == 0) {
         handle_color(input);
+    } else if (memcmp(input, "bot", 3) == 0 && (input[3] == ' ' || input[3] == '\0')) {
+        handle_bot(input);
     } else if (input[0] == '\0') {
         // Empty input, do nothing
     } else if (strcmp(input, "credits") == 0) {

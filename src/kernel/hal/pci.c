@@ -16,6 +16,7 @@ void pci_write_config(uint32_t bus, uint32_t slot, uint32_t func, uint32_t offse
 }
 
 extern void ohci_init(pci_device_t* dev);
+extern void ehci_init(pci_device_t* dev);
 
 void pci_init_device(pci_device_t* dev) {
     // USB Class 0x0C, Subclass 0x03
@@ -23,6 +24,10 @@ void pci_init_device(pci_device_t* dev) {
         if (dev->prog_if == 0x10) {
             printf("PCI: Found OHCI USB Controller at %02x:%02x.%d\n", dev->bus, dev->device, dev->function);
             ohci_init(dev);
+        }
+        else if (dev->prog_if == 0x20) {
+            printf("PCI: Found EHCI USB Controller at %02x:%02x.%d\n", dev->bus, dev->device, dev->function);
+            ehci_init(dev);
         }
     }
 }

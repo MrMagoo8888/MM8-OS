@@ -2,6 +2,9 @@
 #include "arch/i686/io.h"
 #include "stdio.h"
 #include "stddef.h"
+#include "time.h"
+#include "hal/usb_msc.h"
+#include "hal/ehci.h"
 
 // ATA PIO port definitions
 #define ATA_PRIMARY_DATA         0x1F0
@@ -98,7 +101,7 @@ static bool ATA_Initialize(DISK* disk, uint8_t driveNumber) {
 bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     // 1. Check if the USB driver (OHCI) already claimed this disk during PCI enumeration
     if (disk->type == DISK_TYPE_USB && disk->driver_data != NULL) {
-        printf("DISK: Using USB Mass Storage (OHCI) for drive 0x%x\n", driveNumber);
+        printf("DISK: Using USB Mass Storage for drive 0x%x\n", driveNumber);
         disk->id = driveNumber - 0x80;
         return true;
     }
@@ -111,10 +114,19 @@ bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
     return false;
 }
 
+extern int usb_msc_read_sectors(ehci_controller_t* hc, uint32_t lba, uint8_t count, void* buffer);
+
 static bool USB_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
-    // This is where you will implement Bulk-Only Transport (BOT)
-    // For now, we stub it so the system doesn't crash
-    printf("USB: ReadSectors LBA %u not yet implemented in BOT\n", lba);
+    if (!disk->driver_data) return false;
+    ehci_controller_t* hc = (ehci_controller_t*)disk->driver_data;
+    
+    // From Scratch: USB Mass Storage often requires multiple retries 
+    // if the drive is spinning up.
+    for (int i = 0; i < 3; i++) {
+        if (usb_msc_read_sectors(hc, lba, count, buffer) == 0) return true;
+        printf("USB: Read failed, retry %d...\n", i + 1);
+        sleep_ms(100);
+    }
     return false;
 }
 
