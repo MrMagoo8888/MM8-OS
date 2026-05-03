@@ -78,7 +78,8 @@ void sleep_ms(uint32_t milliseconds) {
     uint32_t target_ticks = g_ticks + (uint32_t)target_ticks_increment;
 
     while (g_ticks < target_ticks) {
-        // Busy-wait: do nothing, just wait for the timer interrupt to increment g_ticks
+        // Wait for next interrupt (likely the timer) to save CPU cycles   Way break stuff
+        __asm__ volatile("hlt");
     }
 }
 

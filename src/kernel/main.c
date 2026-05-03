@@ -4,6 +4,7 @@
 #include <hal/hal.h>
 #include <arch/i686/irq.h>
 #include <arch/i686/io.h>
+#include <arch/i686/gdt.h>
 #include <arch/i686/keyboard.h> // This include is already present, but good to confirm
 #include "fat.h"
 #include <arch/i686/keyboard.h>
@@ -16,6 +17,7 @@
 #include "vbe.h"
 #include "graphics.h"
 #include <apps/imageview/bmp.h>
+#include "syscall.h"
 #include "time.h" // Include the new time.h header
 #include <misc/noCrash.h>
 
@@ -119,6 +121,23 @@ void shell_readline(char* buffer, int buffer_size) {
     }
 }
 
+// A dummy "User Mode" program
+void user_mode_test_program() {
+    const char* msg = "Success! We are now running in Ring 3 (User Mode).\n";
+    
+    // Trigger SYS_PUTS via syscall
+    __asm__ volatile (
+        "mov $1, %%eax\n\t"  // SYS_PUTS
+        "mov %0, %%ebx\n\t"  // message pointer
+        "int $0x80"
+        : : "r"(msg) : "eax", "ebx"
+    );
+
+    // We can't return to the kernel easily, so just loop. 
+    // In the future, this would call SYS_EXIT.
+    while(1);
+}
+
 void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
 {
     // Crash the system to verify we've reached the kernel.
@@ -140,11 +159,17 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     init_tests(); 
     console_initialize();
     time_initialize();
+    syscall_initialize();
     
     // Set up core interrupts before running tests or shell
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
     i686_EnableInterrupts();
+
+    // Prepare TSS for potential syscalls/interrupts while in Ring 3
+    uint32_t esp;
+    __asm__ volatile("mov %%esp, %0" : "=r"(esp));
+    i686_TSS_SetStack(i686_GDT_DATA_SEGMENT, esp);
 
     clrscr();
 

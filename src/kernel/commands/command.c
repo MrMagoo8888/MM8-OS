@@ -16,9 +16,9 @@
 #include "commands/color.h"
 #include "stdlib.h"
 #include "heap.h"
-#include "heap.h"
 
 #include "threeD/rand1.h"
+#include <arch/i686/gdt.h> // For i686_EnterUserMode
 
 #include "time.h"
 
@@ -157,6 +157,22 @@ void handleUptime() {
     printf("  Clock: %lu days, %02lu:%02lu:%02lu\n", days, hours % 24, minutes % 60, seconds % 60);
 }
 
+// Defined in main.c
+extern void user_mode_test_program();
+
+void handle_usermode_test() {
+    printf("Attempting to jump to User Mode...\n");
+
+    // Allocate a separate stack for the user program
+    void* user_stack = malloc(4096);
+    if (!user_stack) {
+        printf("Error: Failed to allocate user stack.\n");
+        return;
+    }
+    void* user_stack_top = (uint8_t*)user_stack + 4096;
+    i686_EnterUserMode(user_mode_test_program, user_stack_top);
+}
+
 void command_dispatch(const char* input) {
     if (input[0] == '\0')
         return;
@@ -205,6 +221,8 @@ void command_dispatch(const char* input) {
         handle_typewriter(input);
     } else if (strcmp(input, "cube") == 0) {
         cube_test();
+    } else if (strcmp(input, "usermode_test") == 0) {
+        handle_usermode_test();
     } else if (memcmp(input, "bmp", 3) == 0 && (input[3] == ' ' || input[3] == '\0')) {
         const char* arg = input + 3;
         while (*arg == ' ') arg++; // Skip extra spaces
@@ -217,5 +235,6 @@ void command_dispatch(const char* input) {
         handle_memory();
     } else {
         printf("Unknown command: %s\n", input);
+    
     }
 }

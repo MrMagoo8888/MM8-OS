@@ -33,11 +33,11 @@ void i686_Paging_Map_Range(uint32_t virt, uint32_t phys, uint32_t size) {
         if (!(page_directory[pd_idx] & PAGE_PRESENT)) {
             static int pt_pool_idx = 0;
             uint32_t pt_phys = (uint32_t)page_tables[pt_pool_idx++];
-            page_directory[pd_idx] = pt_phys | PAGE_PRESENT | PAGE_READWRITE;
+            page_directory[pd_idx] = pt_phys | PAGE_PRESENT | PAGE_READWRITE | 0x04; // Add USER bit
         }
 
         uint32_t* table = (uint32_t*)(page_directory[pd_idx] & 0xFFFFF000);
-        table[pt_idx] = p_addr | PAGE_PRESENT | PAGE_READWRITE;
+        table[pt_idx] = p_addr | PAGE_PRESENT | PAGE_READWRITE | 0x04; // Add USER bit
     }
 }
 
