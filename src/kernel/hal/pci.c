@@ -23,11 +23,13 @@ void pci_init_device(pci_device_t* dev) {
     if (dev->class_id == 0x0C && dev->subclass_id == 0x03) {
         if (dev->prog_if == 0x10) {
             printf("PCI: Found OHCI USB Controller at %02x:%02x.%d\n", dev->bus, dev->device, dev->function);
-            ohci_init(dev);
+            //ohci_init(dev);
+            printf("PCI: OHCI initialization is currently not implemented, but found PCI device.\n");
         }
         else if (dev->prog_if == 0x20) {
             printf("PCI: Found EHCI USB Controller at %02x:%02x.%d\n", dev->bus, dev->device, dev->function);
-            ehci_init(dev);
+            //ehci_init(dev);
+            printf("PCI: EHCI initialization is currently not implemented, but found PCI device.\n");
         }
     }
 }

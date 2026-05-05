@@ -6,9 +6,13 @@
 #include <arch/i686/keyboard.h>
 #include "globals.h"
 
-#define EDITOR_BUFFER_SIZE 4096
+#define EDITOR_BUFFER_SIZE 4096 // 4kb buffer for editing files, can be adjusted as needed
 static char g_EditorBuffer[EDITOR_BUFFER_SIZE];
 
+
+// All of this just renders the editor, loops through buffer char by char to find the cursor position in terms of x and y, 
+// and handles basic input for text editing and cursor movement. Ctrl+S saves the file and exits the editor. 
+//This is a very basic implementation and can be expanded with features like multiple files, copy/paste, etc.
 static void redraw_editor(const char* buffer, int cursor_pos) {
     clrscr();
     // Print status bar first so it can be overwritten by text if needed
@@ -33,6 +37,8 @@ static void redraw_editor(const char* buffer, int cursor_pos) {
     setcursor(x, y);
 }
 
+
+// Command Handler
 void editor_handle_command(const char* input) {
     if (input[4] != ' ') {
         printf("Usage: edit [file]\n");
@@ -54,6 +60,8 @@ void editor_handle_command(const char* input) {
     int cursor_pos = file_size;
     redraw_editor(g_EditorBuffer, cursor_pos);
 
+
+    // Main editor loop, wait for Ctrl+S to save (0x1F)
     while (true) {
         int key = getch();
 

@@ -1,10 +1,6 @@
 #include "disk.h"
 #include "arch/i686/io.h"
 #include "stdio.h"
-#include "stddef.h"
-#include "time.h"
-#include "hal/usb_msc.h"
-#include "hal/ehci.h"
 
 // ATA PIO port definitions
 #define ATA_PRIMARY_DATA         0x1F0
@@ -30,9 +26,18 @@
 #define ATA_CMD_CACHE_FLUSH      0xE7
 #define ATA_CMD_IDENTIFY_DEVICE  0xEC
 
-// Internal ATA helper
-static bool ATA_Initialize(DISK* disk, uint8_t driveNumber) {
-    if (driveNumber < 0x80) return false;
+
+// This is a placeholder for a real ATA PIO driver.
+// For now, it does nothing but provides the interface for the FAT driver.
+
+bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
+    if (driveNumber < 0x80) {
+        printf("DISK: Cannot initialize floppy drive %d with ATA driver.\n", driveNumber);
+        return false;
+    }
+
+    // Translate BIOS drive number (e.g., 0x80 for hda) to ATA drive ID (0 for master)
+    disk->id = driveNumber - 0x80;
 
     // --- Stage 1: Software Reset ---
     // Select the master drive
@@ -83,7 +88,7 @@ static bool ATA_Initialize(DISK* disk, uint8_t driveNumber) {
     if (timeout == 0) return false;
 
     if (i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERROR) {
-        printf("DISK: Drive %d (ATA) not ready.\n", driveNumber - 0x80);
+        printf("DISK: Drive %d not ready.\n", disk->id);
         return false;
     }
 
@@ -91,63 +96,11 @@ static bool ATA_Initialize(DISK* disk, uint8_t driveNumber) {
     uint16_t identify_data[256];
     i686_insw(ATA_PRIMARY_DATA, identify_data, 256);
 
-    disk->type = DISK_TYPE_ATA;
-    disk->id = driveNumber - 0x80;
-
-    printf("DISK: Initialized drive %d (ATA).\n", disk->id);
+    printf("DISK: Initialized drive %d.\n", disk->id);
     return true;
 }
 
-bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
-    // 1. Check if the USB driver (OHCI) already claimed this disk during PCI enumeration
-    if (disk->type == DISK_TYPE_USB && disk->driver_data != NULL) {
-        printf("DISK: Using USB Mass Storage for drive 0x%x\n", driveNumber);
-        disk->id = driveNumber - 0x80;
-        return true;
-    }
-
-    // 2. Otherwise, try to initialize as an ATA drive
-    if (ATA_Initialize(disk, driveNumber)) {
-        return true;
-    }
-
-    return false;
-}
-
-extern int usb_msc_read_sectors(ehci_controller_t* hc, uint32_t lba, uint8_t count, void* buffer);
-
-static bool USB_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
-    if (!disk->driver_data) return false;
-    ehci_controller_t* hc = (ehci_controller_t*)disk->driver_data;
-    
-    // From Scratch: USB Mass Storage often requires multiple retries 
-    // if the drive is spinning up.
-    for (int i = 0; i < 3; i++) {
-        if (usb_msc_read_sectors(hc, lba, count, buffer) == 0) return true;
-        printf("USB: Read failed, retry %d...\n", i + 1);
-        sleep_ms(100);
-    }
-    return false;
-}
-
-extern int usb_msc_write_sectors(ehci_controller_t* hc, uint32_t lba, uint8_t count, const void* buffer);
-
-static bool USB_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buffer) {
-    if (!disk->driver_data) return false;
-    ehci_controller_t* hc = (ehci_controller_t*)disk->driver_data;
-
-    for (int i = 0; i < 3; i++) {
-        if (usb_msc_write_sectors(hc, lba, count, buffer) == 0) return true;
-        sleep_ms(100);
-    }
-    return false;
-}
-
 bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
-    if (disk->type == DISK_TYPE_USB) {
-        return USB_ReadSectors(disk, lba, count, buffer);
-    }
-
     // Wait until the drive is not busy
     int timeout = 0x0FFFFFFF;
     while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);
@@ -187,10 +140,6 @@ bool DISK_ReadSectors(DISK* disk, uint32_t lba, uint8_t count, void* buffer) {
 }
 
 bool DISK_WriteSectors(DISK* disk, uint32_t lba, uint8_t count, const void* buffer) {
-    if (disk->type == DISK_TYPE_USB) {
-        return USB_WriteSectors(disk, lba, count, buffer);
-    }
-
     // Wait until the drive is not busy
     int timeout = 0x0FFFFFFF;
     while ((i686_inb(ATA_PRIMARY_STATUS) & ATA_STATUS_BUSY) && --timeout);

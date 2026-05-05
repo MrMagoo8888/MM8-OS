@@ -15,6 +15,7 @@
 #include "commands/cube.h"
 #include "commands/color.h"
 #include "stdlib.h"
+#include "ctype.h"
 #include "heap.h"
 
 #include "threeD/rand1.h"
@@ -23,6 +24,10 @@
 #include "time.h"
 
 #include <apps/imageview/bmp.h>
+
+// Prototypes for HAL functions
+void HAL_Speaker_Play(uint32_t frequency);
+void HAL_Speaker_Stop();
 
 // Command handler functions (made static as they are internal to this file)
 static void handle_help() {
@@ -48,6 +53,9 @@ static void handle_help() {
     printf(" - memory: Show heap memory usage statistics.\n");
     printf(" - bmp [file]: View a BMP image file. Example: bmp /image.bmp (Work in Progress)\n");
     printf(" - uptime: Show the system uptime.\n");
+    printf(" - beep [freq]: Play a sound at the specified frequency.\n");
+    printf(" - play [freq:ms,...]: Play a sequence of notes. Example: play 440:200,880:100\n");
+    printf(" - jingle: Play a short melody.\n");
 }
 
 static void handle_ls() {
@@ -157,10 +165,71 @@ void handleUptime() {
     printf("  Clock: %lu days, %02lu:%02lu:%02lu\n", days, hours % 24, minutes % 60, seconds % 60);
 }
 
+static void handle_beep(const char* input) {
+    uint32_t freq = 440; // Default A4
+    if (memcmp(input, "beep ", 5) == 0) {
+        freq = (uint32_t)atoi(input + 5);
+    }
+    
+    if (freq == 0) freq = 440;
+
+    HAL_Speaker_Play(freq);
+    sleep_ms(200);
+    HAL_Speaker_Stop();
+}
+
+static void handle_jingle() {
+    // Frequencies: C5, E5, G5, C6
+    uint32_t melody[] = { 523, 659, 784, 1046 };
+    uint32_t durations[] = { 100, 100, 100, 300 };
+
+    printf("Playing jingle...\n");
+
+    for (int i = 0; i < 4; i++) {
+        HAL_Speaker_Play(melody[i]);
+        sleep_ms(durations[i]);
+        HAL_Speaker_Stop();
+        // A very short pause between notes makes it sound much clearer
+        sleep_ms(20); 
+    }
+}
+
+static void handle_play(const char* input) {
+    const char* ptr = input + 5; // Skip "play "
+    
+    while (*ptr) {
+        // Skip leading whitespace or commas
+        while (*ptr == ' ' || *ptr == ',') ptr++;
+        if (!*ptr) break;
+
+        if (!isdigit(*ptr)) break;
+
+        // Parse frequency
+        uint32_t freq = (uint32_t)atoi(ptr);
+        while (*ptr && isdigit(*ptr)) ptr++;
+
+        if (*ptr != ':') {
+            printf("Error: Expected ':' after frequency\n");
+            return;
+        }
+        ptr++; // skip ':'
+
+        // Parse duration
+        uint32_t ms = (uint32_t)atoi(ptr);
+        while (*ptr && isdigit(*ptr)) ptr++;
+
+        // Play the note
+        HAL_Speaker_Play(freq);
+        sleep_ms(ms);
+        HAL_Speaker_Stop();
+        sleep_ms(10); // Tiny silence for note clarity
+    }
+}
+
 // Defined in main.c
 extern void user_mode_test_program();
 
-void handle_usermode_test() {
+/*void handle_usermode_test() {
     printf("Attempting to jump to User Mode...\n");
 
     // Allocate a separate stack for the user program
@@ -172,6 +241,7 @@ void handle_usermode_test() {
     void* user_stack_top = (uint8_t*)user_stack + 4096;
     i686_EnterUserMode(user_mode_test_program, user_stack_top);
 }
+*/
 
 void command_dispatch(const char* input) {
     if (input[0] == '\0')
@@ -189,6 +259,12 @@ void command_dispatch(const char* input) {
         handle_read(input);
     } else if (memcmp(input, "edit ", 5) == 0) {
         editor_handle_command(input);
+    } else if (memcmp(input, "beep", 4) == 0) {
+        handle_beep(input);
+    } else if (memcmp(input, "play ", 5) == 0) {
+        handle_play(input);
+    } else if (strcmp(input, "jingle") == 0) {
+        handle_jingle();
     } else if (strcmp(input, "afk") == 0) {
         afk();
     } else if (strcmp(input, "uptime") == 0) {
@@ -222,7 +298,8 @@ void command_dispatch(const char* input) {
     } else if (strcmp(input, "cube") == 0) {
         cube_test();
     } else if (strcmp(input, "usermode_test") == 0) {
-        handle_usermode_test();
+        //handle_usermode_test();
+        printf("User mode test has been decapitated.\n");
     } else if (memcmp(input, "bmp", 3) == 0 && (input[3] == ' ' || input[3] == '\0')) {
         const char* arg = input + 3;
         while (*arg == ' ') arg++; // Skip extra spaces

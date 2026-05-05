@@ -4,7 +4,6 @@
 #include <hal/hal.h>
 #include <arch/i686/irq.h>
 #include <arch/i686/io.h>
-#include <arch/i686/gdt.h>
 #include <arch/i686/keyboard.h> // This include is already present, but good to confirm
 #include "fat.h"
 #include <arch/i686/keyboard.h>
@@ -17,7 +16,6 @@
 #include "vbe.h"
 #include "graphics.h"
 #include <apps/imageview/bmp.h>
-#include "syscall.h"
 #include "time.h" // Include the new time.h header
 #include <misc/noCrash.h>
 
@@ -110,32 +108,11 @@ void shell_readline(char* buffer, int buffer_size) {
                 pos = strlen(buffer);
                 puts(buffer);
             }
-        } else if (c == KEY_PAGE_UP) {
-            for (int i = 0; i < 5; i++) view_scrollback_up();
-        } else if (c == KEY_PAGE_DOWN) {
-            for (int i = 0; i < 5; i++) view_scrollback_down();
         } else if (c >= 32 && c <= 126 && pos < buffer_size - 1) {
             buffer[pos++] = (char)c;
             putc((char)c);
         }
     }
-}
-
-// A dummy "User Mode" program
-void user_mode_test_program() {
-    const char* msg = "Success! We are now running in Ring 3 (User Mode).\n";
-    
-    // Trigger SYS_PUTS via syscall
-    __asm__ volatile (
-        "mov $1, %%eax\n\t"  // SYS_PUTS
-        "mov %0, %%ebx\n\t"  // message pointer
-        "int $0x80"
-        : : "r"(msg) : "eax", "ebx"
-    );
-
-    // We can't return to the kernel easily, so just loop. 
-    // In the future, this would call SYS_EXIT.
-    while(1);
 }
 
 void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t bootDrive)
@@ -159,22 +136,15 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     init_tests(); 
     console_initialize();
     time_initialize();
-    syscall_initialize();
     
     // Set up core interrupts before running tests or shell
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
     i686_EnableInterrupts();
 
-    // Prepare TSS for potential syscalls/interrupts while in Ring 3
-    uint32_t esp;
-    __asm__ volatile("mov %%esp, %0" : "=r"(esp));
-    i686_TSS_SetStack(i686_GDT_DATA_SEGMENT, esp);
+    //init_tests(); 
 
     clrscr();
-
-    // Now that interrupts are enabled, PCI enumeration (and OHCI sleep) will work
-    pci_enumerate();
     
     printf("    ==================================================================\n");
     printf("\n"
@@ -196,7 +166,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
 
     if (!DISK_Initialize(&g_Disk, 0x80)) {
-        printf("System disk initialization failed (No ATA or USB drive found).\n");
+        printf("Hard disk (USB) initialization failed.\n");
     } else if (!FAT_Initialize(&g_Disk)) {
         printf("FAT initialization failed on hard disk.\n");
     }
@@ -204,8 +174,8 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     char input_buffer[256];
 
     while (1) {
-        // Classic Linux-style prompt: mm8@mm8-os:/$ 
-        printf("mm8@mm8-os:%s$ ", g_CurrentPath);
+        // Linux-style but different prompt: user:/> , ready for later user interaction and multi-user support. For now, we just have a single user and the current path.
+        printf("user:%s> ", g_CurrentPath);
 
         shell_readline(input_buffer, sizeof(input_buffer));
 
