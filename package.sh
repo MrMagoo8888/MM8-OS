@@ -55,7 +55,7 @@ echo "Copying files..."
 cp test.txt "$MOUNT_POINT/" 2>/dev/null || true
 cp zBMPs/* "$MOUNT_POINT/"
 
-cat > "$MOUNT_POINT/test.json" << EOL
+cat > "$MOUNT_POINT/test.jsn" << EOL
 {
     "message": "Hello from JSON!",
     "kernel": "MM8-OS",

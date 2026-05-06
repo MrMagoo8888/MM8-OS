@@ -29,7 +29,7 @@ void loadingScreen() {
     clrscr();
 
     //Open loadingScreen.bmp 
-    bmp_view("loadingScreen.bmp");
+    bmp_view("loadScr.bmp");
     // Simulate loading time
-    sleep_ms(3000); // 3 seconds
+    sleep_ms(100); // Delay
 }

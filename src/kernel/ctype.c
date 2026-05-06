@@ -19,3 +19,7 @@ int isdigit(int c) {
 int isprint(int c) {
     return (c >= 0x20 && c <= 0x7E);
 }
+
+int isspace(int c) {
+    return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f' || c == '\r');
+}

@@ -10,9 +10,9 @@
 void handle_json_test() {
     printf("Running cJSON test...\n");
 
-    FAT_File* file = FAT_Open(&g_Disk, "/test.json", FAT_OPEN_MODE_READ);
+    FAT_File* file = FAT_Open(&g_Disk, "/test.jsn", FAT_OPEN_MODE_READ);
     if (!file) {
-        printf("Failed to open /test.json\n");
+        printf("Failed to open /test.jsn\n");
         return;
     }
 
@@ -27,17 +27,20 @@ void handle_json_test() {
 
     // Read the entire file into the buffer
     uint32_t bytes_read = FAT_Read(&g_Disk, file, file->Size, file_buffer);
-    file_buffer[bytes_read] = '\0'; // Null-terminate the string
-
+    if (bytes_read != file->Size) {
+        printf("Error: Expected %u bytes, read %u\n", file->Size, bytes_read);
+        free(file_buffer);
+        FAT_Close(&g_Disk, file);
+        return;
+    }
+    
+    file_buffer[bytes_read] = '\0';
     FAT_Close(&g_Disk, file);
-
-    printf("Read %u bytes from /test.json\n", bytes_read);
+    printf("Read %u bytes from /test.jsn\n", bytes_read);
 
     // --- cJSON Parsing ---
     cJSON* root = cJSON_Parse(file_buffer);
-
-    // Free the file buffer now that cJSON has parsed it
-    free(file_buffer);
+    free(file_buffer); // Safe to free immediately after parsing
 
     if (!root) {
         printf("cJSON_Parse failed. Error near: %s\n", cJSON_GetErrorPtr());
@@ -72,7 +75,11 @@ void handle_json_test() {
         printf("  Features:\n");
         cJSON* feature = NULL;
         cJSON_ArrayForEach(feature, features) {
-            printf("    - %s\n", feature->valuestring);
+            if (cJSON_IsString(feature) && (feature->valuestring != NULL)) {
+                printf("    - %s\n", feature->valuestring);
+            } else {
+                printf("    - [Invalid Feature Element]\n");
+            }
         }
     }
 

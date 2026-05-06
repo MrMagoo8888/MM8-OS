@@ -702,13 +702,139 @@ void print_buffer(const char* msg, const void* buffer, uint32_t count)
     puts("\n");
 }
 
-// STUB: A proper sprintf is a lot of work. This is just to satisfy the linker.
+// SprintF implementation that writes to a string buffer instead of the console and i want to die now please and thank you
+static void sprintf_unsigned(char** out, unsigned long long number, int radix, int width, char padding, bool uppercase)
+{
+    char buffer[64];
+    int pos = 0;
+    const char* hexChars = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
+
+    do {
+        buffer[pos++] = hexChars[number % radix];
+        number /= radix;
+    } while (number > 0);
+
+    while (pos < width) {
+        *(*out)++ = padding;
+        width--;
+    }
+
+    while (--pos >= 0)
+        *(*out)++ = buffer[pos];
+}
+
+static void sprintf_signed(char** out, long long number, int radix, int width, char padding, bool uppercase)
+{
+    if (number < 0) {
+        *(*out)++ = '-';
+        sprintf_unsigned(out, -number, radix, width > 0 ? width - 1 : 0, padding, uppercase);
+    } else {
+        sprintf_unsigned(out, number, radix, width, padding, uppercase);
+    }
+}
+
+// Basic double to string for cJSON support
+static void sprintf_float(char** out, double number, int precision) {
+    if (number < 0) {
+        *(*out)++ = '-';
+        number = -number;
+    }
+
+    long long int_part = (long long)number;
+    sprintf_signed(out, int_part, 10, 0, ' ', false);
+
+    if (precision > 0) {
+        *(*out)++ = '.';
+        double diff = number - (double)int_part;
+        while (precision--) {
+            diff *= 10;
+            int digit = (int)diff;
+            *(*out)++ = digit + '0';
+            diff -= digit;
+        }
+    }
+}
+
+int vsprintf(char* str, const char* fmt, va_list args) {
+    char* start = str;
+    int state = PRINTF_STATE_NORMAL;
+    int length = PRINTF_LENGTH_DEFAULT;
+    int radix = 10;
+    bool sign = false;
+    bool number = false;
+    bool uppercase = false;
+    int width = 0;
+    char padding = ' ';
+
+    while (*fmt) {
+        switch (state) {
+            case PRINTF_STATE_NORMAL:
+                if (*fmt == '%') {
+                    state = PRINTF_STATE_FLAGS;
+                    width = 0; padding = ' '; uppercase = false;
+                } else {
+                    *str++ = *fmt;
+                }
+                break;
+
+            case PRINTF_STATE_FLAGS:
+                if (*fmt == '0') { padding = '0'; state = PRINTF_STATE_WIDTH; }
+                else { state = PRINTF_STATE_WIDTH; goto WIDTH; }
+                break;
+
+            case PRINTF_STATE_WIDTH:
+            WIDTH:
+                if (*fmt >= '0' && *fmt <= '9') width = width * 10 + (*fmt - '0');
+                else { state = PRINTF_STATE_LENGTH; goto LENGTH; }
+                break;
+
+            case PRINTF_STATE_LENGTH:
+            LENGTH:
+                if (*fmt == 'h') state = PRINTF_STATE_LENGTH_SHORT;
+                else if (*fmt == 'l') state = PRINTF_STATE_LENGTH_LONG;
+                else { state = PRINTF_STATE_SPEC; goto SPEC; }
+                break;
+
+            case PRINTF_STATE_SPEC:
+            SPEC:
+                number = false;
+                switch (*fmt) {
+                    case 'c': *str++ = (char)va_arg(args, int); break;
+                    case 's': {
+                        char* s = va_arg(args, char*);
+                        while (*s) *str++ = *s++;
+                        break;
+                    }
+                    case 'd': case 'i': radix = 10; sign = true; number = true; break;
+                    case 'u': radix = 10; sign = false; number = true; break;
+                    case 'X': uppercase = true; radix = 16; sign = false; number = true; break;
+                    case 'x': radix = 16; sign = false; number = true; break;
+                    case 'f': case 'g':
+                        sprintf_float(&str, va_arg(args, double), 6);
+                        break;
+                    case '%': *str++ = '%'; break;
+                }
+
+                if (number) {
+                    if (sign) sprintf_signed(&str, va_arg(args, long long), radix, width, padding, uppercase);
+                    else sprintf_unsigned(&str, va_arg(args, unsigned long long), radix, width, padding, uppercase);
+                }
+                state = PRINTF_STATE_NORMAL;
+                break;
+        }
+        fmt++;
+    }
+    *str = '\0';
+    return str - start;
+}
+
 int sprintf(char* str, const char* format, ...)
 {
-    // For now, just create an empty string. This will cause issues for cJSON's
-    // number printing, but it will allow the kernel to link.
-    str[0] = '\0';
-    return 0;
+    va_list args;
+    va_start(args, format);
+    int ret = vsprintf(str, format, args);
+    va_end(args);
+    return ret;
 }
 
 // STUB: A proper sscanf is a lot of work.

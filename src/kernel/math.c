@@ -1,4 +1,6 @@
 #include "math.h"
+#include "ctype.h"
+#include "stdbool.h"
 
 // A very simple implementation of fabs
 double fabs(double x) {
@@ -8,11 +10,47 @@ double fabs(double x) {
     return x;
 }
 
-// STUB: A proper strtod is a lot of work. This is just to satisfy the linker
-// for libraries like cJSON that might use it. It doesn't actually parse anything.
 double strtod(const char* str, char** endptr) {
-    if (endptr) {
-        *endptr = (char*)str;
+    double res = 0.0;
+    bool neg = false;
+    const char* p = str;
+
+    // Skip whitespace
+    while (isspace(*p)) p++;
+
+    // Handle sign
+    if (*p == '-') {
+        neg = true;
+        p++;
+    } else if (*p == '+') {
+        p++;
     }
-    return 0.0;
+
+    const char* start = p;
+
+    // Parse integer part
+    while (isdigit(*p)) {
+        res = res * 10.0 + (*p - '0');
+        p++;
+    }
+
+    // Parse fractional part
+    if (*p == '.') {
+        p++;
+        double div = 10.0;
+        while (isdigit(*p)) {
+            res += (*p - '0') / div;
+            div *= 10.0;
+            p++;
+        }
+    }
+
+    if (neg) res = -res;
+
+    if (endptr) {
+        // If no digits were found, standard behavior returns original string
+        *endptr = (char*)(p == start ? str : p);
+    }
+
+    return res;
 }
