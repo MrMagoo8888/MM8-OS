@@ -51,7 +51,7 @@ typedef uint32_t uintptr_t;
 //typedef signed long int int32_t;
 //typedef unsigned long int uint32_t;
 //typedef signed long long int int64_t;
-//typedef unsigned long long int uint64_t;
+//typedef unsigned long long uint64_t;
 
 // typedef uint8_t bool; // replaced by custom stdbool.h
 
@@ -67,5 +67,3 @@ typedef uint32_t uintptr_t;
 // also probs move to a more general header file later
 
 // byeee  19:22 10/9/2025
-
-// TEMPORARY KERNEL RESLOVE

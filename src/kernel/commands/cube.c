@@ -91,6 +91,7 @@ static uint32_t apply_light(uint32_t color, int intensity) {
     return (r << 16) | (g << 8) | b;
 }
 
+//What - 6/5/2026
 static void draw_triangle(int x0, int y0, int z0, int x1, int y1, int z1, int x2, int y2, int z2, uint32_t color, uint32_t* z_buffer, int screen_w, int screen_h) {
     // Sort vertices by y
     if (y0 > y1) { swap_int(&x0, &x1); swap_int(&y0, &y1); swap_int(&z0, &z1); }

@@ -1,6 +1,8 @@
 #include "stdio.h"
 #include "string.h"
 #include "mm8Splash.h"
+#include <apps/imageview/bmp.h>
+#include "time.h"
 
 
 void mm8Splash() {
@@ -21,4 +23,13 @@ void mm8Splash() {
     printf("===============================================\n");
 
            return;
+}
+
+void loadingScreen() {
+    clrscr();
+
+    //Open loadingScreen.bmp 
+    bmp_view("loadingScreen.bmp");
+    // Simulate loading time
+    sleep_ms(3000); // 3 seconds
 }

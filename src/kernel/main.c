@@ -137,14 +137,17 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     console_initialize();
     time_initialize();
     
-    // Set up core interrupts before running tests or shell
+    // Init some shit
     i686_IRQ_RegisterHandler(0, timer);
     i686_Keyboard_Initialize(g_CommandHistory, &g_HistoryCount, &g_HistoryIndex, HISTORY_SIZE);
     i686_EnableInterrupts();
 
     //init_tests(); 
 
+    
+
     clrscr();
+    
     
     printf("    ==================================================================\n");
     printf("\n"
@@ -171,10 +174,12 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
         printf("FAT initialization failed on hard disk.\n");
     }
 
+    loadingScreen();
+
     char input_buffer[256];
 
     while (1) {
-        // Linux-style but different prompt: user:/> , ready for later user interaction and multi-user support. For now, we just have a single user and the current path.
+        // Linux-style but different prompt: user:/>
         printf("user:%s> ", g_CurrentPath);
 
         shell_readline(input_buffer, sizeof(input_buffer));
@@ -182,7 +187,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
         add_to_history(input_buffer);
 
 
-        command_dispatch(input_buffer); // invokes commands like help, cls, echo, read, edit
+        command_dispatch(input_buffer); // Commands work here
     
     }
 
