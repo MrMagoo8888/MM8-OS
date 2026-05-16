@@ -18,6 +18,8 @@
 #include "ctype.h"
 #include "heap.h"
 
+#include <apps/gameEngine/gameEngine.h>
+
 #include "threeD/rand1.h"
 #include <arch/i686/gdt.h> // For i686_EnterUserMode
 
@@ -265,6 +267,8 @@ void command_dispatch(const char* input) {
         handle_play(input);
     } else if (strcmp(input, "jingle") == 0) {
         handle_jingle();
+    } else if (strcmp(input, "game_test") == 0) {
+        game_engine_run();
     } else if (strcmp(input, "afk") == 0) {
         afk();
     } else if (strcmp(input, "uptime") == 0) {

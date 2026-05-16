@@ -279,10 +279,26 @@ static void render_cube(int angleX, int angleY, int angleZ,
     }
 }
 
+/* Suggested: Move internal engine state to a struct */
+typedef struct {
+    int angleX, angleY, angleZ;
+    int camX, camY, camZ;
+    Point2D* projected;
+    uint32_t* z_buffer;
+    int screen_w, screen_h;
+} EngineState;
+
+/* Separation of concerns: Update Logic */
+void engine_update(EngineState* state) {
+    state->angleX = (state->angleX + 1) % 64;
+    state->angleY = (state->angleY + 2) % 64;
+    state->angleZ = (state->angleZ + 1) % 64;
+}
+
 void cube_test() {
     if (!g_vbe_screen) {
         printf("Error: Graphics not initialized.\n");
-        getch();
+        // Use a better wait or return to shell
         return;
     }
 

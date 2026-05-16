@@ -133,7 +133,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     HAL_Initialize();
     heap_initialize();
-    init_tests(); 
+    //init_tests(); 
     console_initialize();
     time_initialize();
     
@@ -146,7 +146,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     
 
-    clrscr();
+    /*clrscr();
     
     
     printf("    ==================================================================\n");
@@ -167,6 +167,8 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
 
     printf("\n\nType 'help' for a list of commands.\n\n");
 
+    */
+
 
     if (!DISK_Initialize(&g_Disk, 0x80)) {
         printf("Hard disk (USB) initialization failed.\n");
@@ -175,6 +177,25 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     }
 
     loadingScreen();
+    clrscr();
+
+     printf("    ==================================================================\n");
+    printf("\n"
+           "    '##::::'##:'##::::'##::'#######::::::::::::'#######:::'######::\n"
+           "    ###::'###: ###::'###:'##.... ##::::::::::'##.... ##:'##... ##:\n"
+           "    ####'####: ####'####: ##:::: ##:::::::::: ##:::: ##: ##:::..::\n"
+           "    ## ### ##: ## ### ##:: #######::'#######: ##:::: ##:. ######::\n"
+           "    ##. #: ##: ##. #: ##:'##.... ##:........: ##:::: ##::..... ##:\n"
+           "    ##:.:: ##: ##:.:: ##: ##:::: ##:::::::::: ##:::: ##:'##::: ##:\n"
+           "    ##:::: ##: ##:::: ##:. #######:::::::::::. #######::. ######::\n"
+           "    ..:::::..::..:::::..:::.......:::::::::::::.......::::......:::\n");
+    printf("\n");
+    printf("    ==================================================================\n");
+
+    init_tests(); 
+
+
+    printf("\n\nType 'help' for a list of commands.\n\n");
 
     char input_buffer[256];
 

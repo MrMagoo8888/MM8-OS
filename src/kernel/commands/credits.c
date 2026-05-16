@@ -32,9 +32,16 @@ void credits_streamers() {
 
 void credits_gf() {
 
-    printf("\n\nAnd, one of the biggest supports, my amazing Girlfriend who will remain anonymous!\n\n");
-    printf(" - E <3\n");
+    printf("\n\nFuck you E\n\n");
+    printf(" - She Broke up with me, fuck that bitch\n");
 
+}
+
+void credits_besties() {
+    printf("\n\nCredits to my Amazing Besties:\n\n");
+    printf(" - Una\n");
+    printf(" - Bobby\n");
+    printf(" - Ava\n");
 }
 
 void credits_me() {
@@ -59,7 +66,7 @@ void credits() {
     credits_lucas();
     credits_followers();
     credits_streamers();
-    credits_gf();
+    //credits_gf(); Git
     credits_me();
     
 }

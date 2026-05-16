@@ -6,6 +6,7 @@
 
 void init_tests() {
     // No longer blocks initialization
+    //pixelLoop();
 }
 
 void pixelLoop() {
