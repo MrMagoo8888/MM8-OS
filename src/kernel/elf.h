@@ -3,6 +3,10 @@
 
 #define ELF_MAGIC 0x464C457F // "\x7FELF"
 
+#define ET_EXEC   2
+#define ET_DYN    3
+#define EM_386    3
+
 typedef struct {
     uint8_t  e_ident[16];
     uint16_t e_type;

@@ -9,6 +9,7 @@
 #include "afk.h"
 #include <apps/calc/calc.h>
 #include "mm8Splash.h"
+#include "elf.h"
 
 #include "commands/bot.h"
 #include "commands/credits.h"
@@ -18,7 +19,8 @@
 #include "ctype.h"
 #include "heap.h"
 
-#include <apps/gameEngine/gameEngine.h>
+#include <apps/gameEngine/3d/gameEngine.h>
+#include <apps/gameEngine/2d/mainGame.h>
 
 #include "threeD/rand1.h"
 #include <arch/i686/gdt.h> // For i686_EnterUserMode
@@ -269,6 +271,8 @@ void command_dispatch(const char* input) {
         handle_jingle();
     } else if (strcmp(input, "game_test") == 0) {
         game_engine_run();
+    } else if (strcmp(input, "parkour") == 0) {
+        game2d_run();
     } else if (strcmp(input, "afk") == 0) {
         afk();
     } else if (strcmp(input, "uptime") == 0) {
@@ -315,7 +319,21 @@ void command_dispatch(const char* input) {
     } else if (strcmp(input, "memory") == 0) {
         handle_memory();
     } else {
-        printf("Unknown command: %s\n", input);
-    
+        // Fallback: Try to execute as an ELF file from disk
+        char path[256];
+        if (input[0] != '/') {
+            path[0] = '/';
+            strcpy(path + 1, input);
+        } else {
+            strcpy(path, input);
+        }
+
+        void (*entry_point)() = (void (*)())elf_load(path);
+        if (entry_point) {
+            entry_point();
+        } else {
+            // If elf_load returns NULL, it already printed an error or the file wasn't found
+            printf("Unknown command: %s\n", input);
+        }
     }
 }

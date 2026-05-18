@@ -119,6 +119,7 @@ static void draw_triangle(GameState* state, Point2D p0, Point2D p1, Point2D p2, 
 // --- Physics & Logic ---
 
 static bool check_collision(GameState* state, int x, int y, int z) {
+    if (y < 0) return false; // Don't collide with the floor of the void
     // Convert world space (scaled by 100) to block indices
     int bx = x / (BLOCK_SIZE * 100);
     int by = y / (BLOCK_SIZE * 100);
@@ -144,6 +145,8 @@ static void update_physics(GameState* state) {
         p->y = next_y;
         p->on_ground = false;
     } else {
+        // Snap to the top of the specific block we hit (next_y)
+        if (p->vy < 0) p->y = ((next_y / (BLOCK_SIZE * 100)) + 1) * (BLOCK_SIZE * 100);
         if (p->vy < 0) p->on_ground = true;
         p->vy = 0;
     }
@@ -187,11 +190,11 @@ static void render_world(GameState* state) {
                     int rz = (-wx * sinY + wz * cosY) / 128;
 
                     int depth = rz;
-                    if (depth < 5) depth = 5; 
                     if (rz > 0) visible_count++;
 
-                    projected[i].x = (rx * 256) / depth + half_w;
-                    projected[i].y = half_h - ((wy - 30) * 256) / depth; // Eye-level offset (+30)
+                    // Perspective projection (using 200 as focal length for better FOV)
+                    projected[i].x = (depth > 0) ? (rx * 200) / depth + half_w : 0;
+                    projected[i].y = (depth > 0) ? half_h - ((wy - 30) * 200) / depth : 0;
                     projected[i].depth = depth;
                 }
 
@@ -200,6 +203,17 @@ static void render_world(GameState* state) {
 
                 uint32_t color = block_colors[type];
                 for (int f = 0; f < 6; f++) {
+                    // --- Distortion Fix: Near-Plane Clipping ---
+                    // Lowered threshold from 10 to 2 to prevent blocks disappearing under feet
+                    bool clip = false;
+                    for (int v = 0; v < 4; v++) {
+                        if (projected[cube_faces[f][v]].depth < 2) {
+                            clip = true;
+                            break;
+                        }
+                    }
+                    if (clip) continue;
+
                     // --- Occlusion Check ---
                     // Only draw the face if the neighbor is AIR or outside the world
                     int nx = bx + dx_offsets[f];
@@ -238,6 +252,8 @@ void game_engine_run() {
     if (!g_vbe_screen) return;
 
     GameState* state = (GameState*)malloc(sizeof(GameState));
+    memset(state, 0, sizeof(GameState));
+
     state->screen_w = g_vbe_screen->width;
     state->screen_h = g_vbe_screen->height;
     state->z_buffer = (uint32_t*)malloc(state->screen_w * state->screen_h * sizeof(uint32_t));
@@ -268,46 +284,51 @@ void game_engine_run() {
         update_physics(state);
         render_world(state);
         graphics_swap_buffer();
+        sleep_ms(4); // cap framerate
 
-        // Input Handling
-        if (i686_inb(0x64) & 0x01) {
+        // Handle continuous movement based on held keys
+        int speed = 200;
+        int sinY = sin_table[state->player.angleY % 64];
+        int cosY = cos_table[state->player.angleY % 64];
+
+        if (state->key_states[0x11]) { // W
+            state->player.vx += (sinY * speed) / 128;
+            state->player.vz += (cosY * speed) / 128;
+        }
+        if (state->key_states[0x1F]) { // S
+            state->player.vx -= (sinY * speed) / 128;
+            state->player.vz -= (cosY * speed) / 128;
+        }
+        if (state->key_states[0x1E]) { // A
+            state->player.vx -= (cosY * speed) / 128;
+            state->player.vz += (sinY * speed) / 128;
+        }
+        if (state->key_states[0x20]) { // D
+            state->player.vx += (cosY * speed) / 128;
+            state->player.vz -= (sinY * speed) / 128;
+        }
+        if (state->key_states[0x4B]) state->player.angleY = (state->player.angleY + 63) % 64; // Turn Left
+        if (state->key_states[0x4D]) state->player.angleY = (state->player.angleY + 1) % 64;  // Turn Right
+
+        // Input Handling: Drain the buffer to prevent lag/unintended jumps
+        while (i686_inb(0x64) & 0x01) {
             uint8_t sc = i686_inb(0x60);
-            if (sc == 0x01) break; // ESC
+            if (sc == 0x01) goto end_game; // ESC
 
-            int speed = 200;
-            int sinY = sin_table[state->player.angleY % 64];
-            int cosY = cos_table[state->player.angleY % 64];
-
-            switch (sc) {
-                case 0x11: // W
-                    state->player.vx += (sinY * speed) / 128;
-                    state->player.vz += (cosY * speed) / 128;
-                    break;
-                case 0x1F: // S
-                    state->player.vx -= (sinY * speed) / 128;
-                    state->player.vz -= (cosY * speed) / 128;
-                    break;
-                case 0x1E: // A (Strafe Left)
-                    state->player.vx -= (cosY * speed) / 128;
-                    state->player.vz += (sinY * speed) / 128;
-                    break;
-                case 0x20: // D (Strafe Right)
-                    state->player.vx += (cosY * speed) / 128;
-                    state->player.vz -= (sinY * speed) / 128;
-                    break;
-                case 0x4B: // Left Arrow (Turn Left)
-                    state->player.angleY = (state->player.angleY + 62) % 64;
-                    break;
-                case 0x4D: // Right Arrow (Turn Right)
-                    state->player.angleY = (state->player.angleY + 2) % 64;
-                    break;
-                case 0x39: // Space
-                    if (state->player.on_ground) state->player.vy = 800;
-                    break;
+            if (sc & 0x80) {
+                state->key_states[sc & 0x7F] = false;
+            } else {
+                state->key_states[sc] = true;
+                // Jumping remains event-based for better control
+                if (sc == 0x39 && state->player.on_ground) {
+                    state->player.vy = 800;
+                    state->player.on_ground = false;
+                }
             }
         }
     }
 
+end_game:
     i686_outb(0x21, i686_inb(0x21) & ~0x02);
     free(state->z_buffer);
     free(state);

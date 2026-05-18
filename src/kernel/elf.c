@@ -19,8 +19,20 @@ void* elf_load(const char* path) {
     }
 
     // Verify Magic
-    if (*(uint32_t*)header.e_ident != ELF_MAGIC) {
+    if (memcmp(header.e_ident, "\x7F""ELF", 4) != 0) {
         printf("ELF: Invalid magic number\n");
+        FAT_Close(&g_Disk, file);
+        return NULL;
+    }
+
+    if (header.e_type != ET_EXEC && header.e_type != ET_DYN) {
+        printf("ELF: Unsupported file type %d (Expected ET_EXEC or ET_DYN)\n", header.e_type);
+        FAT_Close(&g_Disk, file);
+        return NULL;
+    }
+
+    if (header.e_machine != EM_386) {
+        printf("ELF: Invalid architecture (machine %d)\n", header.e_machine);
         FAT_Close(&g_Disk, file);
         return NULL;
     }
@@ -37,7 +49,7 @@ void* elf_load(const char* path) {
             // WARNING: In a real OS, you'd map these pages using paging.
             // Here, we trust the ELF doesn't overwrite the kernel (0-4MB).
             if (phdr.p_vaddr < 0x1000000) {
-                printf("ELF: Security violation - segment linked to kernel space\n");
+                printf("ELF: Security violation - segment at 0x%x is below 16MB (Kernel/Heap space)\n", phdr.p_vaddr);
                 FAT_Close(&g_Disk, file);
                 return NULL;
             }

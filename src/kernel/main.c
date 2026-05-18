@@ -135,6 +135,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     heap_initialize();
     //init_tests(); 
     console_initialize();
+    syscall_initialize();
     time_initialize();
     
     // Init some shit

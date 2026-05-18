@@ -54,6 +54,7 @@ mount "$DATA_PART_IMG" "$MOUNT_POINT"
 echo "Copying files..."
 cp test.txt "$MOUNT_POINT/" 2>/dev/null || true
 cp zBMPs/* "$MOUNT_POINT/"
+cp apps/*.elf "$MOUNT_POINT/"
 
 cat > "$MOUNT_POINT/test.jsn" << EOL
 {

@@ -1,6 +1,6 @@
 #pragma once
-#include "../../stdint.h"
-#include "../../stdbool.h"
+#include "stdint.h"
+#include "stdbool.h"
 
 // World Dimensions
 #define WORLD_W 10
@@ -30,6 +30,7 @@ typedef struct {
     uint32_t* z_buffer;
     uint32_t* back_buffer;
     int screen_w, screen_h;
+    bool key_states[256];
 } GameState;
 
 // --- Core Functions ---
