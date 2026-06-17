@@ -11,6 +11,8 @@
 #include "heap.h"
 #include <commands/command.h>
 #include <apps/editor/editor.h>
+#include "syscall.h" // For syscall_initialize
+#include "commands/mm8Splash.h" // For loadingScreen
 #include "globals.h"
 #include <apps/calc/calc.h> // Include for handle_calc
 #include "vbe.h"
@@ -137,6 +139,7 @@ void __attribute__((section(".entry"))) start(VbeScreenInfo* vbe_info, uint16_t 
     console_initialize();
     syscall_initialize();
     time_initialize();
+    pci_enumerate();
     
     // Init some shit
     i686_IRQ_RegisterHandler(0, timer);

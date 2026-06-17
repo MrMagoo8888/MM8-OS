@@ -2,6 +2,8 @@
 #include <arch/i686/io.h>
 #include "stdio.h"
 
+extern void hda_init(pci_device_t* dev);
+
 // These functions assume i686_outl and i686_inl exist in io.h/asm
 uint32_t pci_read_config(uint32_t bus, uint32_t slot, uint32_t func, uint32_t offset) {
     uint32_t address = (uint32_t)((bus << 16) | (slot << 11) | (func << 8) | (offset & 0xfc) | ((uint32_t)0x80000000));
@@ -19,6 +21,13 @@ extern void ohci_init(pci_device_t* dev);
 extern void ehci_init(pci_device_t* dev);
 
 void pci_init_device(pci_device_t* dev) {
+    // Audio Class 0x04, Subclass 0x03 (High Definition Audio)
+    if (dev->class_id == 0x04 && dev->subclass_id == 0x03) {
+        printf("PCI: Found HDA Audio Controller at %02x:%02x.%d\n", dev->bus, dev->device, dev->function);
+        hda_init(dev);
+        return;
+    }
+
     // USB Class 0x0C, Subclass 0x03
     if (dev->class_id == 0x0C && dev->subclass_id == 0x03) {
         if (dev->prog_if == 0x10) {
@@ -59,7 +68,7 @@ void pci_enumerate() {
                 // If not a multi-function device, don't check other functions
                 if (func == 0) {
                     uint32_t header_type = pci_read_config(bus, slot, 0, 0x0C);
-                    if (!(header_type & 0x00800000)) break;
+                    if (!(header_type & 0x80)) break;
                 }
             }
         }

@@ -11,12 +11,13 @@ static void syscall_handler(Registers* regs) {
 
     switch (syscall_num) {
         case SYS_PUTS:
-            // EBX contains the pointer to the string
+            // EBX contains the pointer to the string HELP probs validate lol
             puts((const char*)regs->ebx);
             break;
 
+            // allcate memory
         case SYS_MALLOC:
-            // EBX is size, return pointer in EAX
+            printf("SYSCALL: Malloc %u bytes\n", regs->ebx);
             regs->eax = (uint32_t)malloc(regs->ebx);
             break;
             
@@ -26,7 +27,7 @@ static void syscall_handler(Registers* regs) {
 
         case SYS_EXIT:
             printf("\nProcess exited with code %d\n", regs->ebx);
-            // In a multitasking OS, you would terminate the task here.
+            // In multi-tasking, you would terminate the task here.
             break;
 
         default:

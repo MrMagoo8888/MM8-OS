@@ -25,6 +25,17 @@ char* strcpy(char* dst, const char* src) {
     return origDst;
 }
 
+char* strncpy(char* dst, const char* src, unsigned int n) {
+    unsigned int i;
+    for (i = 0; i < n && src[i] != '\0'; i++) {
+        dst[i] = src[i];
+    }
+    for (; i < n; i++) {
+        dst[i] = '\0';
+    }
+    return dst;
+}
+
 int strncmp(const char* str1, const char* str2, unsigned int n) {
     for (unsigned int i = 0; i < n; i++) {
         if (str1[i] != str2[i]) {

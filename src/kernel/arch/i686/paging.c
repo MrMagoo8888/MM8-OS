@@ -8,8 +8,9 @@
 // Both must be 4KB aligned.
 uint32_t page_directory[1024] __attribute__((aligned(4096)));
 
-// Allocate enough page tables to cover 512MB of RAM + VBE
-uint32_t page_tables[130][1024] __attribute__((aligned(4096)));
+// Allocate enough page tables to cover the full 4GB virtual space when
+// mapping hardware regions such as high-memory MMIO BARs.
+uint32_t page_tables[1024][1024] __attribute__((aligned(4096)));
 
 void page_fault_handler(Registers* regs) {
     // The faulting address is stored in CR2
@@ -30,8 +31,15 @@ void i686_Paging_Map_Range(uint32_t virt, uint32_t phys, uint32_t size) {
         uint32_t pd_idx = v_addr >> 22;
         uint32_t pt_idx = (v_addr >> 12) & 0x3FF;
 
+        if (pd_idx >= 1024) {
+            return;
+        }
+
         if (!(page_directory[pd_idx] & PAGE_PRESENT)) {
             static int pt_pool_idx = 0;
+            if (pt_pool_idx >= 1024) {
+                return;
+            }
             uint32_t pt_phys = (uint32_t)page_tables[pt_pool_idx++];
             page_directory[pd_idx] = pt_phys | PAGE_PRESENT | PAGE_READWRITE | 0x04; // Add USER bit
         }

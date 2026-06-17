@@ -4,6 +4,17 @@
 #include "memory.h"
 #include "globals.h"
 
+/*
+user:/> hello.elf
+ELF: Loading segment at 0x1000000 (280 bytes)
+ELF: Loading segment at 0x1001000 (86 bytes)
+ELF: Loading segment at 0x1002000 (236 bytes)
+
+Process exited with code 16785408
+
+Process exited with code 16785440
+*/
+
 void* elf_load(const char* path) {
     FAT_File* file = FAT_Open(&g_Disk, path, FAT_OPEN_MODE_READ);
     if (!file) {

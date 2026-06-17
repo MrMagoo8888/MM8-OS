@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "fat.h"
+#include "graphics.h" // For g_DoubleBufferEnabled and graphics_swap_buffer
 #include <apps/editor/editor.h>
 #include "memory.h"
 #include "globals.h"
@@ -28,6 +29,8 @@
 #include "time.h"
 
 #include <apps/imageview/bmp.h>
+#include "randomBits/wav/wav.h"
+#include "audio/hda/hda.h"
 
 // Prototypes for HAL functions
 void HAL_Speaker_Play(uint32_t frequency);
@@ -60,6 +63,7 @@ static void handle_help() {
     printf(" - beep [freq]: Play a sound at the specified frequency.\n");
     printf(" - play [freq:ms,...]: Play a sequence of notes. Example: play 440:200,880:100\n");
     printf(" - jingle: Play a short melody.\n");
+    printf(" - wav [file]: Parse and attempt to play a WAV file.\n");
 }
 
 static void handle_ls() {
@@ -230,6 +234,41 @@ static void handle_play(const char* input) {
     }
 }
 
+static void handle_wav(const char* input) {
+    const char* path = input + 4;
+    while (*path == ' ') path++;
+
+    if (*path == '\0') {
+        printf("Usage: wav [file]\n");
+        return;
+    }
+
+    WAVInfo info = {0};
+    if (!wav_parse_file(path, &info)) {
+        return;
+    }
+
+    printf("WAV info for %s\n", path);
+    printf("  Format:      %u\n", info.audio_format);
+    printf("  Channels:    %u\n", info.channels);
+    printf("  Sample rate: %lu\n", (unsigned long)info.sample_rate);
+    printf("  Bits/sample: %u\n", info.bits_per_sample);
+    printf("  Data bytes:  %lu\n", (unsigned long)info.data_size);
+    printf("  Frames:      %lu\n", (unsigned long)wav_get_frame_count(&info));
+
+    if (!hda_play_pcm(info.data,
+                     info.data_size,
+                     info.channels,
+                     info.sample_rate,
+                     info.bits_per_sample)) {
+        printf("WAV: playback request was not accepted by the HDA driver.\n");
+    } else {
+        printf("WAV: playback request sent to HDA.\n");
+    }
+
+    wav_free(&info);
+}
+
 // Defined in main.c
 extern void user_mode_test_program();
 
@@ -267,6 +306,8 @@ void command_dispatch(const char* input) {
         handle_beep(input);
     } else if (memcmp(input, "play ", 5) == 0) {
         handle_play(input);
+    } else if (memcmp(input, "wav ", 4) == 0) {
+        handle_wav(input);
     } else if (strcmp(input, "jingle") == 0) {
         handle_jingle();
     } else if (strcmp(input, "game_test") == 0) {
@@ -321,19 +362,43 @@ void command_dispatch(const char* input) {
     } else {
         // Fallback: Try to execute as an ELF file from disk
         char path[256];
-        if (input[0] != '/') {
-            path[0] = '/';
-            strcpy(path + 1, input);
-        } else {
-            strcpy(path, input);
+        char input_copy[256]; // Make a mutable copy of the input
+        strcpy(input_copy, input);
+
+        // Simple split: find the first space
+        char* args_str = (char*)strchr(input_copy, ' '); // Cast to char* because we might modify input_copy
+        if (args_str) {
+            *args_str = '\0';
+            args_str++; // This is the start of arguments
         }
 
-        void (*entry_point)() = (void (*)())elf_load(path);
+        // Construct the full path to the executable
+        // Ensure path is null-terminated after strncpy
+        memset(path, 0, sizeof(path)); // Clear path buffer
+        if (input_copy[0] != '/') {
+            path[0] = '/';
+            strncpy(path + 1, input_copy, 254);
+        } else {
+            strcpy(path, input_copy);
+        }
+
+        // Load and execute the ELF
+        void (*entry_point)(int, char**) = (void (*)(int, char**))elf_load(path);
         if (entry_point) {
-            entry_point();
+            // Create a fake argv for now
+            char* argv[2];
+            argv[0] = path;
+            argv[1] = args_str;
+            // Call the ELF entry point
+            entry_point(args_str ? 2 : 1, argv);
+            
+            // Force a refresh after the app returns to ensure the prompt is visible
+            if (g_DoubleBufferEnabled) {
+                graphics_swap_buffer();
+            }
         } else {
             // If elf_load returns NULL, it already printed an error or the file wasn't found
-            printf("Unknown command: %s\n", input);
+            printf("Unknown command or : %s\n", input);
         }
     }
 }

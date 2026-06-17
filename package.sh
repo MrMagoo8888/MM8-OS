@@ -55,6 +55,7 @@ echo "Copying files..."
 cp test.txt "$MOUNT_POINT/" 2>/dev/null || true
 cp zBMPs/* "$MOUNT_POINT/"
 cp apps/*.elf "$MOUNT_POINT/"
+cp wavs/*.wav "$MOUNT_POINT/"
 
 cat > "$MOUNT_POINT/test.jsn" << EOL
 {
