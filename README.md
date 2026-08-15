@@ -14,7 +14,7 @@ Prequisits:
 
 Linux-based distro (I have ubuntu, others may or may not work natively)
 
-BASH shell
+BASH shell (kinda)
 
 (apt package manager)
 
